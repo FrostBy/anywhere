@@ -1,0 +1,88 @@
+
+.nw td {
+    background: #ffdfdf;
+    opacity: 1;
+}
+
+.op td {
+    background: #f2f9ff;
+    opacity: 0.8;
+}
+
+
+.oa td {
+    background: #f2fff4;
+    opacity: 0.7;
+}
+
+.bch td {
+    opacity: 0.3;
+}
+
+p.cir {
+    position: fixed;
+    cursor: pointer;
+    z-index: 999;
+    font-family: arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    color: #fff;
+    right: 190px;
+    top: 75px;
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    border: 1px solid #ccc;
+    line-height: 30px;
+    text-align: center;;
+    background: #ccc;
+}
+
+p.cir.nuwo {
+    right: 330px;
+    background: red;
+}
+
+p.cir.ohl {
+    right: 295px;
+    background: yellow;
+    color: #000;
+}
+
+p.cir.opr {
+    right: 225px;
+    background: blue;
+}
+
+p.cir.oac {
+    right: 260px;
+    background: green;
+}
+
+p.cir.hihi:after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: block;
+    width: 10px;
+    height: 10px;
+    background: red;
+}
+
+#global-ask-button {
+    display: none;
+}
+
+.rest1 {
+    display: block;
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    width: 50px;
+    height: 50px;
+    background: rgb(125, 245, 155);
+    z-index: 555;
+    opacity: 0.7;
+    cursor: pointer;
+}
