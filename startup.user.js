@@ -11,9 +11,10 @@
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @updateURL    https://github.com/FrostBy/anywhere/raw/master/startup.user.js
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js
-// @require      https://raw.githubusercontent.com/FrostBy/anywhere/master/startup.js
-// @resource     IMPORTED_CSS https://raw.githubusercontent.com/FrostBy/anywhere/master/startup.css
+// @require      https://github.com/FrostBy/anywhere/raw/master/startup.js
+// @resource     IMPORTED_CSS https://github.com/FrostBy/anywhere/raw/master/startup.css
 // ==/UserScript==
 
 (function() {
