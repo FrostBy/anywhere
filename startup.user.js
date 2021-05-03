@@ -11,8 +11,8 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js
-// @require      https://x-token-auth:CR5C5eauPYEfYu5CHf@bitbucket.org/FrostBy/startup/raw/6f5b789cf0aff23f3509fd763ec52e2a052fe104/startup.js
-// @resource     IMPORTED_CSS https://x-token-auth:CR5C5eauPYEfYu5CHf@bitbucket.org/FrostBy/startup/raw/6f5b789cf0aff23f3509fd763ec52e2a052fe104/startup.css
+// @require      https://raw.githubusercontent.com/FrostBy/anywhere/master/startup.js
+// @resource     IMPORTED_CSS https://raw.githubusercontent.com/FrostBy/anywhere/master/startup.css
 // ==/UserScript==
 
 (function() {
