@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         Startup
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  try to take over the world!
-// @author       You
+// @version      0.3
+// @description  The script helps to keep track of updates
+// @author       Dmitry Scherbatykh
+// @contributor  Vladislav Romanovsky
 // @match        https://staffing.epam.com/positions/153695794/proposals
 // @icon         https://www.google.com/s2/favicons?domain=epam.com
 // @grant        GM_getResourceText
