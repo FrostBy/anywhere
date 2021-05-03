@@ -1,88 +1,129 @@
 
-.nw td {
+.new td {
     background: #ffdfdf;
     opacity: 1;
 }
 
-.op td {
+.offer-preparation td {
     background: #f2f9ff;
     opacity: 0.8;
 }
 
 
-.oa td {
+.offer-acceptance td {
     background: #f2fff4;
     opacity: 0.7;
 }
 
-.bch td {
+.background-check td {
     opacity: 0.3;
 }
 
-p.cir {
+.filters-container {
+    user-select: none;
+    padding: 5px 5px 10px 20px;
+    background: white;
+    box-shadow: 0 0 3px black;
     position: fixed;
-    cursor: pointer;
     z-index: 999;
     font-family: arial, sans-serif;
     font-weight: bold;
     font-size: 13px;
+    right: 20px;
+    top: 195px;
+    text-align: center;
+    transform: translateX(101%);
+}
+.filters-container.open{
+    right: 0;
+    transform: none;
+}
+.filters-container .filter {
+    margin: 0 3px;
     color: #fff;
-    right: 190px;
-    top: 75px;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
     width: 30px;
     height: 30px;
     border-radius: 100%;
-    border: 1px solid #ccc;
     line-height: 30px;
-    text-align: center;;
     background: #ccc;
 }
 
-p.cir.nuwo {
-    right: 330px;
+.filters-container .reset {
+    margin: 0 3px;
+    color: #fff;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    padding: 0 5px;
+    border-radius: 10%;
+    line-height: 30px;
+    background: #7df59b;
+    opacity: 0.7;
+}
+
+.filters-container .filter:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: 10px;
+    bottom: -7px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #39c2d7;
+}
+
+.filters-container .filter.disabled:after {
+    border: none
+}
+
+.filters-container .toggler {
+    border-right: 1px solid #39c2d7;
+    position: absolute;
+    display: flex;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 20px;
+    cursor: pointer;
+}
+
+.filters-container .toggler:after {
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 100%;
+    content: 'ᐊ';
+    margin: 0 auto;
+}
+
+.filters-container.open .toggler:after {
+    content: 'ᐅ';
+}
+
+.filter.new {
     background: red;
 }
 
-p.cir.ohl {
-    right: 295px;
+.filter.on-hold {
     background: yellow;
     color: #000;
 }
 
-p.cir.opr {
-    right: 225px;
+.filter.offer-preparation {
     background: blue;
 }
 
-p.cir.oac {
-    right: 260px;
+.filter.offer-acceptance {
     background: green;
-}
-
-p.cir.hihi:after {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 0;
-    display: block;
-    width: 10px;
-    height: 10px;
-    background: red;
 }
 
 #global-ask-button {
     display: none;
-}
-
-.rest1 {
-    display: block;
-    position: fixed;
-    right: 30px;
-    bottom: 30px;
-    width: 50px;
-    height: 50px;
-    background: rgb(125, 245, 155);
-    z-index: 555;
-    opacity: 0.7;
-    cursor: pointer;
 }
