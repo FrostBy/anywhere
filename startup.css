@@ -64,6 +64,19 @@
     opacity: 0.7;
 }
 
+.filters-container .refresh {
+    margin: 0 3px;
+    color: #fff;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    padding: 0 5px;
+    border-radius: 10%;
+    line-height: 30px;
+    background: #ff0000;
+    opacity: 1;
+}
+
 .filters-container .filter:after {
     content: '';
     position: absolute;

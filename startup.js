@@ -1,21 +1,22 @@
 (function (events, handler) {
     'use strict';
+    Notification.requestPermission()
+        .then(permission => { if (!('permission' in Notification)) Notification.permission = permission; }, rejection => {});
 
-    let positionsArray = [];
-
-    const positionsInterval = setInterval(() => {
+    const proposalsWatcher = setInterval(() => {
         const positions = $('.profile-table tbody.ng-star-inserted');
 
         if (!positions.length) return;
         if ($('.grid-cell-rect').length > 0) initFilters();
 
-        clearInterval(positionsInterval);
+        clearInterval(proposalsWatcher);
     }, 1000);
 
     let idleTime = 0;
     //Increment the idle time counter every minute.
     const idleInterval = setInterval(() => {
         idleTime++;
+        if (idleTime >= 5) getProposals(); //5 minutes
         if (idleTime >= 30) window.location.reload(); //30 minutes
     }, 60000); // 1 minute
 
@@ -23,13 +24,13 @@
     $(document).on('mousemove keypress', () => { idleTime = 0; });
 
     function initFilters() {
-        const filters = $('<div class="filters-container open">');
+        const filters = $(`<div class="filters-container open">`);
         filters
-            .append(`<div class='filter new' data-status="new">0</div>`)
-            .append(`<div class='filter offer-preparation' data-status="offer-preparation">0</div>`)
-            .append(`<div class='filter offer-acceptance' data-status="offer-acceptance">0</div>`)
-            .append(`<div class='filter on-hold' data-status="on-hold">0</div>`)
-            .append(`<div class='filter done' data-status="done">0</div>`)
+            .append(`<div class='filter new' data-status="new" title="New">0</div>`)
+            .append(`<div class='filter offer-preparation' data-status="offer-preparation" title="Offer Preparation">0</div>`)
+            .append(`<div class='filter offer-acceptance' data-status="offer-acceptance" title="Offer Acceptance">0</div>`)
+            .append(`<div class='filter on-hold' data-status="on-hold" title="On Hold">0</div>`)
+            .append(`<div class='filter done' data-status="done" title="Background Check">0</div>`)
             .append(`<div class='reset'>Reset</div>`)
             .append(`<div class='toggler open'></div>`);
 
@@ -57,21 +58,11 @@
         }
 
         function calculateStages() {
-            $('.filter.done')
-                .html($('tbody.background-check').length)
-                .prop('title', 'Background Check');
-            $('.filter.on-hold')
-                .html($('tbody.on-hold').length)
-                .prop('title', 'On Hold');
-            $('.filter.offer-acceptance')
-                .html($('tbody.offer-acceptance').length)
-                .prop('title', 'Offer Acceptance');
-            $('.filter.offer-preparation')
-                .html($('tbody.offer-preparation').length)
-                .prop('title', 'Offer Preparation');
-            $('.filter.new')
-                .html($('tbody.new').length)
-                .prop('title', 'New')
+            $('.filter.done').html($('tbody.background-check').length);
+            $('.filter.on-hold').html($('tbody.on-hold').length);
+            $('.filter.offer-acceptance').html($('tbody.offer-acceptance').length);
+            $('.filter.offer-preparation').html($('tbody.offer-preparation').length);
+            $('.filter.new').html($('tbody.new').length);
         }
 
         function resetFilters() {
@@ -82,23 +73,82 @@
 
         $('.reset').on('click', () => {
             resetFilters();
-        })
+        });
 
         $('.toggler').on('click', () => {
             $('.filters-container').toggleClass('open');
-        })
+        });
 
         $('.filter').on('click', function () {
             $(this).toggleClass('disabled');
 
             const status = $(this).data('status');
-            $('.profile-table tbody').each(function () {
+            $('.profile-table tbody.proposal').each(function () {
                 if ($(this).data('status') === status) $(this).toggle();
-            })
+            });
         });
 
         setClasses();
         calculateStages();
         resetFilters();
     }
+
+    function getProposals() {
+        const proposalsURL = 'https://staffing.epam.com/api/b1/positions/153695794/proposals?size=1000&q=staffingStatus=out=(Cancelled,Rejected)';
+        const proposalsObjectOld = JSON.parse(GM_getValue('proposals', '{}'));
+        const proposalsObject = {};
+        const diff = { new: {}, outdated: {}, changed: {} };
+
+        $.get(proposalsURL, function (data) {
+            const proposals = data.content;
+            let showNotification = false;
+            proposals.forEach(proposal => {
+                const applicant = proposal.applicant || proposal.employee.applicant;
+                const id = applicant.id;
+                const status = proposal.advancedStatusDetails.action.name;
+                const fullName = applicant.fullName;
+                const changed = applicant.lastProcessStatusUpdateDate;
+
+                proposalsObject[id] = { id, status, fullName, changed };
+                const proposalOld = proposalsObjectOld[id];
+                if (!proposalOld) {
+                    diff.new[id] = proposalsObject[id];
+                    showNotification = true;
+                } else if (new Date(proposalOld.changed) < new Date(changed)) {
+                    diff.changed[id] = proposalsObject[id];
+                    showNotification = true;
+                }
+            });
+
+            for (const proposalOld of Object.values(proposalsObjectOld)) {
+                if (!proposalsObject[proposalOld.id]) {
+                    diff.outdated[proposalOld.id] = proposalOld;
+                    showNotification = true;
+                }
+            }
+
+            GM_setValue('proposals', JSON.stringify(proposalsObject));
+
+            if (showNotification) {
+                if (!$('.filters-container .refresh')) {
+                    $('.filters-container').append(`<div class='refresh' title="Reload Page">⟳</div>`);
+                    $('.filters-container .refresh').on('click', () => window.location.reload());
+                }
+
+                if (Notification.permission === 'granted') {
+                    const notification = new Notification('Updates for you on the Startup page!', {
+                        body: `New: ${ Object.keys(diff.new).length } | Changed: ${ Object.keys(diff.changed).length } | Outdated: ${ Object.keys(diff.outdated).length }`,
+                        icon: 'https://www.epam.com/etc/designs/epam-core/favicon/apple-touch-icon.png',
+                        vibrate: true,
+                    });
+                    notification.onclick = () => {
+                        window.focus();
+                        notification.close();
+                    };
+                }
+            }
+        });
+    }
+
+    getProposals();
 })();
