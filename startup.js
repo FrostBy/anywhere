@@ -1,27 +1,91 @@
 (function (events, handler) {
     'use strict';
+
+    const initialState = {
+        done: true,
+        'offer-preparation': true,
+        new: false,
+        'offer-acceptance': false,
+        'on-hold': false
+    };
+    let customState = JSON.parse(JSON.stringify(initialState));
+
+
     Notification.requestPermission()
         .then(permission => { if (!('permission' in Notification)) Notification.permission = permission; }, rejection => {});
+
 
     const proposalsWatcher = setInterval(() => {
         const positions = $('.profile-table tbody.ng-star-inserted');
 
         if (!positions.length) return;
-        if ($('.grid-cell-rect').length > 0) initFilters();
+        if ($('.grid-cell-rect').length) {
+            initFilters();
+            setClasses();
+            calculateStages();
+            resetFilters();
+            watchDOM();
+        }
 
         clearInterval(proposalsWatcher);
     }, 1000);
 
+
     let idleTime = 0;
     //Increment the idle time counter every minute.
-    const idleInterval = setInterval(() => {
+    setInterval(() => {
         idleTime++;
         if (idleTime >= 5) getProposals(); //5 minutes
         if (idleTime >= 30) window.location.reload(); //30 minutes
     }, 60000); // 1 minute
-
     //Zero the idle timer on mouse movement.
     $(document).on('mousemove keypress', () => { idleTime = 0; });
+
+
+    function refreshFilters() {
+        $('.filter').each(function () {
+            if (customState[$(this).data('status')]) $(this).addClass('disabled');
+            else $(this).removeClass('disabled');
+        });
+        $('.profile-table tbody.proposal').each(function () {
+            if (customState[$(this).data('status')]) $(this).hide();
+            else $(this).show();
+        });
+    }
+
+    function resetFilters() {
+        customState = JSON.parse(JSON.stringify(initialState));
+        refreshFilters();
+    }
+
+    function setClasses() {
+        $('.profile-table tbody:has(span[title="Backup Consideration"])')
+            .addClass('proposal backup-consideration new')
+            .data('status', 'new');
+        $('.profile-table tbody:has(span[title="Select Action"])')
+            .addClass('proposal select-action new')
+            .data('status', 'new');
+        $('.profile-table tbody:has(span[title="On Hold"])')
+            .addClass('proposal on-hold')
+            .data('status', 'on-hold');
+        $('.profile-table tbody:has(span[title="Offer Preparation"])')
+            .addClass('proposal offer-preparation')
+            .data('status', 'offer-preparation');
+        $('.profile-table tbody:has(span[title="Offer Acceptance"])')
+            .addClass('proposal offer-acceptance')
+            .data('status', 'offer-acceptance');
+        $('.profile-table tbody:has(span[title="Background Check"])')
+            .addClass('proposal background-check done')
+            .data('status', 'done');
+    }
+
+    function calculateStages() {
+        $('.filter.done').html($('tbody.background-check').length);
+        $('.filter.on-hold').html($('tbody.on-hold').length);
+        $('.filter.offer-acceptance').html($('tbody.offer-acceptance').length);
+        $('.filter.offer-preparation').html($('tbody.offer-preparation').length);
+        $('.filter.new').html($('tbody.new').length);
+    }
 
     function initFilters() {
         const filters = $(`<div class="filters-container open">`);
@@ -36,41 +100,6 @@
 
         $('body').append(filters);
 
-        function setClasses() {
-            $('.profile-table tbody:has(span[title="Backup Consideration"])')
-                .addClass('proposal backup-consideration new')
-                .data('status', 'new');
-            $('.profile-table tbody:has(span[title="Select Action"])')
-                .addClass('proposal select-action new')
-                .data('status', 'new');
-            $('.profile-table tbody:has(span[title="On Hold"])')
-                .addClass('proposal on-hold')
-                .data('status', 'on-hold');
-            $('.profile-table tbody:has(span[title="Offer Preparation"])')
-                .addClass('proposal offer-preparation')
-                .data('status', 'offer-preparation');
-            $('.profile-table tbody:has(span[title="Offer Acceptance"])')
-                .addClass('proposal offer-acceptance')
-                .data('status', 'offer-acceptance');
-            $('.profile-table tbody:has(span[title="Background Check"])')
-                .addClass('proposal background-check done')
-                .data('status', 'done');
-        }
-
-        function calculateStages() {
-            $('.filter.done').html($('tbody.background-check').length);
-            $('.filter.on-hold').html($('tbody.on-hold').length);
-            $('.filter.offer-acceptance').html($('tbody.offer-acceptance').length);
-            $('.filter.offer-preparation').html($('tbody.offer-preparation').length);
-            $('.filter.new').html($('tbody.new').length);
-        }
-
-        function resetFilters() {
-            $('.filter.done, .filter.offer-preparation').not('.disabled').trigger('click');
-            $('.filter.new.disabled, .filter.offer-acceptance.disabled, .filter.on-hold.disabled').trigger('click');
-        }
-
-
         $('.reset').on('click', () => {
             resetFilters();
         });
@@ -80,18 +109,34 @@
         });
 
         $('.filter').on('click', function () {
-            $(this).toggleClass('disabled');
-
-            const status = $(this).data('status');
-            $('.profile-table tbody.proposal').each(function () {
-                if ($(this).data('status') === status) $(this).toggle();
-            });
+            customState[$(this).data('status')] = !$(this).hasClass('disabled');
+            refreshFilters();
         });
-
-        setClasses();
-        calculateStages();
-        resetFilters();
     }
+
+
+    function watchDOM() {
+        XMLHttpRequest.prototype.realSend = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.send = function (value) {
+            this.addEventListener("load", (event) => {
+                const interval = setInterval(() => {
+                    if (!$('.waiting-indicator').length) {
+                        clearInterval(interval);
+                        const newInterval = setInterval(() => {
+                            setClasses();
+                            if ($('.profile-table tbody.proposal').length) {
+                                clearInterval(newInterval);
+                                calculateStages();
+                                refreshFilters();
+                            }
+                        }, 100);
+                    }
+                }, 100);
+            }, false);
+            this.realSend(value);
+        };
+    }
+
 
     function getProposals() {
         const proposalsURL = 'https://staffing.epam.com/api/b1/positions/153695794/proposals?size=1000&q=staffingStatus=out=(Cancelled,Rejected)';
@@ -105,7 +150,7 @@
             proposals.forEach(proposal => {
                 const applicant = proposal.applicant || proposal.employee.applicant;
                 const id = applicant.id;
-                const status = proposal.advancedStatusDetails.action.name;
+                const status = proposal.advancedStatusDetails ? proposal.advancedStatusDetails.action.name : 'Preselected';
                 const fullName = applicant.fullName;
                 const changed = applicant.lastProcessStatusUpdateDate;
 
