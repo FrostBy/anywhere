@@ -175,7 +175,7 @@
             GM_setValue('proposals', JSON.stringify(proposalsObject));
 
             if (showNotification) {
-                if (!$('.filters-container .refresh')) {
+                if (!$('.filters-container .refresh').length) {
                     $('.filters-container').append(`<div class='refresh' title="Reload Page">⟳</div>`);
                     $('.filters-container .refresh').on('click', () => window.location.reload());
                 }
