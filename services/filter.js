@@ -1,0 +1,75 @@
+class Filter {
+    static get initialState() {
+        return {
+            done: true,
+            'offer-preparation': true,
+            new: false,
+            'offer-acceptance': false,
+            'on-hold': false
+        };
+    }
+
+    static get state() {
+        return state;
+    }
+
+    static set state(data) {
+        state = JSON.parse(JSON.stringify(data));
+    }
+
+    static init() {
+        const filters = $(`<div class="filters-container open">`);
+        filters
+            .append(`<div class='filter new' data-status="new" title="New">0</div>`)
+            .append(`<div class='filter offer-preparation' data-status="offer-preparation" title="Offer Preparation">0</div>`)
+            .append(`<div class='filter offer-acceptance' data-status="offer-acceptance" title="Offer Acceptance">0</div>`)
+            .append(`<div class='filter on-hold' data-status="on-hold" title="On Hold">0</div>`)
+            .append(`<div class='filter done' data-status="done" title="Background Check">0</div>`)
+            .append(`<div class='reset'>Reset</div>`)
+            .append(`<div class='toggler open'></div>`);
+
+        $('body').append(filters);
+
+        $('.reset').on('click', () => this.reset());
+
+        $('.toggler').on('click', () => $('.filters-container').toggleClass('open'));
+
+        $('.filter').on('click', function () {
+            Filter.state[$(this).data('status')] = !$(this).hasClass('disabled');
+            Filter.refresh();
+        });
+    }
+
+    static refresh() {
+        $('.filter').each(function () {
+            if (state[$(this).data('status')]) $(this).addClass('disabled');
+            else $(this).removeClass('disabled');
+        });
+        $('.profile-table tbody.proposal').each(function () {
+            if (state[$(this).data('status')]) $(this).hide();
+            else $(this).show();
+        });
+    }
+
+    static reset() {
+        this.state = this.initialState;
+        this.refresh();
+    }
+
+    static calculate() {
+        $('.filter.done').html($('tbody.background-check').length);
+        $('.filter.on-hold').html($('tbody.on-hold').length);
+        $('.filter.offer-acceptance').html($('tbody.offer-acceptance').length);
+        $('.filter.offer-preparation').html($('tbody.offer-preparation').length);
+        $('.filter.new').html($('tbody.new').length);
+    }
+
+    static enableRefresh() {
+        if (!$('.filters-container .refresh').length) {
+            $('.filters-container').append(`<div class='refresh' title="Reload Page">⟳</div>`);
+            $('.filters-container .refresh').on('click', () => window.location.reload());
+        }
+    }
+}
+
+let state = JSON.parse(JSON.stringify(Filter.initialState));
