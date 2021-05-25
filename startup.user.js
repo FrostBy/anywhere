@@ -11,13 +11,13 @@
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
-// @updateURL    file:///F:/domains/anywhere/startup.user.js
+// @updateURL    https://github.com/FrostBy/anywhere/raw/master/startup.user.js
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js
-// @require      file:///F:/domains/anywhere/services/filter.js
-// @require      file:///F:/domains/anywhere/services/dom.js
-// @require      file:///F:/domains/anywhere/services/proposal.js
-// @require      file:///F:/domains/anywhere/startup.js
-// @resource     IMPORTED_CSS file:///F:/domains/anywhere/startup.css
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/filter.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/dom.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/proposal.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/startup.js
+// @resource     IMPORTED_CSS https://github.com/FrostBy/anywhere/raw/master/startup.css
 // ==/UserScript==
 
 (() => {
