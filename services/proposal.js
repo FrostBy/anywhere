@@ -7,7 +7,6 @@ class Proposal {
     }
 
     static markProposals(diff) {
-        console.log(1);
         const newProposals = Object.keys(diff.new);
         const changedProposals = Object.keys(diff.changed);
         const outdatedProposals = Object.keys(diff.outdated);

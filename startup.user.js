@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Startup
 // @namespace    http://tampermonkey.net/
-// @version      0.41
+// @version      0.42
 // @description  The script helps to keep track of updates
 // @author       Dmitry Scherbatykh
 // @contributor  Vladislav Romanovsky
