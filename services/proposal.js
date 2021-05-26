@@ -6,6 +6,21 @@ class Proposal {
         return 'https://staffing.epam.com/api/b1/positions/153695794/proposals?size=1000&q=staffingStatus=out=(Cancelled,Rejected)';
     }
 
+    static markProposals(diff) {
+        console.log(1);
+        const newProposals = Object.keys(diff.new);
+        const changedProposals = Object.keys(diff.changed);
+        const outdatedProposals = Object.keys(diff.outdated);
+
+        $('.profile-table tbody.proposal').each(function () {
+            $(this).removeClass('mark mark-changed mark-new mark-outdated');
+            const id = $(this).find('.applicant-link a').attr('href').split('/').pop();
+            if (newProposals.includes(id)) $(this).addClass('mark mark-new');
+            else if (changedProposals.includes(id)) $(this).addClass('mark mark-changed');
+            else if (outdatedProposals.includes(id)) $(this).addClass('mark mark-outdated');
+        });
+    }
+
     static get() {
         const proposalsObjectOld = JSON.parse(GM_getValue('proposals', '{}'));
         const proposalsObject = {};
@@ -51,6 +66,7 @@ class Proposal {
                         vibrate: true,
                     });
                     notification.onclick = () => {
+                        Proposal.markProposals(diff);
                         window.focus();
                         notification.close();
                     };
@@ -58,5 +74,4 @@ class Proposal {
             }
         });
     }
-
 }
