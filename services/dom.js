@@ -52,7 +52,7 @@ class Dom {
     static setRequisitionStatus(requisitions) {
         $('.profile-table tbody.proposal').each(function () {
             $(this).find('.requisitions').remove();
-            const id = $(this).find('.applicant-link a').attr('href').split('/').pop();
+            const id = $(this).find('.applicant-link a, .candidate__info-link a').attr('href').split('/').pop();
             if (requisitions[id]) {
                 const container = $('<div></div>').addClass('requisitions');
                 requisitions[id].declined.forEach(requisition => {
@@ -74,7 +74,7 @@ class Dom {
 
         $('.profile-table tbody.proposal').each(function () {
             $(this).removeClass('mark mark-changed mark-new mark-outdated');
-            const id = $(this).find('.applicant-link a').attr('href').split('/').pop();
+            const id = $(this).find('.applicant-link a, .candidate__info-link a').attr('href').split('/').pop();
             if (newProposals.includes(id)) $(this).addClass('mark mark-new');
             else if (changedProposals.includes(id)) $(this).addClass('mark mark-changed');
             else if (outdatedProposals.includes(id)) $(this).addClass('mark mark-outdated');

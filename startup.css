@@ -29,10 +29,10 @@
     font-family: arial, sans-serif;
     font-weight: bold;
     font-size: 13px;
-    right: 20px;
-    top: 195px;
+    right: 19px;
+    top: 203px;
     text-align: center;
-    transform: translateX(101%);
+    transform: translateX(100%);
 }
 
 .filters-container.open {
@@ -102,7 +102,7 @@
     left: 0;
     top: 0;
     height: 100%;
-    width: 20px;
+    width: 21px;
     cursor: pointer;
 }
 
@@ -219,4 +219,80 @@
 
 .requisitions .requisition.declined {
     background-color: #dc3545;
+}
+
+.configurator-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+}
+
+.configurator-container .body {
+    background: #fff;
+    transform: translateX(101%);
+    position: absolute;
+    top: 60px;
+    padding-bottom: 60px;
+    height: 100%;
+    box-shadow: 0 2px 4px 0 hsla(0, 0%, 83.9%, .5), 0 2px 10px 0 rgba(0, 0, 0, .17);
+    transition: transform 0.5s;
+    right: 0;
+    width: 900px;
+}
+
+.configurator-container.open .body {
+    transform: translateX(0);
+}
+
+.configurator-container .toggler {
+    position: absolute;
+    margin-left: -19px;
+    cursor: pointer;
+    top: 180px;
+    background: #3498db;
+    color: white;
+    width: 20px;
+    text-align: center;
+}
+
+.configurator-container .input-wrapper {
+    display: flex;
+}
+
+.configurator-container input[type=checkbox] {
+    margin-right: 5px;
+}
+
+.configurator-container .close:hover {
+    background: none;
+    opacity: .5;
+}
+
+.configurator-container .close {
+    margin: 0;
+    padding: 0 22px;
+    height: 60px;
+    font-size: 18px;
+    color: #ccc;
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.force-update-proposals {
+    position: fixed;
+    cursor: pointer;
+    top: 180px;
+    background: #28a745;
+    color: white;
+    width: 20px;
+    text-align: center;
+    right: 22px;
+    z-index: 999;
 }

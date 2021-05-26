@@ -18,7 +18,7 @@ class Filter {
     }
 
     static init() {
-        const filters = $(`<div class="filters-container open">`);
+        const filters = $(`<div class="filters-container open"></div>`);
         filters
             .append(`<div class='filter new' data-status="new" title="New">0</div>`)
             .append(`<div class='filter offer-preparation' data-status="offer-preparation" title="Offer Preparation">0</div>`)
@@ -30,9 +30,11 @@ class Filter {
 
         $('body').append(filters);
 
-        $('.reset').on('click', () => this.reset());
+        $('.filters-container .toggler').on('click', () => $('.filters-container').toggleClass('open'));
+    }
 
-        $('.toggler').on('click', () => $('.filters-container').toggleClass('open'));
+    static unlock() {
+        $('.reset').on('click', () => this.reset());
 
         $('.filter').on('click', function () {
             Filter.state[$(this).data('status')] = !$(this).hasClass('disabled');
