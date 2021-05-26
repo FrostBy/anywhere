@@ -201,3 +201,22 @@
     color: #fff;
     background-color: #6c757d;
 }
+
+.requisitions {
+    margin-top: 2px;
+}
+
+.requisitions .requisition {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin: 0 3px;
+}
+
+.requisitions .requisition.accepted {
+    background-color: #28a745;
+}
+
+.requisitions .requisition.declined {
+    background-color: #dc3545;
+}

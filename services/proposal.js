@@ -1,33 +1,38 @@
 Notification.requestPermission()
     .then(permission => { if (!('permission' in Notification)) Notification.permission = permission; }, rejection => {});
 
+let request;
+
 class Proposal {
     static get url() {
         return 'https://staffing.epam.com/api/b1/positions/153695794/proposals?size=1000&q=staffingStatus=out=(Cancelled,Rejected)';
     }
 
-    static markProposals(diff) {
-        const newProposals = Object.keys(diff.new);
-        const changedProposals = Object.keys(diff.changed);
-        const outdatedProposals = Object.keys(diff.outdated);
-
-        $('.profile-table tbody.proposal').each(function () {
-            $(this).removeClass('mark mark-changed mark-new mark-outdated');
-            const id = $(this).find('.applicant-link a').attr('href').split('/').pop();
-            if (newProposals.includes(id)) $(this).addClass('mark mark-new');
-            else if (changedProposals.includes(id)) $(this).addClass('mark mark-changed');
-            else if (outdatedProposals.includes(id)) $(this).addClass('mark mark-outdated');
-        });
+    static get requisitionStatuses() {
+        return {
+            declined: [
+                'Cancelled',
+                'Rejected',
+                'Offer: Cancelled',
+                'Offer: Rejected',
+                'Offer: Rejected By Candidate',
+                'Offer: Conditions Not Met',
+            ],
+            accepted: [
+                'Offer: Accepted',
+            ],
+        };
     }
 
     static get() {
         const proposalsObjectOld = JSON.parse(GM_getValue('proposals', '{}'));
         const proposalsObject = {};
         const diff = { new: {}, outdated: {}, changed: {} };
-
-        $.get(this.url, function (data) {
+        if (request) request.abort();
+        request = $.get(Proposal.url, function (data) {
             const proposals = data.content;
             let showNotification = false;
+            const requisitions = {};
             proposals.forEach(proposal => {
                 const applicant = proposal.applicant || proposal.employee.applicant;
                 const id = applicant.id;
@@ -35,7 +40,20 @@ class Proposal {
                 const fullName = applicant.fullName;
                 const changed = applicant.lastProcessStatusUpdateDate;
 
-                proposalsObject[id] = { id, status, fullName, changed };
+                if (applicant.requisitionDashboardView.length) requisitions[id] = { declined: [], accepted: [] };
+                const applicantRequisitions = applicant.requisitionDashboardView.map(requisition => {
+                    const data = {
+                        id: requisition.requisitionId,
+                        status: requisition.status,
+                        jobFunction: requisition.jobFunction.name,
+                        changed: requisition.lastStatusUpdateDate
+                    };
+                    if (Proposal.requisitionStatuses.declined.includes(data.status)) requisitions[id].declined.push(data);
+                    else if (Proposal.requisitionStatuses.accepted.includes(data.status)) requisitions[id].accepted.push(data);
+                    return data;
+                });
+
+                proposalsObject[id] = { id, status, fullName, changed, requisitions: applicantRequisitions };
                 const proposalOld = proposalsObjectOld[id];
                 if (!proposalOld) {
                     diff.new[id] = proposalsObject[id];
@@ -65,12 +83,13 @@ class Proposal {
                         vibrate: true,
                     });
                     notification.onclick = () => {
-                        Proposal.markProposals(diff);
+                        services.Dom.markProposals(diff);
                         window.focus();
                         notification.close();
                     };
                 }
             }
+            services.Dom.setRequisitionStatus(requisitions);
         });
     }
 }
