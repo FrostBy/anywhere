@@ -64,7 +64,6 @@ class Dom {
                 $(this).find('.candidate__applicant-icons').append(container);
             }
         });
-
     }
 
     static markProposals(diff) {
@@ -78,6 +77,17 @@ class Dom {
             if (newProposals.includes(id)) $(this).addClass('mark mark-new');
             else if (changedProposals.includes(id)) $(this).addClass('mark mark-changed');
             else if (outdatedProposals.includes(id)) $(this).addClass('mark mark-outdated');
+        });
+    }
+
+    static setJobFunction(proposals) {
+        $('.profile-table tbody.proposal').each(function () {
+            $(this).find('.job-function').remove();
+            const id = $(this).find('.applicant-link a, .candidate__info-link a').attr('href').split('/').pop();
+            if (proposals[id] && proposals[id].jobFunction) {
+                const jobFunction = proposals[id].jobFunction;
+                $(this).find('.candidate__applicant-icons').append($(`<span title="${jobFunction.name}">${jobFunction.seniorityTrack}${jobFunction.level}</span>`).addClass('job-function'));
+            }
         });
     }
 }

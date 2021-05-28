@@ -63,7 +63,7 @@ class Proposal {
                     return data;
                 });
 
-                proposalsObject[id] = { id, status, fullName, changed, requisitions: applicantRequisitions };
+                proposalsObject[id] = { id, status, fullName, changed, jobFunction: applicant.jobFunctionAfterInterview, requisitions: applicantRequisitions };
                 const proposalOld = proposalsObjectOld[id];
                 if (!proposalOld) {
                     diff.new[id] = proposalsObject[id];
@@ -103,6 +103,7 @@ class Proposal {
                     };
                 }
             }
+            services.Dom.setJobFunction(proposalsObject);
             services.Dom.setRequisitionStatus(requisitions);
         });
     }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Startup
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.61
 // @description  The script helps to keep track of updates
 // @author       Vladislav Romanovsky
 // @contributor  Dmitry Scherbatykh
@@ -13,11 +13,13 @@
 // @grant        GM_getValue
 // @updateURL    https://github.com/FrostBy/anywhere/raw/master/startup.user.js
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/js/tooltipster.bundle.min.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/filter.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/dom.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/proposal.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/startup.js
+// @resource     IMPORTED_CSS_TOOLTIPSTER https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/css/tooltipster.bundle.min.css
 // @resource     IMPORTED_CSS https://github.com/FrostBy/anywhere/raw/master/startup.css
 // ==/UserScript==
 
@@ -25,6 +27,7 @@
     window.services = { Dom, Filter, Proposal, Configurator };
     window.GM_setValue = GM_setValue;
     window.GM_getValue = GM_getValue;
+    GM_addStyle(GM_getResourceText('IMPORTED_CSS_TOOLTIPSTER'));
     GM_addStyle(GM_getResourceText('IMPORTED_CSS'));
     initScript();
 })();
