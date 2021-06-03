@@ -1,0 +1,17 @@
+.filters-container {
+    top: 92px;
+}
+.filter.empty {
+    background: #dc3545;
+}
+
+.filter.new {
+    background: #dc3545;
+}
+
+.assigned td {
+    opacity: 0.3;
+}
+.outdated td {
+    opacity: 0.3;
+}

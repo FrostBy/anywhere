@@ -1,6 +1,6 @@
 let handleEventBase = () => {};
 
-class Dom {
+class DomStartup {
     static watchRequests(handleEvent = () => {}) {
         this.unWatch();
         handleEventBase = handleEvent;

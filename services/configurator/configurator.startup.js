@@ -1,4 +1,4 @@
-class Configurator {
+class ConfiguratorStartup {
     static get(key, defaultValue = undefined) {
         try {
             return JSON.parse(GM_getValue('config.' + key, defaultValue));
@@ -73,7 +73,7 @@ class Configurator {
         configurator.find('form input').on('change', function () {
             if ($(this).prop('checked')) boards[$(this).val()] = allBoards[$(this).val()];
             else delete boards[$(this).val()];
-            Configurator.set('boards', boards);
+            ConfiguratorStartup.set('boards', boards);
         });
 
         $('body').append(configurator);
@@ -88,9 +88,5 @@ class Configurator {
     static processBoard() {
         let ids = Object.keys(this.get('boards')).concat(Object.keys(this.get('boardsCustom', {})));
         if (ids.some(board => window.location.href.indexOf(board))) return true;
-    }
-
-    setCustomBoards() {
-
     }
 }

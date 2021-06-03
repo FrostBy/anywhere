@@ -1,4 +1,4 @@
-class Filter {
+class FilterStartup {
     static get initialState() {
         return {
             done: true,
@@ -37,8 +37,8 @@ class Filter {
         $('.reset').on('click', () => this.reset());
 
         $('.filter').on('click', function () {
-            Filter.state[$(this).data('status')] = !$(this).hasClass('disabled');
-            Filter.refresh();
+            FilterStartup.state[$(this).data('status')] = !$(this).hasClass('disabled');
+            FilterStartup.refresh();
         });
     }
 
@@ -74,4 +74,4 @@ class Filter {
     }
 }
 
-let state = JSON.parse(JSON.stringify(Filter.initialState));
+let state = JSON.parse(JSON.stringify(FilterStartup.initialState));
