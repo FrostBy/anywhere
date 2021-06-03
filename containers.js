@@ -10,10 +10,12 @@ function initScript() {
     const watcher = setInterval(() => {
         if (document.readyState !== 'complete' || !$('.dashboard-table tbody.ng-star-inserted, .profile-table tbody.ng-star-inserted').length || requestsIterator || $('.waiting-indicator').length) return;
         if ($('.grid-cell-rect').length) {
-            services.Filter.unlock();
             services.Dom.setClasses();
+            services.Configurator.refreshForm();
+            services.Filter.unlock();
             services.Filter.reset();
             services.Filter.calculate();
+            services.Configurator.watch();
             services.Dom.watchRequests(() => {
                 const interval = setInterval(() => {
                     if (!$('.waiting-indicator').length) {
@@ -22,8 +24,10 @@ function initScript() {
                             services.Dom.setClasses();
                             if ($('.profile-table tbody.requisition, .dashboard-table tbody.container').length) {
                                 clearInterval(newInterval);
+                                services.Configurator.refreshForm();
                                 services.Filter.refresh();
                                 services.Filter.calculate();
+                                services.Configurator.watch();
                             }
                         }, 100);
                     }

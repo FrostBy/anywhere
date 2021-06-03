@@ -1,6 +1,11 @@
 .filters-container {
     top: 92px;
 }
+
+.configurator-container .toggler {
+    top: 69px;
+}
+
 .filter.empty {
     background: #dc3545;
 }
@@ -12,6 +17,11 @@
 .assigned td {
     opacity: 0.3;
 }
+
 .outdated td {
     opacity: 0.3;
+}
+
+.hidden-recruiter, .hidden-discipline {
+    display: none !important;
 }

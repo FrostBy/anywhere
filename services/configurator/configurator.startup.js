@@ -78,7 +78,7 @@ class ConfiguratorStartup {
 
         $('body').append(configurator);
 
-        $('.configurator-container .toggler, .configurator-container .close').on('click', function () { $('.configurator-container').toggleClass('open');});
+        $('.configurator-container .toggler, .configurator-container .close').on('click', () => { $('.configurator-container').toggleClass('open');});
         $(window).scroll(function () {
             if ($(window).scrollTop() <= 60) $('.configurator-container .body').css('top', 60 - $(window).scrollTop());
             else $('.configurator-container .body').css('top', 0);

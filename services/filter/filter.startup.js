@@ -44,12 +44,10 @@ class FilterStartup {
 
     static refresh() {
         $('.filter').each(function () {
-            if (state[$(this).data('status')]) $(this).addClass('disabled');
-            else $(this).removeClass('disabled');
+            $(this).toggleClass('disabled', state[$(this).data('status')]);
         });
         $('.profile-table tbody.proposal').each(function () {
-            if (state[$(this).data('status')]) $(this).hide();
-            else $(this).show();
+            $(this).toggleClass('hidden', state[$(this).data('status')]);
         });
     }
 

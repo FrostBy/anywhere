@@ -55,12 +55,10 @@ class FilterContainers {
 
     static refresh() {
         $('.filter').each(function () {
-            if (state[$(this).data('status')]) $(this).addClass('disabled');
-            else $(this).removeClass('disabled');
+            $(this).toggleClass('disabled', state[$(this).data('status')]);
         });
         $('.profile-table tbody.requisition, .dashboard-table tbody.container').each(function () {
-            if (state[$(this).data('status')]) $(this).hide();
-            else $(this).show();
+            $(this).toggleClass('hidden', state[$(this).data('status')]);
         });
     }
 
@@ -70,8 +68,8 @@ class FilterContainers {
     }
 
     static calculate() {
-        $('.filter.empty').html($('tbody.empty').length);
-        $('.filter.assigned').html($('tbody.assigned').length);
+        $('.filter.empty').html($('tbody.empty').not('.hidden-recruiter, .hidden-discipline').length);
+        $('.filter.assigned').html($('tbody.assigned').not('.hidden-recruiter, .hidden-discipline').length);
         $('.filter.new').html($('tbody.new').length);
         $('.filter.outdated').html($('tbody.outdated').length);
     }
