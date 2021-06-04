@@ -47,7 +47,7 @@ class DomContainers {
             countryGroups[country].push($(this));
         });
         Object.values(countryGroups).forEach(data => {
-            data.sort((a, b) => new Date(a.find('td').eq(dateIndex)) - new Date(b.find('td').eq(dateIndex)));
+            data.sort((a, b) => new Date(b.find('td').eq(dateIndex).text()) - new Date(a.find('td').eq(dateIndex).text()));
             data[0].addClass('new').removeClass('outdated').data('status', 'new');
         });
     }
