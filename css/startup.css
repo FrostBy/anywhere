@@ -141,3 +141,23 @@
     height: 13px;
     font-size: 12px;
 }
+
+.staffing-report .toggler {
+    margin-left: -65px;
+    background: #ff9b19;
+}
+
+.staffing-report .button {
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.staffing-report .editor {
+    display: grid;
+    grid-auto-flow: column;
+}
+
+.staffing-report .editor textarea {
+    width: 100%;
+    margin: 0;
+}

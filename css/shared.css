@@ -42,7 +42,7 @@
     padding: 0 5px;
     border-radius: 10%;
     line-height: 30px;
-    background:#a3c644;
+    background: #a3c644;
     opacity: 0.7;
 }
 
@@ -102,7 +102,7 @@
     content: 'ᐅ';
 }
 
-.configurator-container {
+.sidebar-container {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -110,26 +110,33 @@
     z-index: 1000;
     top: 0;
     right: 0;
+    transition-property: z-index;
+    transition-duration: 2s;
 }
 
-.configurator-container .body {
+.sidebar-container.open {
+    z-index: 1001;
+    transition-duration: 0s;
+}
+
+.sidebar-container .body {
     background: #fff;
     transform: translateX(101%);
     position: absolute;
-    top: 60px;
-    padding-bottom: 60px;
-    height: 100%;
+    bottom: 0;
+    height: calc(100% - 60px);
     box-shadow: 0 2px 4px 0 hsla(0, 0%, 83.9%, .5), 0 2px 10px 0 rgba(0, 0, 0, .17);
-    transition: transform 0.5s;
+    transition: transform 0.5s, z-index 0.5s;
     right: 0;
+    z-index: 1001;
     width: 900px;
 }
 
-.configurator-container.open .body {
+.sidebar-container.open .body {
     transform: translateX(0);
 }
 
-.configurator-container .toggler {
+.sidebar-container .toggler {
     position: absolute;
     margin-left: -19px;
     cursor: pointer;
@@ -140,20 +147,20 @@
     text-align: center;
 }
 
-.configurator-container .input-wrapper {
+.sidebar .input-wrapper {
     display: flex;
 }
 
-.configurator-container input[type=checkbox] {
+.sidebar input[type=checkbox] {
     margin-right: 5px;
 }
 
-.configurator-container .close:hover {
+.sidebar .close:hover, .sidebar .copy:hover {
     background: none;
     opacity: .5;
 }
 
-.configurator-container .close {
+.sidebar .close, .sidebar .copy {
     margin: 0;
     padding: 0 22px;
     height: 60px;
@@ -164,4 +171,21 @@
     right: 0;
     opacity: 1;
     cursor: pointer;
+}
+
+.sidebar form {
+    height: 100%;
+}
+
+.sidebar .applicant-summary__info-container-block {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.sidebar .copy {
+    left: 140px;
+    padding: 4px 7px;
+    height: 30px;
+    top: 8px;
+    width: 30px;
 }

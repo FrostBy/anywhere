@@ -1,8 +1,9 @@
 function initScript() {
     services.Configurator.init();
-    if(!services.Configurator.processBoard()) return;
+    if (!services.Configurator.processBoard()) return;
     services.Filter.init();
     services.Proposal.init();
+    services.StaffingReport.init();
 
     let requestsIterator = 0;
     services.Dom.watchRequests((event) => {

@@ -2,39 +2,16 @@ let locationBase = window.location.href;
 let watcher;
 
 class ConfiguratorContainers {
-    static get(key, defaultValue = undefined) {
-        try {
-            return JSON.parse(GM_getValue('config.' + key, defaultValue));
-        } catch (e) {
-            return defaultValue;
-        }
+    static get(key, defaultValue) {
+        return services.ConfiguratorShared.get(key, defaultValue);
     }
 
     static set(key, value) {
-        GM_setValue('config.' + key, JSON.stringify(value));
-        return value;
+        return services.ConfiguratorShared.set(key, value);
     }
 
     static init() {
-        // language=HTML
-        const configuratorDOM = `
-            <div class="configurator-container">
-                <div class='toggler'>⚙</div>
-                <div class='body'>
-                    <button class="close"><span class="fa fa-close"></span></button>
-                    <form id="boards" class="containers applicant-summary__info-container">
-                    </form>
-                </div>
-            </div>`;
-
-        $('body').append(configuratorDOM);
-
-        $('.configurator-container .toggler, .configurator-container .close').on('click', () => { $('.configurator-container').toggleClass('open');});
-
-        $(window).scroll(function () {
-            if ($(window).scrollTop() <= 60) $('.configurator-container .body').css('top', 60 - $(window).scrollTop());
-            else $('.configurator-container .body').css('top', 0);
-        });
+        $('body').append(services.ConfiguratorShared.getDom());
     }
 
     static watch() {
@@ -129,5 +106,6 @@ class ConfiguratorContainers {
                 }
                 services.Filter.calculate();
             });
+        services.ConfiguratorShared.initEvents();
     }
 }

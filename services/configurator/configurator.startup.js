@@ -1,15 +1,10 @@
 class ConfiguratorStartup {
-    static get(key, defaultValue = undefined) {
-        try {
-            return JSON.parse(GM_getValue('config.' + key, defaultValue));
-        } catch (e) {
-            return defaultValue;
-        }
+    static get(key, defaultValue) {
+        return services.ConfiguratorShared.get(key, defaultValue);
     }
 
     static set(key, value) {
-        GM_setValue('config.' + key, JSON.stringify(value));
-        return value;
+        return services.ConfiguratorShared.set(key, value);
     }
 
     static get boards() {
@@ -43,17 +38,6 @@ class ConfiguratorStartup {
         let boards = this.get('boards');
         if (typeof boards !== 'object' || !Object.keys(boards).length) boards = this.set('boards', this.boards);
 
-        // language=HTML
-        const configuratorDOM = `
-            <div class="configurator-container">
-                <div class='toggler'>⚙</div>
-                <div class='body'>
-                    <button class="close"><span class="fa fa-close"></span></button>
-                    <form id="boards" class="boards applicant-summary__info-container">
-                    </form>
-                </div>
-            </div>`;
-
         let allBoards = this.boards;
         const boardsCustom = this.get('boardsCustom', {});
         if (typeof boardsCustom === 'object') allBoards = Object.assign(allBoards, boardsCustom);
@@ -63,10 +47,10 @@ class ConfiguratorStartup {
             return $(`<div class="input-wrapper"><input type="checkbox" value="${id}" id="board_${id}" ${activeBoardsIds.includes(id) ? 'checked="true"' : null}"><label for="board_${id}">${allBoards[id]}</label></div>`);
         });
 
-        const configurator = $(configuratorDOM);
+        const configurator = $(services.ConfiguratorShared.getDom());
 
         const [fields1, fields2] = this.splitArr(boardsFields);
-        configurator.find('form')
+        configurator.find('form').empty()
             .append($('<div class="applicant-summary__info-container-block"></div>').append(fields1))
             .append($('<div class="applicant-summary__info-container-block"></div>').append(fields2));
 
@@ -77,12 +61,7 @@ class ConfiguratorStartup {
         });
 
         $('body').append(configurator);
-
-        $('.configurator-container .toggler, .configurator-container .close').on('click', () => { $('.configurator-container').toggleClass('open');});
-        $(window).scroll(function () {
-            if ($(window).scrollTop() <= 60) $('.configurator-container .body').css('top', 60 - $(window).scrollTop());
-            else $('.configurator-container .body').css('top', 0);
-        });
+        services.ConfiguratorShared.initEvents();
     }
 
     static processBoard() {

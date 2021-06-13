@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Containers
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.11
 // @description  The script helps to work with hiring containers and requisitions for the Anywhere Team
 // @author       Vladislav Romanovsky
 // @match        https://staffing.epam.com/hiringContainers/*
@@ -13,6 +13,7 @@
 // @updateURL    https://github.com/FrostBy/anywhere/raw/master/containers.user.js
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/js/tooltipster.bundle.min.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator/configurator.shared.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator/configurator.containers.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/filter/filter.containers.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.containers.js
@@ -23,7 +24,12 @@
 // ==/UserScript==
 
 (() => {
-    window.services = { Dom: DomContainers, Filter: FilterContainers, Configurator: ConfiguratorContainers };
+    window.services = {
+        Dom: DomContainers,
+        Filter: FilterContainers,
+        ConfiguratorShared,
+        Configurator: ConfiguratorContainers
+    };
     window.GM_setValue = GM_setValue;
     window.GM_getValue = GM_getValue;
     GM_addStyle(GM_getResourceText('IMPORTED_CSS_TOOLTIPSTER'));
