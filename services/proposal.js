@@ -73,7 +73,7 @@ class Proposal {
 
     static async get() {
         const boardId = window.location.href.match(/(\d+)/)[0];
-        if (!boardId || !Object.keys(services.Configurator.get('boards')).includes(boardId)) return false;
+        if (!boardId || !Object.keys(services.Config.get('boards')).includes(boardId)) return false;
 
         const proposalsObjectOld = JSON.parse(GM_getValue('proposals.' + boardId, '{}'));
         const proposalsObject = {};
