@@ -22,9 +22,9 @@
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.startup.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/staffingReport.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/proposal.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/version.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/config.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/startup.js
-// @require      https://github.com/FrostBy/anywhere/raw/master/version.js
-// @require      https://github.com/FrostBy/anywhere/raw/master/config.js
 // @resource     IMPORTED_CSS_TOOLTIPSTER https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/css/tooltipster.bundle.min.css
 // @resource     IMPORTED_CSS_SHARED https://github.com/FrostBy/anywhere/raw/master/css/shared.css
 // @resource     IMPORTED_CSS https://github.com/FrostBy/anywhere/raw/master/css/startup.css
