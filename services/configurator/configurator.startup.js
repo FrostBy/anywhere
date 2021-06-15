@@ -1,12 +1,4 @@
 class ConfiguratorStartup {
-    static get(key, defaultValue) {
-        return services.ConfiguratorShared.get(key, defaultValue);
-    }
-
-    static set(key, value) {
-        return services.ConfiguratorShared.set(key, value);
-    }
-
     static get boards() {
         return {
             173744973: 'Management (DM, PM, SM)',
@@ -35,11 +27,11 @@ class ConfiguratorStartup {
     }
 
     static init() {
-        let boards = this.get('boards');
-        if (typeof boards !== 'object' || !Object.keys(boards).length) boards = this.set('boards', this.boards);
+        let boards = services.Config.get('boards');
+        if (typeof boards !== 'object' || !Object.keys(boards).length) boards = services.Config.set('boards', this.boards);
 
         let allBoards = this.boards;
-        const boardsCustom = this.get('boardsCustom', {});
+        const boardsCustom = services.Config.get('boardsCustom', {});
         if (typeof boardsCustom === 'object') allBoards = Object.assign(allBoards, boardsCustom);
 
         const activeBoardsIds = Object.keys(boards);
@@ -57,7 +49,7 @@ class ConfiguratorStartup {
         configurator.find('form input').on('change', function () {
             if ($(this).prop('checked')) boards[$(this).val()] = allBoards[$(this).val()];
             else delete boards[$(this).val()];
-            ConfiguratorStartup.set('boards', boards);
+            services.Config.set('boards', boards);
         });
 
         $('body').append(configurator);
@@ -65,7 +57,7 @@ class ConfiguratorStartup {
     }
 
     static processBoard() {
-        let ids = Object.keys(this.get('boards')).concat(Object.keys(this.get('boardsCustom', {})));
+        let ids = Object.keys(services.Config.get('boards')).concat(Object.keys(services.Config.get('boardsCustom', {})));
         if (ids.some(board => window.location.href.indexOf(board))) return true;
     }
 }

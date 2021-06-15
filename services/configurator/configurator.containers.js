@@ -2,14 +2,6 @@ let locationBase = window.location.href;
 let watcher;
 
 class ConfiguratorContainers {
-    static get(key, defaultValue) {
-        return services.ConfiguratorShared.get(key, defaultValue);
-    }
-
-    static set(key, value) {
-        return services.ConfiguratorShared.set(key, value);
-    }
-
     static init() {
         $('body').append(services.ConfiguratorShared.getDom());
     }
@@ -50,8 +42,8 @@ class ConfiguratorContainers {
         const recruitersArray = Object.keys(recruiters);
         const disciplinesArray = Object.keys(disciplines);
 
-        const activeRecruiters = new Set(this.get('recruiters', recruitersArray));
-        const activeDisciplines = new Set(this.get('disciplines', disciplinesArray));
+        const activeRecruiters = new Set(services.Config.get('recruiters', recruitersArray));
+        const activeDisciplines = new Set(services.Config.get('disciplines', disciplinesArray));
 
         const hiddenRecruiters = new Set(recruitersArray.filter(recruiter => !activeRecruiters.has(recruiter)));
         const hiddenDisciplines = new Set(disciplinesArray.filter(discipline => !activeDisciplines.has(discipline)));
@@ -96,13 +88,13 @@ class ConfiguratorContainers {
                     else activeRecruiters.delete($(this).val());
 
                     requisitions.forEach(requisition => requisition.toggleClass('hidden-recruiter', !checked));
-                    ConfiguratorContainers.set('recruiters', [...activeRecruiters]);
+                    services.Config.set('recruiters', [...activeRecruiters]);
                 } else {
                     if (checked) activeDisciplines.add($(this).val());
                     else activeDisciplines.delete($(this).val());
 
                     requisitions.forEach(requisition => requisition.toggleClass('hidden-discipline', !checked));
-                    ConfiguratorContainers.set('disciplines', [...activeDisciplines]);
+                    services.Config.set('disciplines', [...activeDisciplines]);
                 }
                 services.Filter.calculate();
             });
