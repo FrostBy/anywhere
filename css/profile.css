@@ -1,0 +1,41 @@
+span.copy {
+    padding: 10px;
+}
+
+span.exchange {
+    cursor: pointer;
+}
+
+span.calculate {
+    cursor: pointer;
+    font-size: 160%;
+    line-height: 16px;
+    padding: 0 10px;
+}
+
+.calculator {
+    font-size: 14px;
+    padding: 20px;
+    border: 1px solid #eee;
+    background: white;
+    position: absolute;
+    display: none;
+    z-index: 1;
+    right: -100%;
+}
+
+.calculator input:focus-visible {
+    outline: none;
+}
+
+.calculator button {
+    font-size: 200%;
+    line-height: 10px;
+    padding: 0 4px 10px;
+}
+
+.calculator .result {
+    text-align: center;
+    padding-top: 10px;
+    width: 100%;
+}

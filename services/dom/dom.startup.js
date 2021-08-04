@@ -32,10 +32,16 @@ class DomStartup {
         $('.profile-table tbody:has(span[title="Backup Consideration"])')
             .addClass('proposal backup-consideration new')
             .data('status', 'new');
+        $('.profile-table tbody:has(span[title="RM Candidate Consideration"])')
+            .addClass('proposal rm-candidate-consideration new')
+            .data('status', 'new');
         $('.profile-table tbody:has(span[title="Select Action"])')
             .addClass('proposal select-action new')
             .data('status', 'new');
         $('.profile-table tbody:has(span[title="On Hold"])')
+            .addClass('proposal on-hold')
+            .data('status', 'on-hold');
+        $('.profile-table tbody:has(span[title="Technical Interview"])')
             .addClass('proposal on-hold')
             .data('status', 'on-hold');
         $('.profile-table tbody:has(span[title="Offer Preparation"])')

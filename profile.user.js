@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         Containers
+// @name         Applicant/User Profile
 // @namespace    http://tampermonkey.net/
 // @version      2021.08.04
-// @description  The script helps to work with hiring containers and requisitions for the Anywhere Team
+// @description  The script helps to work with an applicant/employee profile
 // @author       Vladislav Romanovsky
-// @match        https://staffing.epam.com/hiringContainers/*
+// @match        https://staffing.epam.com/applicant*/*
 // @icon         https://www.google.com/s2/favicons?domain=epam.com
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
@@ -12,28 +12,24 @@
 // @grant        GM_getValue
 // @grant        GM_info
 // @grant        GM_xmlhttpRequest
-// @updateURL    https://github.com/FrostBy/anywhere/raw/master/containers.user.js
+// @updateURL    https://github.com/FrostBy/anywhere/raw/master/profile.user.js
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/js/tooltipster.bundle.min.js
-// @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator/configurator.shared.js
-// @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator/configurator.containers.js
-// @require      https://github.com/FrostBy/anywhere/raw/master/services/filter/filter.containers.js
-// @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.containers.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.profile.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/salaryConverter.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/version.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/config.js
-// @require      https://github.com/FrostBy/anywhere/raw/master/containers.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/profile.js
 // @resource     IMPORTED_CSS_TOOLTIPSTER https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/css/tooltipster.bundle.min.css
 // @resource     IMPORTED_CSS_SHARED https://github.com/FrostBy/anywhere/raw/master/css/shared.css
-// @resource     IMPORTED_CSS https://github.com/FrostBy/anywhere/raw/master/css/containers.css
+// @resource     IMPORTED_CSS https://github.com/FrostBy/anywhere/raw/master/css/profile.css
 // ==/UserScript==
 
 (() => {
     window.services = {
         Config,
-        Dom: DomContainers,
-        Filter: FilterContainers,
-        ConfiguratorShared,
-        Configurator: ConfiguratorContainers
+        SalaryConverter,
+        Dom: DomProfile,
     };
     window.GM_setValue = GM_setValue;
     window.GM_getValue = GM_getValue;

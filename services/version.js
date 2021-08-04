@@ -7,7 +7,8 @@ class Version {
                 url: updateURL,
                 onload: response => {
                     const source = response.responseText;
-                    const remoteVersion = source.match(/\/\/\s+@version\s+([0-9.]+)/i)[1];
+                    const versionMatches = source.match(/\/\/\s+@version\s+([0-9.]+)/i);
+                    const remoteVersion = versionMatches ? versionMatches[1] : false;
                     if (remoteVersion) {
                         console.log('The remote script is version: ', remoteVersion);
                         if (remoteVersion > version) {

@@ -40,7 +40,7 @@ class StaffingReport {
         $('.staffing-report .toggler, .staffing-report .close').on('click', () => { $('.staffing-report').toggleClass('open');});
 
         $('.staffing-report textarea').on('change', function () {
-            const data = $(this).val().replace(/http.*?(?=[,\s])/gi, '<a href="$&">$&</a>').split('\n');
+            const data = $(this).val().replace(/http.*?(?=[,\s])/gi, '<a href="$&" target="_blank">$&</a>').split('\n');
             const div = $('.staffing-report .preview .rows');
             div.empty();
             data.forEach(row => div.append(`<p>${row}</p>`));

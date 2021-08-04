@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Startup
 // @namespace    http://tampermonkey.net/
-// @version      2021.06.15
+// @version      2021.08.04
 // @description  The script helps to keep track of updates
 // @author       Vladislav Romanovsky
 // @contributor  Dmitry Scherbatykh
@@ -26,6 +26,7 @@
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/config.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/startup.js
 // @resource     IMPORTED_CSS_TOOLTIPSTER https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/css/tooltipster.bundle.min.css
+// @resource     IMPORTED_CSS_TOOLTIPSTER_LIGHT https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css
 // @resource     IMPORTED_CSS_SHARED https://github.com/FrostBy/anywhere/raw/master/css/shared.css
 // @resource     IMPORTED_CSS https://github.com/FrostBy/anywhere/raw/master/css/startup.css
 // ==/UserScript==
@@ -45,6 +46,7 @@
     window.version = GM_info.script.version;
     window.updateURL = GM_info.script.updateURL;
     GM_addStyle(GM_getResourceText('IMPORTED_CSS_TOOLTIPSTER'));
+    GM_addStyle(GM_getResourceText('IMPORTED_CSS_TOOLTIPSTER_LIGHT'));
     GM_addStyle(GM_getResourceText('IMPORTED_CSS_SHARED'));
     GM_addStyle(GM_getResourceText('IMPORTED_CSS'));
     (async () => { if (await Version.check()) initScript(); })();

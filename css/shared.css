@@ -160,6 +160,10 @@
     opacity: .5;
 }
 
+span.copy {
+    cursor: pointer;
+}
+
 .sidebar .close, .sidebar .copy {
     margin: 0;
     padding: 0 22px;
@@ -170,7 +174,6 @@
     top: 0;
     right: 0;
     opacity: 1;
-    cursor: pointer;
 }
 
 .sidebar form {
