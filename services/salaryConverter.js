@@ -32,19 +32,38 @@ class SalaryConverter {
     }
 
     static async get(from = 'RUB', to = 'USD', key = '23a435284fd626d9f782') {
-        const API_URL = `https://free.currconv.com/api/v7/convert?q=${from}_${to}&compact=y&apiKey=${key}`;
-        return { from, to, value: (await $.get(API_URL))[`${from}_${to}`]?.val };
+        const ratesCache = services.Config.get('rates', {});
+
+        let rate = ratesCache[`${from}_${to}`];
+
+        const expireDate = new Date();
+        expireDate.setTime(expireDate.getTime() - (6 * 60 * 60 * 1000));
+
+        if (!rate || expireDate >= new Date(rate.date)) {
+            console.log('Rates cache expired');
+
+            const API_URL = `https://free.currconv.com/api/v7/convert?q=${from}_${to}&compact=y&apiKey=${key}`;
+            const result = { from, to, value: (await $.get(API_URL))[`${from}_${to}`]?.val };
+
+            ratesCache[`${from}_${to}`] = rate = { date: new Date(), ...result };
+            services.Config.set('rates', ratesCache);
+        }
+
+        console.log(rate);
+
+        return rate;
     }
 
     static initCalculator() {
-        const container = $('.salary-expectations .title:contains("Comment")');
+        const container = $('.salary-expectations .title:contains("Comment")').eq(0);
         container.append('<span class="calculate" title="Calculate Offer">🖩</span>');
         const fromCurrency = $('sd-static-select[formcontrolname="expectedCurrency"] .selected-option .ellipsis').get(0).innerText;
         // language=HTML
         const calculator = `
             <div class="calculator">
                 <form>
-                    <input name="value" value="${ $('input[formcontrolname="expectedAmount"]').val()}" placeholder="Salary" class="form-entry-input">
+                    <input name="value" value="${$('input[formcontrolname="expectedAmount"]').val()}"
+                           placeholder="Salary" class="form-entry-input">
                     <input name="from" readonly value="${fromCurrency}" class="form-entry-input">
                     <button class="btn profile-action">🖩</button>
                 </form>
@@ -58,14 +77,16 @@ class SalaryConverter {
             $('.calculator').toggle();
         });
 
-        $('.calculator form').on('submit', async function (e) {
+        $('.calculator form').on('submit', function (e) {
             e.preventDefault();
             const data = {};
             $(this).serializeArray().forEach(obj => { data[obj.name] = obj.value; });
             if (data.value) {
-                const rate = await SalaryConverter.get(data.from);
-                $('.calculator .result').text(`~ ${rate.to} ${Math.floor(data.value * rate.value)}`);
+                SalaryConverter.get(data.from).then(rate => {
+                    $('.calculator .result').text(`~ ${rate.to} ${Math.floor(data.value * rate.value)}`);
+                });
             }
+            return false;
         }).submit();
     }
 }
