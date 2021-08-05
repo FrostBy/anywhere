@@ -4,7 +4,7 @@
 [![en](https://img.shields.io/badge/lang-en-red.svg)](./README.en-en.md)
 [![ru-ru](https://img.shields.io/badge/lang-ru--ru-green.svg)](./README.md)
 
-###Features
+### Features
 - Используется [TamperMonkey](https://tampermonkey.net/)
 - Поддержка всех современных браузеров
 - Автоматическое обновление и контролль версий
