@@ -1,24 +1,15 @@
 function initScript() {
-    services.Dom.initCopyButtons();
-    services.SalaryConverter.init();
-    services.SalaryConverter.initCalculator();
+    let timeout;
+    services.Dom.watchRequests(() => {
+        timeout = initTimeout(timeout);
+    });
+}
 
-    $('.entity-page-toggle').on('click', () => {
+function initTimeout(interval) {
+    if (interval) clearTimeout(interval);
+    return setTimeout(() => {
         services.Dom.initCopyButtons();
         services.SalaryConverter.init();
-    });
-
-    function initTabClickListener() {
-        $('.tabs-heading a').on('click', (e) => {
-            setTimeout(() => {
-                initTabClickListener();
-                if ($(e.target)[0].textContent === 'Profile') {
-                    services.Dom.initCopyButtons();
-                    services.SalaryConverter.init();
-                }
-            }, 500);
-        });
-    }
-
-    initTabClickListener();
+        services.SalaryConverter.initCalculator();
+    }, 1000);
 }

@@ -18,6 +18,7 @@
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator/configurator.shared.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator/configurator.containers.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/filter/filter.containers.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.shared.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.containers.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/version.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/config.js
@@ -30,6 +31,7 @@
 (() => {
     window.services = {
         Config,
+        DomShared,
         Dom: DomContainers,
         Filter: FilterContainers,
         ConfiguratorShared,

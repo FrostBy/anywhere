@@ -16,6 +16,7 @@
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/js/tooltipster.bundle.min.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.profile.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.shared.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/salaryConverter.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/version.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/config.js
@@ -29,6 +30,7 @@
     window.services = {
         Config,
         SalaryConverter,
+        DomShared,
         Dom: DomProfile,
     };
     window.GM_setValue = GM_setValue;

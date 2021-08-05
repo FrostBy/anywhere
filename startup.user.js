@@ -19,6 +19,7 @@
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator/configurator.shared.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator/configurator.startup.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/filter/filter.startup.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.shared.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.startup.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/staffingReport.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/proposal.js
@@ -34,6 +35,7 @@
 (() => {
     window.services = {
         Config,
+        DomShared,
         Dom: DomStartup,
         Filter: FilterStartup,
         StaffingReport,

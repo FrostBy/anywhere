@@ -17,7 +17,7 @@ class SalaryConverter {
 
     static async generateTooltip(containers) {
         for (const container of containers) {
-            if (container.is('.tooltipstered')) container.tooltipster('destroy');
+            if (container.data('tooltipsterNs')) container.tooltipster('destroy');
 
             const text = $.trim(container.get(0).textContent);
             const [from, money, period] = text.split(' ');
@@ -56,6 +56,8 @@ class SalaryConverter {
 
     static initCalculator() {
         const container = $('.salary-expectations .title:contains("Comment")').eq(0);
+        if (!container.length) return;
+
         container.append('<span class="calculate" title="Calculate Offer">🖩</span>');
         const fromCurrency = $('sd-static-select[formcontrolname="expectedCurrency"] .selected-option .ellipsis').get(0).innerText;
         // language=HTML
