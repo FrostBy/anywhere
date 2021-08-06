@@ -1,4 +1,36 @@
 class SalaryConverter {
+    static async request(from = 'RUB', to = 'USD', auth = {}, source) {
+        const sources = {
+            exchangerate: async (from, to) => {
+                const API_URL = `https://api.exchangerate.host/convert?from=${from}&to=${to}`;
+                try {
+                    return (await $.get(API_URL))?.result;
+                } catch (e) {
+                    console.log(e);
+                    return 0;
+                }
+            },
+            currconv: async (from, to, auth) => {
+                const API_URL = `https://free.currconv.com/api/v7/convert?q=${from}_${to}&compact=y&apiKey=${auth.key || '23a435284fd626d9f782'}`;
+                try {
+                    return (await $.get(API_URL))[`${from}_${to}`]?.val;
+                } catch (e) {
+                    console.log(e);
+                    return 0;
+                }
+            }
+        };
+
+        if (!source) {
+            for (const func of Object.values(sources)) {
+                const value = await func(from, to, auth);
+                if (value) return value;
+            }
+        } else if (sources[source]) return await sources[source](from, to, auth);
+
+        return 0;
+    }
+
     static init() {
         const container = $('.profile-content td:contains("Expected Salary (Gross)")').next('td');
         if (!container.length) return;
@@ -21,6 +53,9 @@ class SalaryConverter {
 
             const text = $.trim(container.get(0).textContent);
             const [from, money, period] = text.split(' ');
+
+            if (!money || !from) return;
+
             const rate = await SalaryConverter.get(from);
 
             container.tooltipster({
@@ -31,7 +66,7 @@ class SalaryConverter {
         }
     }
 
-    static async get(from = 'RUB', to = 'USD', key = '23a435284fd626d9f782') {
+    static async get(from = 'RUB', to = 'USD', auth = {}) {
         const ratesCache = services.Config.get('rates', {});
 
         let rate = ratesCache[`${from}_${to}`];
@@ -41,11 +76,12 @@ class SalaryConverter {
 
         if (!rate || expireDate >= new Date(rate.date)) {
             console.log('Rates cache expired');
-
-            const API_URL = `https://free.currconv.com/api/v7/convert?q=${from}_${to}&compact=y&apiKey=${key}`;
-            const result = { from, to, value: (await $.get(API_URL))[`${from}_${to}`]?.val };
-
-            ratesCache[`${from}_${to}`] = rate = { date: new Date(), ...result };
+            ratesCache[`${from}_${to}`] = rate = {
+                date: new Date(),
+                from,
+                to,
+                value: await this.request(from, to, auth)
+            };
             services.Config.set('rates', ratesCache);
         }
 
@@ -56,17 +92,20 @@ class SalaryConverter {
 
     static initCalculator() {
         const container = $('.salary-expectations .title:contains("Comment")').eq(0);
-        if (!container.length) return;
+        if (!container.length || $('.calculate').length) return;
 
         container.append('<span class="calculate" title="Calculate Offer">🖩</span>');
-        const fromCurrency = $('sd-static-select[formcontrolname="expectedCurrency"] .selected-option .ellipsis').get(0).innerText;
+        const from = $('sd-static-select[formcontrolname="expectedCurrency"] .selected-option .ellipsis').get(0).innerText;
+        const money = $('input[formcontrolname="expectedAmount"]').val();
+
+        if (!money || !from) return;
+
         // language=HTML
         const calculator = `
             <div class="calculator">
                 <form>
-                    <input name="value" value="${$('input[formcontrolname="expectedAmount"]').val()}"
-                           placeholder="Salary" class="form-entry-input">
-                    <input name="from" readonly value="${fromCurrency}" class="form-entry-input">
+                    <input name="value" value="${money}" placeholder="Salary" class="form-entry-input">
+                    <input name="from" readonly value="${from}" class="form-entry-input">
                     <button class="btn profile-action">🖩</button>
                 </form>
                 <div class="result">~ USD 0</div>

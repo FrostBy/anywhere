@@ -21,7 +21,12 @@ span.calculate {
     position: absolute;
     display: none;
     z-index: 1;
-    right: -100%;
+    left: 100%;
+    margin-left: 50px;
+}
+
+.calculator form {
+    white-space: nowrap;
 }
 
 .calculator input:focus-visible {
@@ -32,6 +37,7 @@ span.calculate {
     font-size: 200%;
     line-height: 10px;
     padding: 0 4px 10px;
+    margin: 0;
 }
 
 .calculator .result {
