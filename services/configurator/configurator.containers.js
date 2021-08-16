@@ -60,13 +60,14 @@ class ConfiguratorContainers extends ConfiguratorShared {
         });
 
         const recruitersDom = recruitersArray.sort().map(recruiter => {
-            const id = recruiter.replace(' ', '_').toLowerCase();
+            const recruiterTrimmed = recruiter.trim();
+            const id = recruiterTrimmed.replace(' ', '_').toLowerCase() || 0;
             // language=HTML
             return $(`
                 <div class="input-wrapper recruiter">
                     <input type="checkbox" value="${recruiter}" id="recruiter_${id}" class="recruiter"
                            ${activeRecruiters.has(recruiter) ? 'checked="true"' : null}">
-                    <label for="recruiter_${id}">${recruiter}</label>
+                    <label for="recruiter_${id}">${recruiterTrimmed || '<b>Empty Recruiter</b>'}</label>
                 </div>`);
         });
 

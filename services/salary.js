@@ -143,8 +143,6 @@ class Salary {
         const base = 0;
         const signOn = 0;
         const psp = 0;
-        const maxSignOn = 150000;
-        const maxPsp = 70000;
 
         const types = {
             // language=HTML
@@ -203,15 +201,13 @@ class Salary {
                     <div class="form-entry">
                         <label class="form-entry-label" title="">PSP Cap</label>
                         <div class="form-entry-field">
-                            <input name="psp" value="${psp}" max="${maxPsp}" type="number" placeholder="PSP"
-                                   class="form-entry-input">
+                            <input name="psp" value="${psp}" type="number" placeholder="PSP" class="form-entry-input">
                         </div>
                     </div>
                     <div class="form-entry">
                         <label class="form-entry-label" title="">Sign On</label>
                         <div class="form-entry-field">
-                            <input name="signOn" value="${signOn}" max="${maxSignOn}" type="number"
-                                   placeholder="Sign On"
+                            <input name="signOn" value="${signOn}" type="number" placeholder="Sign On"
                                    class="form-entry-input">
                         </div>
                     </div>
