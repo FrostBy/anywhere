@@ -1,4 +1,10 @@
 class ConfiguratorShared {
+    static get prefix() { return 'shared'; }
+
+    static key(key) {
+        return this.prefix + '.' + key;
+    }
+
     static getDom() {
         // language=HTML
         return `
@@ -14,13 +20,12 @@ class ConfiguratorShared {
     }
 
     static initEvents() {
-        $('.configurator-container .toggler, .configurator-container .close').on('click', () => { $('.configurator-container').toggleClass('open');});
-        $(window).scroll(function () {
+        $('.configurator-container .toggler, .configurator-container .close').off('click').on('click', () => { $('.configurator-container').toggleClass('open');});
+        $(window).off('scroll.configurator').on('scroll.configurator', () => {
             const offset = 60 - $(window).scrollTop();
             if (offset <= 0) $('.configurator-container .body').css('height', '100%');
             else if (offset < 60) $('.configurator-container .body').css('height', `calc(100% - ${offset}px)`);
             else $('.configurator-container .body').css('height', '');
-
         });
     }
 }

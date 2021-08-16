@@ -8,12 +8,19 @@ span.exchange {
 
 span.calculate {
     cursor: pointer;
-    font-size: 160%;
+    font-size: 150%;
     line-height: 16px;
     padding: 0 10px;
 }
+span.prefill {
+    cursor: pointer;
+    font-size: 160%;
+    line-height: 16px;
+    padding: 0 10px;
+    float: right;
+}
 
-.calculator {
+.form-wrapper {
     font-size: 14px;
     padding: 20px;
     border: 1px solid #eee;
@@ -25,23 +32,35 @@ span.calculate {
     margin-left: 50px;
 }
 
-.calculator form {
+.form-wrapper form {
     white-space: nowrap;
 }
 
-.calculator input:focus-visible {
+.form-wrapper input:focus-visible {
     outline: none;
 }
 
-.calculator button {
+.form-wrapper button {
     font-size: 200%;
     line-height: 10px;
     padding: 0 4px 10px;
     margin: 0;
 }
 
-.calculator .result {
+.form-wrapper .result {
     text-align: center;
     padding-top: 10px;
     width: 100%;
+    text-transform: none;
+}
+
+.offer-tool{
+    width: 100%;
+}
+.offer-tool .button-wrapper{
+   justify-content: center;
+}
+
+.applicant-profile__additional-info-details, .content-table tr td:last-child{
+    white-space: pre-line !important;
 }

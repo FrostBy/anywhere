@@ -9,7 +9,8 @@ function initTimeout(interval) {
     if (interval) clearTimeout(interval);
     return setTimeout(() => {
         services.Dom.initCopyButtons();
-        services.SalaryConverter.init();
-        services.SalaryConverter.initCalculator();
+        services.Salary.init();
+        services.Salary.initOfferTool();
+        services.Salary.initCalculator();
     }, 1000);
 }

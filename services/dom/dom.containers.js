@@ -1,13 +1,4 @@
-class DomContainers {
-
-    static watchRequests(handleEvent = () => {}) {
-        services.DomShared.watchRequests(handleEvent);
-    }
-
-    static unWatch() {
-        services.DomShared.unWatch();
-    }
-
+class DomContainers extends DomShared {
     static setClasses() {
         $('.profile-table tbody:has(.workflow-entities)')
             .addClass('requisition assigned')

@@ -6,6 +6,10 @@
     top: 69px;
 }
 
+.configurator-container .applicant-summary__last-updated-info {
+    align-items: flex-end;
+}
+
 .filter.empty {
     background: #dc3545;
 }

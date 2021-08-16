@@ -1,13 +1,4 @@
-class DomStartup {
-
-    static watchRequests(handleEvent = () => {}) {
-        services.DomShared.watchRequests(handleEvent);
-    }
-
-    static unWatch() {
-        services.DomShared.unWatch();
-    }
-
+class DomStartup extends DomShared {
     static setClasses() {
         $('.profile-table tbody:has(span[title="Backup Consideration"])')
             .addClass('proposal backup-consideration new')

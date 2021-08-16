@@ -40,7 +40,7 @@ class Proposal {
     }
 
     static _retrieveISOCode(location) {
-        if (location.isoCode) return { isoCode: location.isoCode, name: location.name };
+        if (location.isoCode || !location.parent) return { isoCode: location.isoCode || location.name, name: location.name };
         else return this._retrieveISOCode(location.parent);
     }
 

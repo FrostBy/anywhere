@@ -57,8 +57,8 @@ class FilterContainers {
         $('.filter').each(function () {
             $(this).toggleClass('disabled', state[$(this).data('status')]);
         });
-        $('.profile-table tbody.requisition, .dashboard-table tbody.container').each(function (index) {
-            $(this).toggleClass('hidden',  index >= 100 || state[$(this).data('status')]);
+        $('.profile-table tbody.requisition, .dashboard-table tbody.container').each(function () {
+            $(this).toggleClass('hidden', state[$(this).data('status')]);
         });
     }
 

@@ -1,12 +1,4 @@
-class DomProfile {
-    static watchRequests(handleEvent = () => {}) {
-        services.DomShared.watchRequests(handleEvent);
-    }
-
-    static unWatch() {
-        services.DomShared.unWatch();
-    }
-
+class DomProfile extends DomShared {
     static initCopyButtons() {
         $('span.copy').remove();
 

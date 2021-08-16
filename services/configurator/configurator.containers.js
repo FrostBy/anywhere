@@ -1,9 +1,11 @@
-let locationBase = window.location.href;
+let locationBase;
 let watcher;
 
-class ConfiguratorContainers {
+class ConfiguratorContainers extends ConfiguratorShared {
+    static get prefix() { return 'containers'; }
+
     static init() {
-        $('body').append(services.ConfiguratorShared.getDom());
+        $('body').append(this.getDom());
     }
 
     static watch() {
@@ -22,6 +24,9 @@ class ConfiguratorContainers {
     }
 
     static refreshForm() {
+        const containerLocation = $('.content-table td:contains("Location")').next('td').get(0)?.innerText;
+        if (!containerLocation) return;
+
         const recruiters = {};
         const disciplines = {};
 
@@ -42,8 +47,9 @@ class ConfiguratorContainers {
         const recruitersArray = Object.keys(recruiters);
         const disciplinesArray = Object.keys(disciplines);
 
-        const activeRecruiters = new Set(services.Config.get('recruiters', recruitersArray));
-        const activeDisciplines = new Set(services.Config.get('disciplines', disciplinesArray));
+        const activeRecruiters = new Set(services.Config.get(this.key('recruiters.' + containerLocation), recruitersArray));
+        const activeDisciplines = new Set(services.Config.get(this.key('disciplines.' + containerLocation), disciplinesArray));
+        const autoPaginate = services.Config.get(this.key('autoPaginate'), false);
 
         const hiddenRecruiters = new Set(recruitersArray.filter(recruiter => !activeRecruiters.has(recruiter)));
         const hiddenDisciplines = new Set(disciplinesArray.filter(discipline => !activeDisciplines.has(discipline)));
@@ -75,10 +81,22 @@ class ConfiguratorContainers {
                 </div>`);
         });
 
-        $('.configurator-container form').empty()
+        // language=HTML
+        const autoPagination = `
+            <div class="input-wrapper">
+                <input type="checkbox" value="0" id="auto_paginate" class="auto-paginate"
+                       ${autoPaginate ? 'checked="true"' : null}">
+                <label for="auto_paginate">Auto Pagination (In Development)</label>
+            </div>
+        `;
+
+        const form = $('.configurator-container form');
+        form.empty()
             .append($('<div class="applicant-summary__info-container-block"></div>').append(recruitersDom))
             .append($('<div class="applicant-summary__info-container-block"></div>').append(disciplinesDom))
-            .find('input')
+            .append($('<div class="applicant-summary__last-updated-info"></div>').append(autoPagination));
+
+        form.find('.applicant-summary__info-container-block input')
             .on('change', function () {
                 const checked = $(this).prop('checked');
                 const value = $(this).val();
@@ -88,16 +106,20 @@ class ConfiguratorContainers {
                     else activeRecruiters.delete($(this).val());
 
                     requisitions.forEach(requisition => requisition.toggleClass('hidden-recruiter', !checked));
-                    services.Config.set('recruiters', [...activeRecruiters]);
+                    services.Config.set(ConfiguratorContainers.key('recruiters.' + containerLocation), [...activeRecruiters]);
                 } else {
                     if (checked) activeDisciplines.add($(this).val());
                     else activeDisciplines.delete($(this).val());
 
                     requisitions.forEach(requisition => requisition.toggleClass('hidden-discipline', !checked));
-                    services.Config.set('disciplines', [...activeDisciplines]);
+                    services.Config.set(ConfiguratorContainers.key('disciplines.' + containerLocation), [...activeDisciplines]);
                 }
                 services.Filter.calculate();
             });
-        services.ConfiguratorShared.initEvents();
+
+        $('.auto-paginate').on('change', function () {
+            services.Config.set(ConfiguratorContainers.key('autoPaginate'), $(this).prop('checked'));
+        });
+        this.initEvents();
     }
 }
