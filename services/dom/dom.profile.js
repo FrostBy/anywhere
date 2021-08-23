@@ -20,4 +20,55 @@ class DomProfile extends DomShared {
             input.remove();
         });
     }
+
+    static watchNextStep() {
+        $('body').on('click', '.staffing-status-dropdown a', function () {
+            const lastAction = $(this).attr('title');
+
+            if (lastAction === 'Offer Acceptance') {
+                services.Dom.waitForAddedNode({
+                    selector: '.modal.modal-bs4.show',
+                    parent: document.body,
+                    recursive: false,
+                    disconnect: true,
+                    done: async (element, params) => {
+                        const id = window.location.href.match(/(\d+)/)[0];
+                        const interviews = await services.Proposal.getInterviews([id]);
+                        const interview = interviews[id]?.find(interview => interview.name === 'Offer');
+
+                        if (interview) {
+                            const offer = interview.interviewFeedback[0];
+
+                            if (offer && offer.feedback) {
+                                const feedback = offer.feedback.replace(/<[^>]*>/g, '').trim();
+                                const lines = feedback.split(/\n\n/);
+
+                                const hiringProgramString = lines.find(element => element.startsWith('Hiring program'));
+                                const hiringProgram = hiringProgramString?.split(': ')[1] || 'Flex';
+
+                                const npString = lines.find(element => element.startsWith('Notice period'));
+                                const np = npString?.split(': ')[1] || 'N/A';
+
+                                $(element).find('.visible-text-area').val(`${hiringProgram}, NP: ${np}`);
+
+                                const responseDateString = lines.find(element => element.startsWith('Candidate Response date'));
+                                const responseDate = responseDateString?.split(/\n/)[1];
+
+                                if (responseDate) {
+                                    const now = moment(moment().format('yyyy-MM-DD'));
+                                    const dueDate = moment(`${responseDate} ${now.year()}`, 'MMMM DD YYYY');
+
+                                    if (now > dueDate) dueDate.add(1, 'y');
+
+                                    $(element).find('sd-datepicker-popup[label="Due Date"] input').val(dueDate.format('DD-MMM-yyyy'));
+                                }
+                            }
+                        }
+
+                        $('.ng-clear-wrapper').triggerRawMouse('mousedown');
+                    }
+                });
+            }
+        });
+    }
 }

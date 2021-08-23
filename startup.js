@@ -1,6 +1,9 @@
 function initScript() {
+    services.Dom.initPlugins();
     services.Configurator.init();
+
     if (!services.Configurator.processBoard()) return;
+
     services.Filter.init();
     services.Proposal.init();
     services.StaffingReport.init();

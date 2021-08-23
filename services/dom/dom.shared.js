@@ -27,4 +27,47 @@ class DomShared {
             this.realSend(value);
         };
     }
+
+    static initRawTriggers() {
+        $.fn.triggerRawMouse = function (event = 'click') {
+            const clickEvent = new MouseEvent(event, {
+                view: unsafeWindow,
+                bubbles: true,
+                cancelable: true
+            });
+
+            return this.each(function () {
+                this.dispatchEvent(clickEvent);
+            });
+        };
+    }
+
+    static initPlugins() {
+        this.initRawTriggers();
+    }
+
+    /**
+     *
+     * @param params.selector string
+     * @param params.parent HTMLElement
+     * @param params.recursive Boolean
+     * @param params.done Function
+     * @param params.disconnect Boolean
+     */
+    static waitForAddedNode(params) {
+        const observer = new MutationObserver(function (mutations) {
+            const element = $(params.selector);
+            if (element.length) {
+                if (!!params.disconnect) this.disconnect();
+                if (typeof params.done === 'function') params.done(element.get(0), params);
+            }
+        });
+
+        observer.observe(params.parent || document, {
+            subtree: !!params.recursive || !params.parent,
+            childList: true,
+        });
+
+        return observer;
+    }
 }

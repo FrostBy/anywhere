@@ -40,7 +40,10 @@ class Proposal {
     }
 
     static _retrieveISOCode(location) {
-        if (location.isoCode || !location.parent) return { isoCode: location.isoCode || location.name, name: location.name };
+        if (location.isoCode || !location.parent) return {
+            isoCode: location.isoCode || location.name,
+            name: location.name
+        };
         else return this._retrieveISOCode(location.parent);
     }
 
@@ -61,7 +64,9 @@ class Proposal {
         return new Promise((resolve) => {
             $.when(...requests).done(function () {
                 const interviews = {};
-                Object.values(arguments).forEach(response => {
+                const responses = ids.length > 1 ? arguments : [arguments];
+
+                Object.values(responses).forEach(response => {
                     const allInterviews = response[0];
                     const id = allInterviews[0].candidate.employeeId || allInterviews[0].candidate.applicantId;
                     interviews[id] = allInterviews;
@@ -184,7 +189,8 @@ class Proposal {
 
                     if (location) row.location = `${location.name} (${location.isoCode})`;
 
-                    const interview = interviews[row.id]?.find(interview => interview.name === 'Technical' && interview.status === 'Completed') || undefined;
+                    const interview = interviews[row.id]?.find(interview => interview.name === 'Technical' && interview.status === 'Completed');
+
                     if (interview) {
                         const feedback = interview.interviewFeedback[0];
                         row.english = feedback.englishLevel?.name || row.english;

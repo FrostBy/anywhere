@@ -1,8 +1,12 @@
 function initScript() {
+    services.Dom.initPlugins();
+
     let timeout;
     services.Dom.watchRequests(() => {
         timeout = initTimeout(timeout);
     });
+
+    services.Dom.watchNextStep();
 }
 
 function initTimeout(interval) {

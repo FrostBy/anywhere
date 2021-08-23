@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Applicant/User Profile
 // @namespace    http://tampermonkey.net/
-// @version      2021.08.17.01
+// @version      2021.08.23
 // @description  The script helps to work with an applicant/employee profile
 // @author       Vladislav Romanovsky
 // @match        https://staffing.epam.com/applicant*/*
@@ -14,10 +14,12 @@
 // @grant        GM_xmlhttpRequest
 // @updateURL    https://github.com/FrostBy/anywhere/raw/master/profile.user.js
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/js/tooltipster.bundle.min.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.shared.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.profile.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/salary.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/proposal.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/version.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/config.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/profile.js
@@ -32,6 +34,7 @@
         Salary,
         DomShared,
         Dom: DomProfile,
+        Proposal,
     };
     window.GM_setValue = GM_setValue;
     window.GM_getValue = GM_getValue;

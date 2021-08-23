@@ -1,4 +1,5 @@
 function initScript() {
+    services.Dom.initPlugins();
     services.Configurator.init();
     services.Filter.init();
 
