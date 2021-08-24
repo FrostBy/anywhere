@@ -49,7 +49,7 @@ class DomProfile extends DomShared {
                                 const npString = lines.find(element => element.startsWith('Notice period'));
                                 const np = npString?.split(': ')[1] || 'N/A';
 
-                                $(element).find('.visible-text-area').val(`${hiringProgram}, NP: ${np}`);
+                                $(element).find('.visible-text-area').val(`${hiringProgram}, NP: ${np}`).triggerRawEvent('input');
 
                                 const responseDateString = lines.find(element => element.startsWith('Candidate Response date'));
                                 const responseDate = responseDateString?.split(/\n/)[1];
@@ -60,14 +60,17 @@ class DomProfile extends DomShared {
 
                                     if (now > dueDate) dueDate.add(1, 'y');
 
-                                    $(element).find('sd-datepicker-popup[label="Due Date"] input').val(dueDate.format('DD-MMM-yyyy'));
+                                    $(element).find('sd-datepicker-popup[label="Due Date"] input').val(dueDate.format('DD-MMM-yyyy')).triggerRawEvent('input');
                                 }
                             }
                         }
 
-                        $('.ng-clear-wrapper').triggerRawMouse('mousedown');
                     }
                 });
+            }
+            const clearPersonsActions = ['Offer Acceptance', 'Offer Preparation', 'Background Check'];
+            if (clearPersonsActions.includes(lastAction)) {
+                setTimeout(() => {$('.ng-clear-wrapper').triggerRawMouse('mousedown');}, 500);
             }
         });
     }

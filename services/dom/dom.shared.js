@@ -36,9 +36,16 @@ class DomShared {
                 cancelable: true
             });
 
-            return this.each(function () {
-                this.dispatchEvent(clickEvent);
+            return this.each(function () { this.dispatchEvent(clickEvent); });
+        };
+
+        $.fn.triggerRawEvent = function (event = 'input') {
+            const rawEvent = new Event(event, {
+                bubbles: true,
+                cancelable: true,
             });
+
+            return this.each(function () { this.dispatchEvent(rawEvent); });
         };
     }
 
