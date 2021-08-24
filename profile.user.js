@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Applicant/User Profile
 // @namespace    http://tampermonkey.net/
-// @version      2021.08.23
+// @version      2021.08.24
 // @description  The script helps to work with an applicant/employee profile
 // @author       Vladislav Romanovsky
 // @match        https://staffing.epam.com/applicant*/*
@@ -18,6 +18,7 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/js/tooltipster.bundle.min.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.shared.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.profile.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/engagementDetails.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/salary.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/proposal.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/version.js
@@ -35,6 +36,7 @@
         DomShared,
         Dom: DomProfile,
         Proposal,
+        EngagementDetails,
     };
     window.GM_setValue = GM_setValue;
     window.GM_getValue = GM_getValue;

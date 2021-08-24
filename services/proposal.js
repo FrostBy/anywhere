@@ -3,11 +3,11 @@ Notification.requestPermission()
 
 class Proposal {
     static get apiUrl() {
-        return 'https://staffing.epam.com/api/b1/positions/[URL]/proposals?size=1000&q=staffingStatus=out=(Cancelled,Rejected)';
+        return 'https://staffing.epam.com/api/b1/positions/[ID]/proposals?size=1000&q=staffingStatus=out=(Cancelled,Rejected)';
     }
 
     static get boardUrl() {
-        return 'https://staffing.epam.com/positions/[URL]/proposals';
+        return 'https://staffing.epam.com/positions/[ID]/proposals';
     }
 
     static get locationsUrl() {
@@ -16,6 +16,10 @@ class Proposal {
 
     static get interviewsUrl() {
         return 'https://staffing.epam.com/api/v1/applicants/[ID]/interview-and-request?size=1000';
+    }
+
+    static get applicantUrl() {
+        return 'https://staffing.epam.com/api/v1/applicants/extended/[ID]';
     }
 
     static get requisitionStatuses() {
@@ -76,6 +80,14 @@ class Proposal {
         });
     }
 
+    static async getApplicant(id) {
+        return new Promise((resolve) => {
+            $.get(Proposal.applicantUrl.replace('[ID]', id), async data => {
+                resolve(data);
+            });
+        });
+    }
+
     static async get() {
         const boardId = window.location.href.match(/(\d+)/)[0];
         if (!boardId || !Object.keys(services.Config.get('boards')).includes(boardId)) return false;
@@ -84,7 +96,7 @@ class Proposal {
         const proposalsObject = {};
         const diff = { new: {}, outdated: {}, changed: {} };
 
-        $.get(Proposal.apiUrl.replace('[URL]', boardId), async data => {
+        $.get(Proposal.apiUrl.replace('[ID]', boardId), async data => {
             let showNotification = false;
             const proposals = data.content;
             const requisitions = {};
@@ -168,7 +180,7 @@ class Proposal {
                     });
                     notification.onclick = () => {
                         if (window.closed) {
-                            window.open(Proposal.boardUrl.replace('[URL]', boardId), '_blank').focus();
+                            window.open(Proposal.boardUrl.replace('[ID]', boardId), '_blank').focus();
                         } else {
                             services.Dom.markProposals(diff);
                             window.focus();

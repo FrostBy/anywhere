@@ -67,6 +67,19 @@ class DomProfile extends DomShared {
 
                     }
                 });
+            } else if (lastAction === 'Offer Preparation') {
+                services.Dom.waitForAddedNode({
+                    selector: '.modal.modal-bs4.show',
+                    parent: document.body,
+                    recursive: false,
+                    disconnect: true,
+                    done: async (element, params) => {
+                        const id = window.location.href.match(/(\d+)/)[0];
+                        const profile = await services.Proposal.getApplicant(id);
+                        const hiringProgram = profile?.hiringProgram.name;
+                        $(element).find('.visible-text-area').val(`${hiringProgram}, `).triggerRawEvent('input');
+                    }
+                });
             }
             const clearPersonsActions = ['Offer Acceptance', 'Offer Preparation', 'Background Check'];
             if (clearPersonsActions.includes(lastAction)) {
