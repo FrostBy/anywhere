@@ -5,10 +5,10 @@ class ConfiguratorShared {
         return this.prefix + '.' + key;
     }
 
-    static getDom() {
+    static getDom(classes = []) {
         // language=HTML
         return `
-            <div class="configurator-container sidebar-container">
+            <div class="configurator-container sidebar-container ${classes.join(' ')}">
                 <div class='toggler'>⚙</div>
                 <div class='body sidebar'>
                     <button class="close"><span class="fa fa-close"></span></button>
@@ -27,5 +27,10 @@ class ConfiguratorShared {
             else if (offset < 60) $('.configurator-container .body').css('height', `calc(100% - ${offset}px)`);
             else $('.configurator-container .body').css('height', '');
         });
+    }
+
+    static terminate() {
+        $(window).off('scroll.configurator');
+        $('.configurator-container').remove();
     }
 }

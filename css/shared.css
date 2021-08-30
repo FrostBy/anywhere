@@ -192,3 +192,93 @@ span.copy {
     top: 8px;
     width: 30px;
 }
+
+.loading {
+    display: none;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    text-align: center;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(238, 238, 238, 0.8);
+    z-index: 9999;
+}
+
+.circle-loader {
+    fill: transparent;
+    stroke: #366bb2;
+    stroke-width: 4;
+    -webkit-animation: dash 2s ease infinite, rotate 2s linear infinite;
+    animation: dash 2s ease infinite, rotate 2s linear infinite;
+}
+
+.spinner {
+    text-align: center;
+    position: relative;
+    display: block;
+    height: 40px;
+    margin: .5em;
+}
+
+@-webkit-keyframes dash {
+    0% {
+        stroke-dasharray: 1, 95;
+        stroke-dashoffset: 0
+    }
+    50% {
+        stroke-dasharray: 85, 95;
+        stroke-dashoffset: -25
+    }
+    to {
+        stroke-dasharray: 85, 95;
+        stroke-dashoffset: -93
+    }
+}
+
+@-webkit-keyframes rotate {
+    0% {
+        -webkit-transform: rotate(0);
+        transform: rotate(0)
+    }
+    to {
+        -webkit-transform: rotate(1turn);
+        transform: rotate(1turn)
+    }
+}
+
+.fade-in {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    animation: fadeIn 1s;
+    -webkit-animation: fadeIn 1s
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0
+    }
+    100% {
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes fadeIn {
+    0% {
+        opacity: 0
+    }
+    100% {
+        opacity: 1
+    }
+}

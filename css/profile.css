@@ -12,6 +12,7 @@ span.calculate {
     line-height: 16px;
     padding: 0 10px;
 }
+
 span.prefill {
     cursor: pointer;
     font-size: 160%;
@@ -29,7 +30,8 @@ span.prefill {
     display: none;
     z-index: 1;
     left: 100%;
-    margin-left: 50px;
+    margin-left: 44px;
+    box-sizing: content-box;
 }
 
 .form-wrapper form {
@@ -54,13 +56,44 @@ span.prefill {
     text-transform: none;
 }
 
-.offer-tool{
+.offer-tool {
     width: 100%;
 }
-.offer-tool .button-wrapper{
-   justify-content: center;
+
+.offer-tool .button-wrapper {
+    justify-content: center;
 }
 
-.applicant-profile__additional-info-details, .content-table tr td:last-child{
+.applicant-profile__additional-info-details, .content-table tr td:last-child {
     white-space: pre-line !important;
+}
+
+.modal.custom a.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background-color: #a3c644;
+}
+
+.modal.custom a.btn:hover {
+    background-color: #7f993a;
+}
+
+.modal .scroll {
+    margin-top: 25px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.modal .scroll a {
+    display: block;
+    text-align: center;
+    padding: 10px 0 9.5px 0;
+    border: 1px solid #eee;
+    border-bottom: 0;
+}
+
+.modal .scroll a:last-child {
+    border-bottom: 1px solid #eee;
 }

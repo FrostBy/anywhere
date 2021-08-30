@@ -39,15 +39,16 @@ class Salary {
 
         const button = `<span class="exchange" title="Get Exchange Rate">💱</span>`;
 
-        container.contents().wrap('<span class="money" />');
+        if (!container.find('.money').length) container.contents().wrap('<span class="money" />');
+
         container.append(button);
 
-        this.generateTooltip([container.find('.money')]);
+        this.generateTooltip([container.find('.money')], false);
 
         $('.exchange').on('click', (e) => this.generateTooltip([$(e.target).parent().find('.money')]));
     }
 
-    static async generateTooltip(containers) {
+    static async generateTooltip(containers, show = true) {
         for (const container of containers) {
             if (container.data('tooltipsterNs')) container.tooltipster('destroy');
 
@@ -62,7 +63,7 @@ class Salary {
                 content: `~ ${rate.to} ${Math.floor(money.replace(/[^0-9]/g, '') * rate.value)}`,
                 theme: 'tooltipster-light'
             });
-            container.tooltipster('show');
+            if (show) container.tooltipster('show');
         }
     }
 
@@ -95,10 +96,8 @@ class Salary {
         if (!container.length || $('.calculate').length) return;
 
         container.append('<span class="calculate" title="Calculate Offer">🖩</span>');
-        const from = $('sd-static-select[formcontrolname="expectedCurrency"] .selected-option .ellipsis').get(0).innerText;
-        const money = $('input[formcontrolname="expectedAmount"]').val();
-
-        if (!money || !from) return;
+        const from = $('sd-static-select[formcontrolname="expectedCurrency"] .selected-option .ellipsis').get(0)?.innerText || 'USD';
+        const money = $('input[formcontrolname="expectedAmount"]').val() || 0;
 
         // language=HTML
         const calculator = `
@@ -135,10 +134,8 @@ class Salary {
 
         container.append('<span class="prefill" title="Prefill Offer">🗲</span>');
 
-        const currency = $('sd-static-select[formcontrolname="expectedCurrency"] .selected-option .ellipsis').get(0).innerText;
-        const salary = $('input[formcontrolname="expectedAmount"]').val();
-
-        if (!salary || !currency) return;
+        const currency = $('sd-static-select[formcontrolname="expectedCurrency"] .selected-option .ellipsis').get(0)?.innerText || 'USD';
+        const salary = $('input[formcontrolname="expectedAmount"]').val() || 0;
 
         const base = 0;
         const signOn = 0;
@@ -159,9 +156,7 @@ class Salary {
                 <option value="Ultra-Flex">Ultra-Flex</option>
             `,
             'INR': `
-                <option value="Flex">Flex</option>
-                <option value="Flex (off-hour)" selected>Flex (off-hour)</option>
-                <option value="Ultra-Flex">Ultra-Flex</option>
+                <option value="Flex" selected>Flex</option>
             `,
             'COP': `
                 <option value="FIX" selected>FIX</option>
@@ -181,7 +176,8 @@ class Salary {
                     <div class="form-entry">
                         <label class="form-entry-label" title="">Cap</label>
                         <div class="form-entry-field">
-                            <input name="cap" placeholder="Cap" type="number" class="form-entry-input">
+                            <input name="cap" value="${salary}" placeholder="Cap" type="number"
+                                   class="form-entry-input">
                         </div>
                     </div>
                     <div class="form-entry">
@@ -217,7 +213,9 @@ class Salary {
                             <select name="condition" class="form-entry-input">
                                 <option value="GENERAL" selected>After assignment to a project</option>
                                 <option value="EVENT">Hiring week</option>
-                                <option value="LAPTOP">India: Laptop (After assignment to a project)</option>
+                                <option value="LAPTOP (After assignment to a project)">India: Laptop (After assignment
+                                    to a project)
+                                </option>
                                 <option value="LAPTOP (ASAP)">India: Laptop (ASAP)</option>
                             </select>
                         </div>

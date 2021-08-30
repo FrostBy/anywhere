@@ -1,24 +1,29 @@
 class FilterStartup {
     static get initialState() {
         return {
-            done: true,
-            'offer-preparation': true,
             new: false,
-            'offer-acceptance': false,
-            'on-hold': false
+            'offer-preparation': true,
+            'offer-acceptance': true,
+            'on-hold': true,
+            done: true,
         };
     }
 
-    static get state() {
-        return state;
+    get state() {
+        return this._state;
     }
 
-    static set state(data) {
-        state = JSON.parse(JSON.stringify(data));
+    set state(data) {
+        this._state = JSON.parse(JSON.stringify(data));
     }
 
-    static init() {
-        const filters = $(`<div class="filters-container open"></div>`);
+    constructor() {
+        this._state = JSON.parse(JSON.stringify(FilterStartup.initialState));
+        this._init();
+    }
+
+    _init() {
+        const filters = $(`<div class="filters-container startup open"></div>`);
         filters
             .append(`<div class='filter new' data-status="new" title="New">0</div>`)
             .append(`<div class='filter offer-preparation' data-status="offer-preparation" title="Offer Preparation">0</div>`)
@@ -30,33 +35,41 @@ class FilterStartup {
 
         $('body').append(filters);
 
-        $('.filters-container .toggler').on('click', () => $('.filters-container').toggleClass('open'));
+        $('.filters-container .toggler').off('click').on('click', () => $('.filters-container').toggleClass('open'));
     }
 
-    static unlock() {
-        $('.reset').on('click', () => this.reset());
+    terminate() {
+        $('.filters-container').remove();
+    }
 
-        $('.filter').on('click', function () {
-            FilterStartup.state[$(this).data('status')] = !$(this).hasClass('disabled');
-            FilterStartup.refresh();
+    unlock() {
+        const that = this;
+
+        $('.reset').off('click').on('click', () => this.reset());
+
+        $('.filter').off('click').on('click', function () {
+            that.state[$(this).data('status')] = !$(this).hasClass('disabled');
+            that.refresh();
         });
     }
 
-    static refresh() {
+    refresh() {
+        const that = this;
+
         $('.filter').each(function () {
-            $(this).toggleClass('disabled', state[$(this).data('status')]);
+            $(this).toggleClass('disabled', that.state[$(this).data('status')]);
         });
         $('.profile-table tbody.proposal').each(function () {
-            $(this).toggleClass('hidden', state[$(this).data('status')]);
+            $(this).toggleClass('hidden', that.state[$(this).data('status')]);
         });
     }
 
-    static reset() {
-        this.state = this.initialState;
+    reset() {
+        this.state = FilterStartup.initialState;
         this.refresh();
     }
 
-    static calculate() {
+    calculate() {
         $('.filter.done').html($('tbody.background-check').length);
         $('.filter.on-hold').html($('tbody.on-hold').length);
         $('.filter.offer-acceptance').html($('tbody.offer-acceptance').length);
@@ -64,12 +77,10 @@ class FilterStartup {
         $('.filter.new').html($('tbody.new').length);
     }
 
-    static enableRefresh() {
+    enableRefresh() {
         if (!$('.filters-container .refresh').length) {
             $('.filters-container').append(`<div class='refresh' title="Reload Page">⟳</div>`);
             $('.filters-container .refresh').on('click', () => window.location.reload());
         }
     }
 }
-
-let state = JSON.parse(JSON.stringify(FilterStartup.initialState));

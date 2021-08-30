@@ -41,7 +41,7 @@ class ConfiguratorStartup extends ConfiguratorShared {
             return $(`<div class="input-wrapper"><input type="checkbox" value="${id}" id="board_${id}" ${activeBoardsIds.includes(id) ? 'checked="true"' : null}"><label for="board_${id}">${allBoards[id]}</label></div>`);
         });
 
-        const configurator = $(services.ConfiguratorShared.getDom());
+        const configurator = $(services.Configurator.Shared.getDom());
 
         const [fields1, fields2] = this.splitArr(boardsFields);
         configurator.find('form').empty()
@@ -55,7 +55,7 @@ class ConfiguratorStartup extends ConfiguratorShared {
         });
 
         $('body').append(configurator);
-        services.ConfiguratorShared.initEvents();
+        services.Configurator.Shared.initEvents();
     }
 
     static processBoard() {

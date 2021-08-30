@@ -1,23 +1,28 @@
 class FilterContainers {
     static get initialState() {
         return {
+            new: false,
             empty: false,
             assigned: true,
-            new: false,
             outdated: true,
         };
     }
 
-    static get state() {
-        return state;
+    get state() {
+        return this._state;
     }
 
-    static set state(data) {
-        state = JSON.parse(JSON.stringify(data));
+    set state(data) {
+        this._state = JSON.parse(JSON.stringify(data));
     }
 
-    static init() {
-        const filters = $(`<div class="filters-container open"></div>`);
+    constructor() {
+        this._state = JSON.parse(JSON.stringify(FilterContainers.initialState));
+        this._init();
+    }
+
+    _init() {
+        const filters = $(`<div class="filters-container containers open"></div>`);
         filters
             .append(`<div class='filter requisitions empty' data-status="empty" title="Empty">0</div>`)
             .append(`<div class='filter requisitions assigned' data-status="assigned" title="Assigned">0</div>`)
@@ -44,42 +49,48 @@ class FilterContainers {
         }, 500);
     }
 
-    static unlock() {
+    terminate() {
+        $('.filters-container').remove();
+    }
+
+    unlock() {
+        const that = this;
+
         $('.reset').on('click', () => this.reset());
 
         $('.filter').on('click', function () {
-            FilterContainers.state[$(this).data('status')] = !$(this).hasClass('disabled');
-            FilterContainers.refresh();
+            that.state[$(this).data('status')] = !$(this).hasClass('disabled');
+            that.refresh();
         });
     }
 
-    static refresh() {
+    refresh() {
+        const that = this;
+
         $('.filter').each(function () {
-            $(this).toggleClass('disabled', state[$(this).data('status')]);
+            $(this).toggleClass('disabled', that.state[$(this).data('status')]);
         });
         $('.profile-table tbody.requisition, .dashboard-table tbody.container').each(function () {
-            $(this).toggleClass('hidden', state[$(this).data('status')]);
+            $(this).toggleClass('hidden', that.state[$(this).data('status')]);
         });
     }
 
-    static reset() {
-        this.state = this.initialState;
+    reset() {
+        this.state = FilterContainers.initialState;
         this.refresh();
     }
 
-    static calculate() {
+    calculate() {
         $('.filter.empty').html($('tbody.empty').not('.hidden-recruiter, .hidden-discipline').length);
         $('.filter.assigned').html($('tbody.assigned').not('.hidden-recruiter, .hidden-discipline').length);
         $('.filter.new').html($('tbody.new').length);
         $('.filter.outdated').html($('tbody.outdated').length);
     }
 
-    static enableRefresh() {
+    enableRefresh() {
         if (!$('.filters-container .refresh').length) {
             $('.filters-container').append(`<div class='refresh' title="Reload Page">⟳</div>`);
             $('.filters-container .refresh').on('click', () => window.location.reload());
         }
     }
 }
-
-let state = JSON.parse(JSON.stringify(FilterContainers.initialState));

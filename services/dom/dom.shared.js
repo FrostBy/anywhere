@@ -1,6 +1,11 @@
 let handleEventBase = () => {};
 
 class DomShared {
+    static terminate() {
+        DomShared.unWatch();
+        this.modal(false);
+    }
+
     static watchRequests(handleEvent = () => {}) {
         this.unWatch();
         handleEventBase = handleEvent;
@@ -76,5 +81,58 @@ class DomShared {
         });
 
         return observer;
+    }
+
+    static toggleSpinner(state) {
+        let indicator = $('.spinner-container');
+
+        if (!indicator.length) {
+            // language=HTML
+            const spinner = `
+                <div class="spinner-container loading">
+                    <div class="spinner">
+                        <svg width="40" height="40" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                             class="circle-loader">
+                            <circle cx="20" cy="20" r="15"></circle>
+                        </svg>
+                    </div>
+                </div>`;
+            $('body').append(spinner);
+            indicator = $('.spinner-container');
+        }
+        indicator.toggleClass('fade-in', state);
+    }
+
+    static modal(show = true, title, body, footer) {
+        $('ngb-modal-backdrop').remove();
+        $('ngb-modal-window').remove();
+
+        if (!show) return;
+
+        // language=HTML
+        const backdrop = `
+            <ngb-modal-backdrop style="z-index: 1050;" aria-hidden="true" class="fade modal-backdrop modal-bs4 show" />
+        `;
+        // language=HTML
+        const modal = `
+            <ngb-modal-window role="dialog" tabindex="-1" aria-modal="true" class="d-block fade modal modal-bs4 show custom">
+                <div role="document" class="modal-dialog">
+                    <div class="modal-content">
+                        <sd-action-modal>
+                            <button class="close modal-close"><span class="fa fa-close"></span></button>
+                            <div class="modal-header"><h4 class="modal-title">${title}</h4></div>
+                            <div class="modal-body">
+                                ${body}
+                            </div>
+                            <div class="modal-footer">
+                                ${footer}
+                            </div>
+                        </sd-action-modal>
+                    </div>
+                </div>
+            </ngb-modal-window>`;
+
+        $('body').append(backdrop).append(modal);
+        $('ngb-modal-backdrop, .close.modal-close').on('click', () => this.modal(false));
     }
 }

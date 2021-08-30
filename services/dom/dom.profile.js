@@ -1,4 +1,40 @@
 class DomProfile extends DomShared {
+    static terminate() {
+        super.terminate();
+        $(document).off('click.action');
+    }
+
+    static initRequisitionButton() {
+        $('button.requisitions').remove();
+
+        const button = `<button class="requisitions btn profile-action" title="Show Empty Requisitions">Requisitions</button>`;
+
+        $('.entity-page-controls').after(button);
+
+        $('.requisitions').on('click', async (e) => {
+            DomProfile.toggleSpinner(true);
+            const locations = $('.profile-content td:contains("Location")').next('td').get(0)?.innerText.split(', ');
+            const data = await services.Requisition.getRequisitions(locations);
+            const requisitions = data.requisitions.splice(0, 20).map(requisition => {
+                // language=HTML
+                return `<a href="https://staffing.epam.com/requisitions/${requisition.id}/candidates" target="_blank">
+                    ${requisition.title} | ${requisition.headline} | ${requisition.primarySkill} | (${requisition.id})
+                </a>`;
+            });
+            this.modal(true, 'Requisitions',
+                // language=HTML
+                `
+                    <div class="scroll">${requisitions.join('')}</div>
+                `,
+                // language=HTML
+                `
+                    <a href="https://staffing.epam.com/hiringContainers/${data.container.id}/requisitions"
+                       target="_blank" class="btn col-xs-12">Open Container ${data.container.code}</a>
+                `);
+            DomProfile.toggleSpinner(false);
+        });
+    }
+
     static initCopyButtons() {
         $('span.copy').remove();
 
@@ -21,19 +57,19 @@ class DomProfile extends DomShared {
         });
     }
 
-    static watchNextStep() {
-        $('body').on('click', '.staffing-status-dropdown a', function () {
+    static watchNextStep(proposal) {
+        $(document).on('click.action', '.staffing-status-dropdown a', function () {
             const lastAction = $(this).attr('title');
 
             if (lastAction === 'Offer Acceptance') {
-                services.Dom.waitForAddedNode({
+                services.Dom.Profile.waitForAddedNode({
                     selector: '.modal.modal-bs4.show',
                     parent: document.body,
                     recursive: false,
                     disconnect: true,
                     done: async (element, params) => {
                         const id = window.location.href.match(/(\d+)/)[0];
-                        const interviews = await services.Proposal.getInterviews([id]);
+                        const interviews = await proposal.getInterviews([id]);
                         const interview = interviews[id]?.find(interview => interview.name === 'Offer');
 
                         if (interview) {
@@ -68,14 +104,14 @@ class DomProfile extends DomShared {
                     }
                 });
             } else if (lastAction === 'Offer Preparation') {
-                services.Dom.waitForAddedNode({
+                services.Dom.Profile.waitForAddedNode({
                     selector: '.modal.modal-bs4.show',
                     parent: document.body,
                     recursive: false,
                     disconnect: true,
                     done: async (element, params) => {
                         const id = window.location.href.match(/(\d+)/)[0];
-                        const profile = await services.Proposal.getApplicant(id);
+                        const profile = await proposal.getApplicant(id);
                         const hiringProgram = profile?.hiringProgram.name;
                         $(element).find('.visible-text-area').val(`${hiringProgram}, `).triggerRawEvent('input');
                     }
@@ -83,7 +119,15 @@ class DomProfile extends DomShared {
             }
             const clearPersonsActions = ['Offer Acceptance', 'Offer Preparation', 'Background Check'];
             if (clearPersonsActions.includes(lastAction)) {
-                setTimeout(() => {$('.ng-clear-wrapper').triggerRawMouse('mousedown');}, 500);
+                services.Dom.Profile.waitForAddedNode({
+                    selector: '.modal .ng-clear-wrapper',
+                    parent: document.body,
+                    recursive: false,
+                    disconnect: true,
+                    done: async (element, params) => {
+                        $('.ng-clear-wrapper').triggerRawMouse('mousedown');
+                    }
+                });
             }
         });
     }

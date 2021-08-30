@@ -38,12 +38,28 @@ class Proposal {
         };
     }
 
-    static init() {
-        $('body').append('<div class="force-update-proposals" title="Request proposals in background">⇄</div>');
-        $('.force-update-proposals').on('click', () => { Proposal.get();});
+    constructor(params = {}) {
+        this.report = params.report;
+        this.filter = params.filter;
     }
 
-    static _retrieveISOCode(location) {
+    initButton(){
+        $('body').append('<div class="force-update-proposals" title="Request proposals in background">⇄</div>');
+        $('.force-update-proposals').on('click', async () => {
+            services.Dom.Shared.toggleSpinner(true);
+            await this.get();
+            services.Dom.Shared.toggleSpinner(false);
+        });
+    }
+
+    terminate() {
+        $('.force-update-proposals').remove();
+        if (this.getLocationsRequest) this.getLocationsRequest.abort();
+        if (this.getInterviewsRequests) this.getInterviewsRequests.map(request => request.abort());
+        if (this.getRequest) this.getRequest.abort();
+    }
+
+    _retrieveISOCode(location) {
         if (location.isoCode || !location.parent) return {
             isoCode: location.isoCode || location.name,
             name: location.name
@@ -51,36 +67,44 @@ class Proposal {
         else return this._retrieveISOCode(location.parent);
     }
 
-    static async getLocations(ids = []) {
-        return new Promise((resolve) => {
-            $.get(Proposal.locationsUrl.replace('[IDS]', ids.join(',')), data => {
-                const locations = {};
-                data.content.forEach(location => {
-                    locations[location.id] = Proposal._retrieveISOCode(location);
-                });
-                resolve(locations);
-            });
+    async getLocations(ids = []) {
+        const locations = {};
+
+        if (this.getLocationsRequest) this.getLocationsRequest.abort();
+
+        this.getLocationsRequest = $.get(Proposal.locationsUrl.replace('[IDS]', ids.join(',')));
+
+        const data = await this.getLocationsRequest.promise();
+        if (!data) return locations;
+
+        data.content.forEach(location => {
+            locations[location.id] = this._retrieveISOCode(location);
         });
+
+        return locations;
     }
 
-    static async getInterviews(ids) {
-        const requests = ids.map(id => $.get(Proposal.interviewsUrl.replace('[ID]', id)));
-        return new Promise((resolve) => {
-            $.when(...requests).done(function () {
-                const interviews = {};
-                const responses = ids.length > 1 ? arguments : [arguments];
+    async getInterviews(ids) {
+        const interviews = {};
 
-                Object.values(responses).forEach(response => {
-                    const allInterviews = response[0];
-                    const id = allInterviews[0].candidate.employeeId || allInterviews[0].candidate.applicantId;
-                    interviews[id] = allInterviews;
-                });
-                resolve(interviews);
-            });
+        if (this.getInterviewsRequests) this.getInterviewsRequests.map(request => request.abort());
+
+        this.getInterviewsRequests = ids.map(id => $.get(Proposal.interviewsUrl.replace('[ID]', id)));
+
+        const data = await Promise.all(this.getInterviewsRequests.map(request => request.promise()));
+        if (!data) return interviews;
+
+
+        data.forEach(allInterviews => {
+            if (!allInterviews) return;
+            const id = allInterviews[0].candidate.employeeId || allInterviews[0].candidate.applicantId;
+            interviews[id] = allInterviews;
         });
+
+        return interviews;
     }
 
-    static async getApplicant(id) {
+    async getApplicant(id) {
         return new Promise((resolve) => {
             $.get(Proposal.applicantUrl.replace('[ID]', id), async data => {
                 resolve(data);
@@ -88,131 +112,138 @@ class Proposal {
         });
     }
 
-    static async get() {
+    async get() {
         const boardId = window.location.href.match(/(\d+)/)[0];
-        if (!boardId || !Object.keys(services.Config.get('boards')).includes(boardId)) return false;
+        const boards = Object.keys(services.Config.get('boards', []));
+        if (!boardId || boards.length && !boards.includes(boardId)) return false;
 
         const proposalsObjectOld = JSON.parse(GM_getValue('proposals.' + boardId, '{}'));
         const proposalsObject = {};
         const diff = { new: {}, outdated: {}, changed: {} };
 
-        $.get(Proposal.apiUrl.replace('[ID]', boardId), async data => {
-            let showNotification = false;
-            const proposals = data.content;
-            const requisitions = {};
-            const reportRows = [];
-            const applicantIds = new Set();
-            const locationIds = new Set();
+        if (this.getRequest) this.getRequest.abort();
 
-            proposals.forEach(proposal => {
-                const applicant = proposal.applicant || proposal.employee.applicant;
-                const id = applicant.id;
-                const status = proposal.advancedStatusDetails?.action.name || 'Preselected';
-                const fullName = applicant.fullName;
-                const changed = applicant.lastProcessStatusUpdateDate;
-                const rawRequisitions = applicant.requisitionDashboardView || proposal.requisitionDashboardView || proposal.employee.requisitionDashboardView || [];
+        this.getRequest = $.get(Proposal.apiUrl.replace('[ID]', boardId));
 
-                if (rawRequisitions.length) requisitions[id] = { declined: [], accepted: [] };
+        const data = await this.getRequest.promise();
 
-                const applicantRequisitions = rawRequisitions.map(requisition => {
-                    const data = {
-                        id: requisition.requisitionId,
-                        status: requisition.status,
-                        jobFunction: requisition.jobFunction.name,
-                        changed: requisition.lastStatusUpdateDate
-                    };
-                    if (Proposal.requisitionStatuses.declined.includes(data.status)) requisitions[id].declined.push(data);
-                    else if (Proposal.requisitionStatuses.accepted.includes(data.status)) {
-                        locationIds.add(applicant.location.id);
-                        applicantIds.add(id);
-                        if (proposal.advancedStatusDetails?.action?.name === 'Offer Acceptance') {
-                            reportRows.push({
-                                fullName,
-                                id,
-                                level: applicant.jobFunctionAfterInterview.name,
-                                english: applicant.englishLevel.name,
-                                location: applicant.location.name,
-                                locationId: applicant.location.id,
-                                skill: applicant.primarySkill.name,
-                            });
-                        }
+        if (!data) return;
 
-                        requisitions[id].accepted.push(data);
-                    }
-                    return data;
-                });
+        let showNotification = false;
+        const proposals = data.content;
+        const requisitions = {};
+        const reportRows = [];
+        const applicantIds = new Set();
+        const locationIds = new Set();
 
-                proposalsObject[id] = {
-                    id,
-                    status,
-                    fullName,
-                    changed,
-                    jobFunction: applicant.jobFunctionAfterInterview,
-                    requisitions: applicantRequisitions
+        proposals.forEach(proposal => {
+            const applicant = proposal.applicant || proposal.employee.applicant;
+            const id = applicant.id;
+            const status = proposal.advancedStatusDetails?.action.name || 'Preselected';
+            const fullName = applicant.fullName;
+            const changed = applicant.lastProcessStatusUpdateDate;
+            const rawRequisitions = applicant.requisitionDashboardView || proposal.requisitionDashboardView || proposal.employee.requisitionDashboardView || [];
+
+            if (rawRequisitions.length) requisitions[id] = { declined: [], accepted: [] };
+
+            const applicantRequisitions = rawRequisitions.map(requisition => {
+                const data = {
+                    id: requisition.requisitionId,
+                    status: requisition.status,
+                    jobFunction: requisition.jobFunction.name,
+                    changed: requisition.lastStatusUpdateDate
                 };
-                const proposalOld = proposalsObjectOld[id];
-                if (!proposalOld) {
-                    diff.new[id] = proposalsObject[id];
-                    showNotification = true;
-                } else if (new Date(proposalOld.changed) < new Date(changed)) {
-                    diff.changed[id] = proposalsObject[id];
-                    showNotification = true;
+                if (Proposal.requisitionStatuses.declined.includes(data.status)) requisitions[id].declined.push(data);
+                else if (Proposal.requisitionStatuses.accepted.includes(data.status)) {
+                    locationIds.add(applicant.location.id);
+                    applicantIds.add(id);
+                    if (proposal.advancedStatusDetails?.action?.name === 'Offer Acceptance') {
+                        reportRows.push({
+                            fullName,
+                            id,
+                            level: applicant.jobFunctionAfterInterview?.name,
+                            english: applicant.englishLevel?.name,
+                            location: applicant.location?.name,
+                            locationId: applicant.location?.id,
+                            skill: applicant.primarySkill?.name,
+                        });
+                    }
+
+                    requisitions[id].accepted.push(data);
                 }
+                return data;
             });
 
-            for (const proposalOld of Object.values(proposalsObjectOld)) {
-                if (!proposalsObject[proposalOld.id]) {
-                    diff.outdated[proposalOld.id] = proposalOld;
-                    showNotification = true;
-                }
-            }
-
-            GM_setValue('proposals.' + boardId, JSON.stringify(proposalsObject));
-
-            if (showNotification) {
-                services.Filter.enableRefresh();
-
-                if (Notification.permission === 'granted') {
-                    const notification = new Notification('Updates for you on the Startup page!', {
-                        body: `New: ${Object.keys(diff.new).length} | Changed: ${Object.keys(diff.changed).length} | Outdated: ${Object.keys(diff.outdated).length}`,
-                        icon: 'https://www.epam.com/etc/designs/epam-core/favicon/apple-touch-icon.png',
-                        vibrate: true,
-                    });
-                    notification.onclick = () => {
-                        if (window.closed) {
-                            window.open(Proposal.boardUrl.replace('[ID]', boardId), '_blank').focus();
-                        } else {
-                            services.Dom.markProposals(diff);
-                            window.focus();
-                        }
-                        notification.close();
-                    };
-                }
-            }
-
-            services.Dom.setJobFunction(proposalsObject);
-            services.Dom.setRequisitionStatus(requisitions);
-
-            if (!services.StaffingReport.config.applicants) {
-                const locations = services.StaffingReport.config.locations = await Proposal.getLocations(Array.from(locationIds));
-                const interviews = services.StaffingReport.config.interviews = await Proposal.getInterviews(Array.from(applicantIds));
-                const applicants = services.StaffingReport.config.applicants = reportRows.map(row => {
-                    const location = locations[row.locationId];
-
-                    if (location) row.location = `${location.name} (${location.isoCode})`;
-
-                    const interview = interviews[row.id]?.find(interview => interview.name === 'Technical' && interview.status === 'Completed');
-
-                    if (interview) {
-                        const feedback = interview.interviewFeedback[0];
-                        row.english = feedback.englishLevel?.name || row.english;
-                        row.skill = feedback.primarySkill?.name || row.skill;
-                        row.level = feedback.jobFunction?.name || row.level;
-                    }
-                    return row;
-                });
-                services.StaffingReport.fill(applicants);
+            proposalsObject[id] = {
+                id,
+                status,
+                fullName,
+                changed,
+                jobFunction: applicant.jobFunctionAfterInterview,
+                requisitions: applicantRequisitions
+            };
+            const proposalOld = proposalsObjectOld[id];
+            if (!proposalOld) {
+                diff.new[id] = proposalsObject[id];
+                showNotification = true;
+            } else if (new Date(proposalOld.changed) < new Date(changed)) {
+                diff.changed[id] = proposalsObject[id];
+                showNotification = true;
             }
         });
+
+        for (const proposalOld of Object.values(proposalsObjectOld)) {
+            if (!proposalsObject[proposalOld.id]) {
+                diff.outdated[proposalOld.id] = proposalOld;
+                showNotification = true;
+            }
+        }
+
+        GM_setValue('proposals.' + boardId, JSON.stringify(proposalsObject));
+
+        if (showNotification) {
+            this.filter.enableRefresh();
+
+            if (Notification.permission === 'granted') {
+                const notification = new Notification('Updates for you on the Startup page!', {
+                    body: `New: ${Object.keys(diff.new).length} | Changed: ${Object.keys(diff.changed).length} | Outdated: ${Object.keys(diff.outdated).length}`,
+                    icon: 'https://www.epam.com/etc/designs/epam-core/favicon/apple-touch-icon.png',
+                    vibrate: true,
+                });
+                notification.onclick = () => {
+                    if (window.closed) {
+                        window.open(Proposal.boardUrl.replace('[ID]', boardId), '_blank').focus();
+                    } else {
+                        services.Dom.Startup.markProposals(diff);
+                        window.focus();
+                    }
+                    notification.close();
+                };
+            }
+        }
+
+        services.Dom.Startup.setJobFunction(proposalsObject);
+        services.Dom.Startup.setRequisitionStatus(requisitions);
+
+        if (!this.report.config.applicants) {
+            const locations = this.report.config.locations = await this.getLocations(Array.from(locationIds));
+            const interviews = this.report.config.interviews = await this.getInterviews(Array.from(applicantIds));
+            const applicants = this.report.config.applicants = reportRows.map(row => {
+                const location = locations[row.locationId];
+
+                if (location) row.location = `${location.name} (${location.isoCode})`;
+
+                const interview = interviews[row.id]?.find(interview => interview.name === 'Technical' && interview.status === 'Completed');
+
+                if (interview) {
+                    const feedback = interview.interviewFeedback[0];
+                    row.english = feedback.englishLevel?.name || row.english;
+                    row.skill = feedback.primarySkill?.name || row.skill;
+                    row.level = feedback.jobFunction?.name || row.level;
+                }
+                return row;
+            });
+            this.report.fill(applicants);
+        }
     }
 }

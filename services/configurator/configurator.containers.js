@@ -5,10 +5,10 @@ class ConfiguratorContainers extends ConfiguratorShared {
     static get prefix() { return 'containers'; }
 
     static init() {
-        $('body').append(this.getDom());
+        $('body').append(this.getDom(['containers']));
     }
 
-    static watch() {
+    static watch(filter) {
         if (watcher) clearInterval(watcher);
         watcher = setInterval(() => {
             const location = window.location.href;
@@ -18,12 +18,12 @@ class ConfiguratorContainers extends ConfiguratorShared {
 
             if (location.match(/hiringContainers\/\d+/)) {
                 $('.configurator-container:hidden').show();
-                ConfiguratorContainers.refreshForm();
+                ConfiguratorContainers.refreshForm(filter);
             } else $('.configurator-container:visible').hide();
         }, 500);
     }
 
-    static refreshForm() {
+    static refreshForm(filter) {
         const containerLocation = $('.content-table td:contains("Location")').next('td').get(0)?.innerText;
         if (!containerLocation) return;
 
@@ -115,7 +115,7 @@ class ConfiguratorContainers extends ConfiguratorShared {
                     requisitions.forEach(requisition => requisition.toggleClass('hidden-discipline', !checked));
                     services.Config.set(ConfiguratorContainers.key('disciplines.' + containerLocation), [...activeDisciplines]);
                 }
-                services.Filter.calculate();
+                filter.calculate();
             });
 
         $('.auto-paginate').on('change', function () {

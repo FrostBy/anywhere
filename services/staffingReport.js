@@ -1,14 +1,4 @@
-let config = {};
-
 class StaffingReport {
-    static get config() {
-        return config;
-    }
-
-    static set config(data) {
-        config = data;
-    }
-
     static getDom() {
         // language=HTML
         return `
@@ -36,7 +26,19 @@ class StaffingReport {
         `;
     }
 
-    static initEvents() {
+    constructor() {
+        this.config = {};
+        const configurator = $(StaffingReport.getDom());
+        $('body').append(configurator);
+        this.initEvents();
+    }
+
+    terminate() {
+        $(window).off('scroll.staffingReport');
+        $('.staffing-report').remove();
+    }
+
+    initEvents() {
         $('.staffing-report .toggler, .staffing-report .close').on('click', () => { $('.staffing-report').toggleClass('open');});
 
         $('.staffing-report textarea').on('change', function () {
@@ -48,7 +50,7 @@ class StaffingReport {
 
         $('.staffing-report button').on('click', (e) => {
             e.preventDefault();
-            StaffingReport.fill(StaffingReport.config.applicants);
+            this.fill(this.config.applicants);
         });
 
         $('.staffing-report .copy').on('click', (e) => {
@@ -56,7 +58,7 @@ class StaffingReport {
             document.execCommand('copy');
         });
 
-        $(window).scroll(function () {
+        $(window).on('scroll.staffingReport', () => {
             const offset = 60 - $(window).scrollTop();
             if (offset <= 0) $('.staffing-report .body').css('height', '100%');
             else if (offset < 60) $('.staffing-report .body').css('height', `calc(100% - ${offset}px)`);
@@ -64,13 +66,7 @@ class StaffingReport {
         });
     }
 
-    static init() {
-        const configurator = $(StaffingReport.getDom());
-        $('body').append(configurator);
-        StaffingReport.initEvents();
-    }
-
-    static fill(applicants = []) {
+    fill(applicants = []) {
         let value = applicants.map(applicant => `${applicant.fullName} https://staffing.epam.com/applicants/${applicant.id}/taProcess, ${applicant.level}, ${applicant.location}, ${applicant.english}, ${applicant.skill}`).join('\n');
         if (value) $('.staffing-report textarea').val(value).change();
     }

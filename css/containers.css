@@ -1,12 +1,12 @@
-.filters-container {
+.filters-container.containers {
     top: 92px;
 }
 
-.configurator-container .toggler {
+.configurator-container.containers .toggler {
     top: 69px;
 }
 
-.configurator-container .applicant-summary__last-updated-info {
+.configurator-container.containers .applicant-summary__last-updated-info {
     align-items: flex-end;
 }
 
