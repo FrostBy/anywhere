@@ -20,44 +20,44 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/js/tooltipster.bundle.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js
 
-// @require      file:///F:/domains/anywhere/services/configurator/configurator.shared.js
-// @require      file:///F:/domains/anywhere/services/configurator/configurator.requisitions.js
-// @require      file:///F:/domains/anywhere/services/configurator/configurator.startup.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator/configurator.shared.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator/configurator.requisitions.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/configurator/configurator.startup.js
 
-// @require      file:///F:/domains/anywhere/services/dom/dom.shared.js
-// @require      file:///F:/domains/anywhere/services/dom/dom.containers.js
-// @require      file:///F:/domains/anywhere/services/dom/dom.startup.js
-// @require      file:///F:/domains/anywhere/services/dom/dom.profile.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.shared.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.containers.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.startup.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/dom/dom.profile.js
 
-// @require      file:///F:/domains/anywhere/services/filter/filter.shared.js
-// @require      file:///F:/domains/anywhere/services/filter/filter.containers.js
-// @require      file:///F:/domains/anywhere/services/filter/filter.requisitions.js
-// @require      file:///F:/domains/anywhere/services/filter/filter.startup.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/filter/filter.shared.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/filter/filter.containers.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/filter/filter.requisitions.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/filter/filter.startup.js
 
-// @require      file:///F:/domains/anywhere/services/config.js
-// @require      file:///F:/domains/anywhere/services/engagementDetails.js
-// @require      file:///F:/domains/anywhere/services/proposal.js
-// @require      file:///F:/domains/anywhere/services/requisition.js
-// @require      file:///F:/domains/anywhere/services/salary.js
-// @require      file:///F:/domains/anywhere/services/staffingReport.js
-// @require      file:///F:/domains/anywhere/services/version.js
-// @require      file:///F:/domains/anywhere/services/wizard.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/config.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/engagementDetails.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/proposal.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/requisition.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/salary.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/staffingReport.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/version.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/wizard.js
 
-// @require      file:///F:/domains/anywhere/routes/containers.js
-// @require      file:///F:/domains/anywhere/routes/requisitions.js
-// @require      file:///F:/domains/anywhere/routes/profile.js
-// @require      file:///F:/domains/anywhere/routes/profileEdit.js
-// @require      file:///F:/domains/anywhere/routes/startup.js
-// @require      file:///F:/domains/anywhere/routes/router.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/routes/containers.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/routes/requisitions.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/routes/profile.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/routes/profileEdit.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/routes/startup.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/routes/router.js
 
 // @resource     IMPORTED_CSS_TOOLTIPSTER https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/css/tooltipster.bundle.min.css
 // @resource     IMPORTED_CSS_TOOLTIPSTER_LIGHT https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css
 // @resource     IMPORTED_CSS_TOASTR https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css
 
-// @resource     IMPORTED_CSS_SHARED file:///F:/domains/anywhere/css/shared.css
-// @resource     IMPORTED_CSS_STARTUP file:///F:/domains/anywhere/css/startup.css
-// @resource     IMPORTED_CSS_CONTAINERS file:///F:/domains/anywhere/css/containers.css
-// @resource     IMPORTED_CSS_PROFILE file:///F:/domains/anywhere/css/profile.css
+// @resource     IMPORTED_CSS_SHARED https://github.com/FrostBy/anywhere/raw/master/css/shared.css
+// @resource     IMPORTED_CSS_STARTUP https://github.com/FrostBy/anywhere/raw/master/css/startup.css
+// @resource     IMPORTED_CSS_CONTAINERS https://github.com/FrostBy/anywhere/raw/master/css/containers.css
+// @resource     IMPORTED_CSS_PROFILE https://github.com/FrostBy/anywhere/raw/master/css/profile.css
 // ==/UserScript==
 
 (() => {
