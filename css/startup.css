@@ -116,18 +116,6 @@
     background-color: #dc3545;
 }
 
-.force-update-proposals {
-    position: fixed;
-    cursor: pointer;
-    top: 180px;
-    background: #28a745;
-    color: white;
-    width: 20px;
-    text-align: center;
-    right: 22px;
-    z-index: 999;
-}
-
 .job-function {
     background-color: #3498db;
     color: white;
@@ -140,11 +128,6 @@
     margin-top: 3px;
     height: 13px;
     font-size: 12px;
-}
-
-.staffing-report .toggler {
-    margin-left: -65px;
-    background: #ff9b19;
 }
 
 .staffing-report .button {
@@ -160,4 +143,12 @@
 .staffing-report .editor textarea {
     width: 100%;
     margin: 0;
+}
+
+.buttons-container .staffing-report-toggler {
+    background: #ff9b19;
+}
+
+.buttons-container .force-update-proposals {
+    background: #28a745;
 }

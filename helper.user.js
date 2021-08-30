@@ -21,7 +21,7 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js
 
 // @require      file:///F:/domains/anywhere/services/configurator/configurator.shared.js
-// @require      file:///F:/domains/anywhere/services/configurator/configurator.containers.js
+// @require      file:///F:/domains/anywhere/services/configurator/configurator.requisitions.js
 // @require      file:///F:/domains/anywhere/services/configurator/configurator.startup.js
 
 // @require      file:///F:/domains/anywhere/services/dom/dom.shared.js
@@ -29,7 +29,9 @@
 // @require      file:///F:/domains/anywhere/services/dom/dom.startup.js
 // @require      file:///F:/domains/anywhere/services/dom/dom.profile.js
 
+// @require      file:///F:/domains/anywhere/services/filter/filter.shared.js
 // @require      file:///F:/domains/anywhere/services/filter/filter.containers.js
+// @require      file:///F:/domains/anywhere/services/filter/filter.requisitions.js
 // @require      file:///F:/domains/anywhere/services/filter/filter.startup.js
 
 // @require      file:///F:/domains/anywhere/services/config.js
@@ -42,6 +44,7 @@
 // @require      file:///F:/domains/anywhere/services/wizard.js
 
 // @require      file:///F:/domains/anywhere/routes/containers.js
+// @require      file:///F:/domains/anywhere/routes/requisitions.js
 // @require      file:///F:/domains/anywhere/routes/profile.js
 // @require      file:///F:/domains/anywhere/routes/profileEdit.js
 // @require      file:///F:/domains/anywhere/routes/startup.js
@@ -61,13 +64,13 @@
     window.services = {
         Config,
         Dom: { Shared: DomShared, Containers: DomContainers, Startup: DomStartup, Profile: DomProfile },
-        Filter: { Startup: FilterStartup, Containers: FilterContainers },
+        Filter: { Shared: FilterShared, Startup: FilterStartup, Containers: FilterContainers, Requisitions: FilterRequisitions },
         StaffingReport,
         Proposal,
         Salary,
         EngagementDetails,
         Requisition,
-        Configurator: { Shared: ConfiguratorShared, Startup: ConfiguratorStartup, Containers: ConfiguratorContainers }
+        Configurator: { Shared: ConfiguratorShared, Startup: ConfiguratorStartup, Requisitions: ConfiguratorRequisitions }
     };
     window.GM_setValue = GM_setValue;
     window.GM_getValue = GM_getValue;

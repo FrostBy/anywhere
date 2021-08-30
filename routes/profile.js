@@ -1,6 +1,8 @@
 let profileRoute;
 
 class ProfileRoute {
+    static get bodyClass() { return 'profile'; }
+
     static get route() {
         return 'https://staffing.epam.com/applicants/.*';
     }
@@ -15,15 +17,23 @@ class ProfileRoute {
     }
 
     init() {
+        $('body').addClass(this.constructor.bodyClass);
+
+        services.Dom.Profile.initButtonsContainer();
+
         this.proposal = new services.Proposal();
         services.Dom.Profile.watchRequests(() => this.initTimeout());
         services.Dom.Profile.watchNextStep(this.proposal);
     }
 
     terminate(){
-        services.Dom.Profile.terminate();
         this.proposal.terminate();
+
         if (this.timeout) clearTimeout(this.timeout);
+
+        services.Dom.Profile.terminate();
+
+        $('body').removeClass(this.constructor.bodyClass);
     }
 
     initTimeout() {

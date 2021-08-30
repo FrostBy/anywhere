@@ -136,11 +136,17 @@
     transform: translateX(0);
 }
 
-.sidebar-container .toggler {
-    position: absolute;
-    margin-left: -19px;
-    cursor: pointer;
+.buttons-container {
+    right: 0;
     top: 180px;
+    height: 20px;
+    position: fixed;
+    z-index: 999;
+}
+
+.buttons-container div {
+    display: inline-block;
+    cursor: pointer;
     background: #3498db;
     color: white;
     width: 20px;

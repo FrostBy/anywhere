@@ -1,30 +1,35 @@
-let containerRoute;
+let requisitionRoute;
 
-class ContainersRoute {
+class RequisitionsRoute {
     static get bodyClass() { return 'containers'; }
 
     static get route() {
-        return 'https://staffing.epam.com/hiringContainers/all/*';
+        return 'https://staffing.epam.com/hiringContainers/.*/requisitions';
     }
 
     static init() {
-        if (containerRoute) containerRoute.terminate();
+        if (requisitionRoute) requisitionRoute.terminate();
 
-        containerRoute = new this();
-        containerRoute.init();
+        requisitionRoute = new this();
+        requisitionRoute.init();
 
-        return containerRoute;
+        return requisitionRoute;
     }
 
     init() {
         $('body').addClass(this.constructor.bodyClass);
 
-        this.filter = new services.Filter.Containers();
+        services.Dom.Containers.initButtonsContainer();
+        services.Configurator.Requisitions.init();
+
+        this.filter = new services.Filter.Requisitions();
 
         this.watchData();
+        this.idleTimer();
     }
 
     terminate() {
+        services.Configurator.Requisitions.terminate();
         this.filter.terminate();
 
         if (this.watcher) this.watcher.disconnect();
@@ -32,11 +37,24 @@ class ContainersRoute {
         if (this.watcherActions) this.watcherActions.disconnect();
         if (this.timeoutActions) clearTimeout(this.timeoutActions);
 
+        if (this.interval) clearInterval(this.interval);
+
         $(document).off('mousemove.idle keypress.idle');
 
         services.Dom.Containers.terminate();
 
         $('body').removeClass(this.constructor.bodyClass);
+    }
+
+    idleTimer() {
+        let idleTime = 0;
+        //Increment the idle time counter every minute.
+        this.interval = setInterval(() => {
+            idleTime++;
+            if (idleTime >= 30) window.location.reload(); //30 minutes
+        }, 60000); // 1 minute
+        //Zero the idle timer on mouse movement.
+        $(document).on('mousemove.idle keypress.idle', () => { idleTime = 0; });
     }
 
     watchData() {
@@ -53,6 +71,7 @@ class ContainersRoute {
 
                 this.timeout = setTimeout(() => {
                     services.Dom.Containers.setClasses();
+                    services.Configurator.Requisitions.refreshForm(this.filter);
                     this.filter.unlock();
                     this.filter.reset();
                     this.filter.calculate();

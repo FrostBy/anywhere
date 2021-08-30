@@ -1,9 +1,8 @@
 class StaffingReport {
-    static getDom() {
+    static get dom() {
         // language=HTML
         return `
             <div class="staffing-report sidebar-container">
-                <div class='toggler' title='Report to Staffing Team'>🗪</div>
                 <div class='body sidebar'>
                     <button class="close"><span class="fa fa-close"></span></button>
                     <form class="boards applicant-summary__info-container">
@@ -28,18 +27,22 @@ class StaffingReport {
 
     constructor() {
         this.config = {};
-        const configurator = $(StaffingReport.getDom());
-        $('body').append(configurator);
+    }
+
+    init() {
+        $('body').append($(StaffingReport.dom));
+        services.Dom.Shared.appendButtons($('<div class="staffing-report-toggler" title="Report to Staffing Team">🗪</div>'), 1);
         this.initEvents();
     }
 
     terminate() {
         $(window).off('scroll.staffingReport');
+        $('.staffing-report-toggler').remove();
         $('.staffing-report').remove();
     }
 
     initEvents() {
-        $('.staffing-report .toggler, .staffing-report .close').on('click', () => { $('.staffing-report').toggleClass('open');});
+        $('.staffing-report-toggler, .staffing-report .close').on('click', () => { $('.staffing-report').toggleClass('open');});
 
         $('.staffing-report textarea').on('change', function () {
             const data = $(this).val().replace(/http.*?(?=[,\s])/gi, '<a href="$&" target="_blank">$&</a>').split('\n');

@@ -1,8 +1,8 @@
-.filters-container.containers {
+.containers .filters-container {
     top: 92px;
 }
 
-.configurator-container.containers .toggler {
+.containers .buttons-container {
     top: 69px;
 }
 

@@ -1,6 +1,8 @@
 let profileEditRoute;
 
 class ProfileEditRoute {
+    static get bodyClass() { return 'profile-edit'; }
+
     static get route() {
         return 'https://staffing.epam.com/applicant/edit.*';
     }
@@ -15,12 +17,19 @@ class ProfileEditRoute {
     }
 
     init() {
+        $('body').addClass(this.constructor.bodyClass);
+
+        services.Dom.Profile.initButtonsContainer();
+
         services.Dom.Profile.watchRequests(() => this.initTimeout());
     }
 
-    terminate(){
-        services.Dom.Profile.terminate();
+    terminate() {
         if (this.timeout) clearTimeout(this.timeout);
+
+        services.Dom.Profile.terminate();
+
+        $('body').removeClass(this.constructor.bodyClass);
     }
 
     initTimeout() {

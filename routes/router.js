@@ -1,5 +1,5 @@
 const routes = [
-    StartupRoute, ProfileRoute, ProfileEditRoute, ContainersRoute
+    StartupRoute, ProfileRoute, ProfileEditRoute, ContainersRoute, RequisitionsRoute
 ];
 
 let currentRoute;
@@ -8,8 +8,11 @@ function route(url) {
     console.log(`URL changed to ${location.href}`);
     const routeClass = routes.find(route => location.href.match(route.route));
 
-    if (!routeClass || (currentRoute && currentRoute instanceof routeClass)) return;
-    if (currentRoute) currentRoute.terminate();
+    if (!routeClass) return;
+    if (currentRoute) {
+        if (currentRoute instanceof routeClass) return;
+        currentRoute.terminate();
+    }
     currentRoute = routeClass.init();
 }
 

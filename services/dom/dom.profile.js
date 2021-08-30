@@ -15,22 +15,26 @@ class DomProfile extends DomShared {
             DomProfile.toggleSpinner(true);
             const locations = $('.profile-content td:contains("Location")').next('td').get(0)?.innerText.split(', ');
             const data = await services.Requisition.getRequisitions(locations);
-            const requisitions = data.requisitions.splice(0, 20).map(requisition => {
-                // language=HTML
-                return `<a href="https://staffing.epam.com/requisitions/${requisition.id}/candidates" target="_blank">
-                    ${requisition.title} | ${requisition.headline} | ${requisition.primarySkill} | (${requisition.id})
-                </a>`;
-            });
-            this.modal(true, 'Requisitions',
-                // language=HTML
-                `
-                    <div class="scroll">${requisitions.join('')}</div>
-                `,
-                // language=HTML
-                `
-                    <a href="https://staffing.epam.com/hiringContainers/${data.container.id}/requisitions"
-                       target="_blank" class="btn col-xs-12">Open Container ${data.container.code}</a>
-                `);
+            if(data.container) {
+                const requisitions = data.requisitions.splice(0, 20).map(requisition => {
+                    // language=HTML
+                    return `<a href="https://staffing.epam.com/requisitions/${requisition.id}/candidates"
+                               target="_blank">
+                        ${requisition.title} | ${requisition.headline} | ${requisition.primarySkill} |
+                            (${requisition.id})
+                    </a>`;
+                });
+                this.modal(true, 'Requisitions',
+                    // language=HTML
+                    `
+                        <div class="scroll">${requisitions.join('')}</div>
+                    `,
+                    // language=HTML
+                    `
+                        <a href="https://staffing.epam.com/hiringContainers/${data.container.id}/requisitions"
+                           target="_blank" class="btn col-xs-12">Open Container ${data.container.code}</a>
+                    `);
+            }
             DomProfile.toggleSpinner(false);
         });
     }

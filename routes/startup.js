@@ -1,14 +1,14 @@
 let startupRoute;
 
 class StartupRoute {
+    static get bodyClass() { return 'startup'; }
+
     static get route() {
         return 'https://staffing.epam.com/positions/.*/proposals';
     }
 
     static init() {
         if (startupRoute) startupRoute.terminate();
-
-        services.Configurator.Startup.init();
 
         startupRoute = new this();
         startupRoute.init();
@@ -17,6 +17,11 @@ class StartupRoute {
     }
 
     init() {
+        $('body').addClass(this.constructor.bodyClass);
+
+        services.Dom.Startup.initButtonsContainer();
+        services.Configurator.Startup.init();
+
         if (!services.Configurator.Startup.processBoard()) return;
 
         this.filter = new services.Filter.Startup();
@@ -41,6 +46,10 @@ class StartupRoute {
         if (this.interval) clearInterval(this.interval);
 
         $(document).off('mousemove.idle keypress.idle');
+
+        services.Dom.Startup.terminate();
+
+        $('body').removeClass(this.constructor.bodyClass);
     }
 
     watchProposals() {
@@ -56,6 +65,7 @@ class StartupRoute {
                 if (this.timeout) clearTimeout(this.timeout);
 
                 this.timeout = setTimeout(() => {
+                    this.report.init();
                     this.filter.unlock();
                     services.Dom.Startup.setClasses();
                     this.filter.calculate();

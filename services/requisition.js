@@ -8,7 +8,7 @@ class Requisition {
     }
 
     static async getRequisitions(locations = []) {
-        if (!locations.length) return [];
+        if (!locations.length) return {};
 
         const containersData = await $.get(this.containersURL, {
             page: 0,
@@ -21,9 +21,13 @@ class Requisition {
         const containers = containersData.content.filter(container => locations.includes(container.location.name));
         containers.sort((a, b) => new Date(b.audit.created) - new Date(a.audit.created));
 
-        const activeDisciplines = new Set(services.Config.get(services.Configurator.Containers.key('disciplines.' + containers[0].location.name), []));
+        const container = containers.find(container => container.status === 'Approved' && container?.location.name);
 
-        const requisitionsData = await $.get(this.requisitionsURL.replace('[ID]', containers[0].id), {
+        if (!container) return {};
+
+        const activeDisciplines = new Set(services.Config.get(services.Configurator.Requisitions.key('disciplines.' + container.location.name), []));
+
+        const requisitionsData = await $.get(this.requisitionsURL.replace('[ID]', container.id), {
             page: 0,
             size: 1000,
             sort: ['primarySkill.name', 'desc', 'ignore-case'],
@@ -34,8 +38,8 @@ class Requisition {
 
         return {
             container: {
-                code: containers[0].code,
-                id: containers[0].id,
+                code: container.code,
+                id: container.id,
             },
             requisitions: requisitions.map(requisition => ({
                 id: requisition.id,

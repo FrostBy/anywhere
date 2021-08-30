@@ -5,11 +5,10 @@ class ConfiguratorShared {
         return this.prefix + '.' + key;
     }
 
-    static getDom(classes = []) {
+    static get dom() {
         // language=HTML
         return `
-            <div class="configurator-container sidebar-container ${classes.join(' ')}">
-                <div class='toggler'>⚙</div>
+            <div class="configurator-container sidebar-container">
                 <div class='body sidebar'>
                     <button class="close"><span class="fa fa-close"></span></button>
                     <form id="boards" class="boards applicant-summary__info-container">
@@ -19,8 +18,15 @@ class ConfiguratorShared {
         `;
     }
 
+    static get button() {
+        // language=HTML
+        return `
+            <div class="configurator-container-toggler">⚙</div>
+        `;
+    }
+
     static initEvents() {
-        $('.configurator-container .toggler, .configurator-container .close').off('click').on('click', () => { $('.configurator-container').toggleClass('open');});
+        $('.configurator-container-toggler, .configurator-container .close').off('click').on('click', () => { $('.configurator-container').toggleClass('open');});
         $(window).off('scroll.configurator').on('scroll.configurator', () => {
             const offset = 60 - $(window).scrollTop();
             if (offset <= 0) $('.configurator-container .body').css('height', '100%');
@@ -31,6 +37,7 @@ class ConfiguratorShared {
 
     static terminate() {
         $(window).off('scroll.configurator');
+        $('.configurator-container-toggler').remove();
         $('.configurator-container').remove();
     }
 }

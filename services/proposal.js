@@ -44,7 +44,7 @@ class Proposal {
     }
 
     initButton(){
-        $('body').append('<div class="force-update-proposals" title="Request proposals in background">⇄</div>');
+        services.Dom.Shared.appendButtons($('<div class="force-update-proposals" title="Request proposals in background">⇄</div>'), 2)
         $('.force-update-proposals').on('click', async () => {
             services.Dom.Shared.toggleSpinner(true);
             await this.get();

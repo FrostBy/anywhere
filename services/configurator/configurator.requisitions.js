@@ -1,26 +1,9 @@
-let locationBase;
-let watcher;
-
-class ConfiguratorContainers extends ConfiguratorShared {
+class ConfiguratorRequisitions extends ConfiguratorShared {
     static get prefix() { return 'containers'; }
 
     static init() {
-        $('body').append(this.getDom(['containers']));
-    }
-
-    static watch(filter) {
-        if (watcher) clearInterval(watcher);
-        watcher = setInterval(() => {
-            const location = window.location.href;
-
-            if (location === locationBase) return;
-            locationBase = location;
-
-            if (location.match(/hiringContainers\/\d+/)) {
-                $('.configurator-container:hidden').show();
-                ConfiguratorContainers.refreshForm(filter);
-            } else $('.configurator-container:visible').hide();
-        }, 500);
+        $('body').append(this.dom);
+        services.Dom.Shared.appendButtons($(this.button), 0)
     }
 
     static refreshForm(filter) {
@@ -30,10 +13,10 @@ class ConfiguratorContainers extends ConfiguratorShared {
         const recruiters = {};
         const disciplines = {};
 
-        const disciplineIndex = $('.profile-table thead th:has(div[title="Primary Skill"])').index();
-        const recruiterIndex = $('.profile-table thead th:has(div[title="Primary Recruiter"])').index();
+        const disciplineIndex = $('.data-table thead th:has(div[title="Primary Skill"])').index();
+        const recruiterIndex = $('.data-table thead th:has(div[title="Primary Recruiter"])').index();
 
-        $('.profile-table tbody.requisition').each(function () {
+        $('.data-table tbody.requisition').each(function () {
             const discipline = $(this).find('td').eq(disciplineIndex).text();
             const recruiter = $(this).find('td').eq(recruiterIndex).text();
 
@@ -54,7 +37,7 @@ class ConfiguratorContainers extends ConfiguratorShared {
         const hiddenRecruiters = new Set(recruitersArray.filter(recruiter => !activeRecruiters.has(recruiter)));
         const hiddenDisciplines = new Set(disciplinesArray.filter(discipline => !activeDisciplines.has(discipline)));
 
-        $('.profile-table tbody.requisition').each(function () {
+        $('.data-table tbody.requisition').each(function () {
             $(this).toggleClass('hidden-recruiter', hiddenRecruiters.has($(this).find('td').eq(recruiterIndex).text()));
             $(this).toggleClass('hidden-discipline', hiddenDisciplines.has($(this).find('td').eq(disciplineIndex).text()));
         });
@@ -107,19 +90,19 @@ class ConfiguratorContainers extends ConfiguratorShared {
                     else activeRecruiters.delete($(this).val());
 
                     requisitions.forEach(requisition => requisition.toggleClass('hidden-recruiter', !checked));
-                    services.Config.set(ConfiguratorContainers.key('recruiters.' + containerLocation), [...activeRecruiters]);
+                    services.Config.set(ConfiguratorRequisitions.key('recruiters.' + containerLocation), [...activeRecruiters]);
                 } else {
                     if (checked) activeDisciplines.add($(this).val());
                     else activeDisciplines.delete($(this).val());
 
                     requisitions.forEach(requisition => requisition.toggleClass('hidden-discipline', !checked));
-                    services.Config.set(ConfiguratorContainers.key('disciplines.' + containerLocation), [...activeDisciplines]);
+                    services.Config.set(ConfiguratorRequisitions.key('disciplines.' + containerLocation), [...activeDisciplines]);
                 }
                 filter.calculate();
             });
 
         $('.auto-paginate').on('change', function () {
-            services.Config.set(ConfiguratorContainers.key('autoPaginate'), $(this).prop('checked'));
+            services.Config.set(ConfiguratorRequisitions.key('autoPaginate'), $(this).prop('checked'));
         });
         this.initEvents();
     }

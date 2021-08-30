@@ -4,6 +4,7 @@ class DomShared {
     static terminate() {
         DomShared.unWatch();
         this.modal(false);
+        $('.buttons-container').remove();
     }
 
     static watchRequests(handleEvent = () => {}) {
@@ -115,7 +116,8 @@ class DomShared {
         `;
         // language=HTML
         const modal = `
-            <ngb-modal-window role="dialog" tabindex="-1" aria-modal="true" class="d-block fade modal modal-bs4 show custom">
+            <ngb-modal-window role="dialog" tabindex="-1" aria-modal="true"
+                              class="d-block fade modal modal-bs4 show custom">
                 <div role="document" class="modal-dialog">
                     <div class="modal-content">
                         <sd-action-modal>
@@ -134,5 +136,18 @@ class DomShared {
 
         $('body').append(backdrop).append(modal);
         $('ngb-modal-backdrop, .close.modal-close').on('click', () => this.modal(false));
+    }
+
+    static initButtonsContainer() {
+        $('body').append('<div class="buttons-container"></div>');
+    }
+
+    static appendButtons(element, position = 0) {
+        element.attr('data-position', position);
+
+        const container = $('.buttons-container');
+        container.append(element);
+
+        container.find('>').sort((a, b) => +b.dataset.position - +a.dataset.position).appendTo(container);
     }
 }
