@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Staffing Desc Helper
 // @namespace    http://tampermonkey.net/
-// @version      2021.08.28
+// @version      2021.09.16
 // @description  The script helps to work with Staffing Desk
 // @author       Vladislav Romanovsky
 // @contributor  Dmitry Scherbatykh
