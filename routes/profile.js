@@ -7,6 +7,10 @@ class ProfileRoute {
         return 'https://staffing.epam.com/applicants/.*';
     }
 
+    static get id() { return window.location.href.match(/(\d+)/)[0]; }
+
+    get id() { return this.constructor.id; }
+
     static init() {
         if (profileRoute) profileRoute.terminate();
 
@@ -16,7 +20,7 @@ class ProfileRoute {
         return profileRoute;
     }
 
-    init() {
+    async init() {
         $('body').addClass(this.constructor.bodyClass);
 
         services.Dom.Profile.initButtonsContainer();
@@ -24,9 +28,11 @@ class ProfileRoute {
         this.proposal = new services.Proposal();
         services.Dom.Profile.watchRequests(() => this.initTimeout());
         services.Dom.Profile.watchNextStep(this.proposal);
+
+        services.Dom.Profile.markHiringWeek(await this.isHiringWeek());
     }
 
-    terminate(){
+    terminate() {
         this.proposal.terminate();
 
         if (this.timeout) clearTimeout(this.timeout);
@@ -43,5 +49,10 @@ class ProfileRoute {
             services.Dom.Profile.initRequisitionButton();
             services.Salary.init();
         }, 1000);
+    }
+
+    async isHiringWeek() {
+        const profile = await this.proposal.getApplicant(this.id);
+        return !!profile.poolContainerDashboardView?.find(pool=> pool.code === 'PC-XX-HREV');
     }
 }

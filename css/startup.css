@@ -1,36 +1,36 @@
 
-.new td {
+.startup .new td {
     background: #ffdfdf;
     opacity: 1;
 }
 
-.offer-preparation td {
+.startup .offer-preparation td {
     background: #f2f9ff;
     opacity: 0.8;
 }
 
-.offer-acceptance td {
+.startup .offer-acceptance td {
     background: #f2fff4;
     opacity: 0.7;
 }
 
-.background-check td {
+.startup .background-check td {
     opacity: 0.3;
 }
 
-.filter.new {
+.startup .filter.new {
     background: #dc3545;
 }
 
-.filter.on-hold {
+.startup .filter.on-hold {
     background: #ff9b19;
 }
 
-.filter.offer-preparation {
+.startup .filter.offer-preparation {
     background: #3498db;
 }
 
-.filter.offer-acceptance {
+.startup .filter.offer-acceptance {
     background: #28a745;
 }
 
@@ -38,20 +38,20 @@
     display: none;
 }
 
-.mark td {
+.startup .mark td {
     border-top: 1px solid;
     border-bottom: 1px solid;
 }
 
-.mark td:first-child {
+.startup .mark td:first-child {
     border-left: 1px solid;
 }
 
-.mark td:last-child {
+.startup .mark td:last-child {
     border-right: 1px solid;
 }
 
-.mark .entity-status::after {
+.startup .mark .entity-status::after {
     position: absolute;
     right: 0;
     display: inline-block;
@@ -67,56 +67,56 @@
     margin-top: 4px;
 }
 
-.mark.mark-changed td {
+.startup .mark.mark-changed td {
     border-color: #28a745;
 }
 
-.mark.mark-changed .entity-status::after {
+.startup .mark.mark-changed .entity-status::after {
     content: 'CHANGED!';
     color: #fff;
     background-color: #28a745;
 }
 
-.mark.mark-new td {
+.startup .mark.mark-new td {
     border-color: #dc3545;
 }
 
-.mark.mark-new .entity-status::after {
+.startup .mark.mark-new .entity-status::after {
     content: 'NEW!';
     color: #fff;
     background-color: #dc3545;
 }
 
-.mark.mark-outdated td {
+.startup .mark.mark-outdated td {
     border-color: #6c757d;
 }
 
-.mark.mark-outdated .entity-status::after {
+.startup .mark.mark-outdated .entity-status::after {
     content: 'OUTDATED!';
     color: #fff;
     background-color: #6c757d;
 }
 
-.requisitions {
+.startup .requisitions {
     margin-top: 2px;
 }
 
-.requisitions .requisition {
+.startup .requisitions .requisition {
     display: inline-block;
     width: 15px;
     height: 15px;
     margin: 0 3px;
 }
 
-.requisitions .requisition.accepted {
+.startup .requisitions .requisition.accepted {
     background-color: #28a745;
 }
 
-.requisitions .requisition.declined {
+.startup .requisitions .requisition.declined {
     background-color: #dc3545;
 }
 
-.job-function {
+.startup .job-function {
     background-color: #3498db;
     color: white;
     display: inline-block;
@@ -130,25 +130,25 @@
     font-size: 12px;
 }
 
-.staffing-report .button {
+.startup .staffing-report .button {
     justify-content: center;
     align-items: flex-start;
 }
 
-.staffing-report .editor {
+.startup .staffing-report .editor {
     display: grid;
     grid-auto-flow: column;
 }
 
-.staffing-report .editor textarea {
+.startup .staffing-report .editor textarea {
     width: 100%;
     margin: 0;
 }
 
-.buttons-container .staffing-report-toggler {
+.startup .buttons-container .staffing-report-toggler {
     background: #ff9b19;
 }
 
-.buttons-container .force-update-proposals {
+.startup .buttons-container .force-update-proposals {
     background: #28a745;
 }

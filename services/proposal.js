@@ -15,7 +15,7 @@ class Proposal {
     }
 
     static get interviewsUrl() {
-        return 'https://staffing.epam.com/api/v1/applicants/[ID]/interview-and-request?size=1000';
+        return 'https://staffing.epam.com/api/v1/applicants/[ID]/interview-and-request?size=200';
     }
 
     static get applicantUrl() {
@@ -45,7 +45,7 @@ class Proposal {
 
     initButton(){
         services.Dom.Shared.appendButtons($('<div class="force-update-proposals" title="Request proposals in background">⇄</div>'), 2)
-        $('.force-update-proposals').on('click', async () => {
+        $('.force-update-proposals').off('click').on('click', async () => {
             services.Dom.Shared.toggleSpinner(true);
             await this.get();
             services.Dom.Shared.toggleSpinner(false);
@@ -157,7 +157,9 @@ class Proposal {
                 else if (Proposal.requisitionStatuses.accepted.includes(data.status)) {
                     locationIds.add(applicant.location.id);
                     applicantIds.add(id);
-                    if (proposal.advancedStatusDetails?.action?.name === 'Offer Acceptance') {
+                    const status = proposal.advancedStatusDetails?.action?.name;
+
+                    if (status === 'Offer Acceptance' || status === 'Backup Consideration') {
                         reportRows.push({
                             fullName,
                             id,
@@ -237,9 +239,9 @@ class Proposal {
 
                 if (interview) {
                     const feedback = interview.interviewFeedback[0];
-                    row.english = feedback.englishLevel?.name || row.english;
-                    row.skill = feedback.primarySkill?.name || row.skill;
-                    row.level = feedback.jobFunction?.name || row.level;
+                    row.english = feedback?.englishLevel?.name || row.english;
+                    row.skill = feedback?.primarySkill?.name || row.skill;
+                    row.level = feedback?.jobFunction?.name || row.level;
                 }
                 return row;
             });

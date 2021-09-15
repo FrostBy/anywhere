@@ -15,11 +15,22 @@ class DomProfile extends DomShared {
             DomProfile.toggleSpinner(true);
             const locations = $('.profile-content td:contains("Location")').next('td').get(0)?.innerText.split(', ');
             const data = await services.Requisition.getRequisitions(locations);
-            if(data.container) {
-                const requisitions = data.requisitions.splice(0, 20).map(requisition => {
+            if (data.container) {
+                const [jobFunction, level] = $('.profile-content td:contains("Job Function (after interview)")').next('td').get(0).textContent.trim().split(' Level ');
+
+                const params = {
+                    recruiter: $('.profile-content td:contains("Applicant Owner")').next('td').find('a').get(0).textContent.trim(),
+                    candidate: $('.entity-name span:last-child').get(0).textContent.trim(),
+                    jobFunction,
+                    level
+                };
+
+                const requisitions = data.requisitions.map(requisition => {
+                    params.id = requisition.id;
                     // language=HTML
-                    return `<a href="https://staffing.epam.com/requisitions/${requisition.id}/candidates"
-                               target="_blank">
+                    return `<a
+                            href="https://staffing.epam.com/requisition/edit?${(new URLSearchParams(params)).toString()}"
+                            target="_blank">
                         ${requisition.title} | ${requisition.headline} | ${requisition.primarySkill} |
                             (${requisition.id})
                     </a>`;
@@ -134,5 +145,31 @@ class DomProfile extends DomShared {
                 });
             }
         });
+    }
+
+    static markHiringWeek(status = false) {
+        const header = $('.entity-name span:last-child');
+        header.toggleClass('hiring-week', status);
+        if (status) $('sd-applicant-icons').prepend(this.hwDom);
+    }
+
+    static get hwDom() {
+        //language=HTML
+        return `
+            <span class="hiring-week-marker" title="Hiring Week">
+                <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+                    <g>
+                        <rect height="100%" width="100%" fill="#dc3545" />
+                        <text x="50%" y="50%"
+                              font-family="Helvetica, Arial, sans-serif"
+                              dominant-baseline="central"
+                              text-anchor="middle"
+                              font-size="60"
+                              fill="#ffffff">HW
+                        </text>
+                    </g>
+                </svg>
+            </span>
+        `;
     }
 }

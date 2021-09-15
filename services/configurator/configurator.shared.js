@@ -1,9 +1,7 @@
 class ConfiguratorShared {
     static get prefix() { return 'shared'; }
 
-    static key(key) {
-        return this.prefix + '.' + key;
-    }
+    static key(key) { return this.prefix + '.' + key; }
 
     static get dom() {
         // language=HTML

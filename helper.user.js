@@ -16,6 +16,7 @@
 // @updateURL    https://github.com/FrostBy/anywhere/raw/master/helper.user.js
 
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.3/jquery.scrollTo.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/js/tooltipster.bundle.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js
@@ -45,6 +46,7 @@
 
 // @require      https://github.com/FrostBy/anywhere/raw/master/routes/containers.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/routes/requisitions.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/routes/requisitionEdit.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/routes/profile.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/routes/profileEdit.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/routes/startup.js
@@ -70,6 +72,7 @@
         Salary,
         EngagementDetails,
         Requisition,
+        Wizard,
         Configurator: { Shared: ConfiguratorShared, Startup: ConfiguratorStartup, Requisitions: ConfiguratorRequisitions }
     };
     window.GM_setValue = GM_setValue;

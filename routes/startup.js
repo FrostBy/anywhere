@@ -28,6 +28,9 @@ class StartupRoute {
         this.report = new services.StaffingReport();
         this.proposal = new services.Proposal({ report: this.report, filter: this.filter });
 
+        this.report.init();
+        this.proposal.initButton();
+
         this.watchProposals();
         this.idleTimer();
     }
@@ -65,12 +68,10 @@ class StartupRoute {
                 if (this.timeout) clearTimeout(this.timeout);
 
                 this.timeout = setTimeout(() => {
-                    this.report.init();
                     this.filter.unlock();
                     services.Dom.Startup.setClasses();
                     this.filter.calculate();
                     this.filter.reset();
-                    this.proposal.initButton();
                     this.proposal.get();
                     this.watcher.disconnect();
                     this.watchActions();

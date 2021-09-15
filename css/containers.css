@@ -29,3 +29,12 @@
 .hidden-recruiter, .hidden-discipline {
     display: none !important;
 }
+
+.fill-form {
+    display: block;
+    width: 100%;
+}
+
+.predefined-fields {
+    width: 100%;
+}

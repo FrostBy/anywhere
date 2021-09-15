@@ -20,12 +20,16 @@
     transform: none;
 }
 
-.filters-container .filter {
+.filters-container .filter, .filters-container .reset, .filters-container .refresh {
     margin: 0 3px;
     color: #fff;
     display: inline-block;
     position: relative;
     cursor: pointer;
+    float: left;
+}
+
+.filters-container .filter {
     width: 30px;
     height: 30px;
     border-radius: 100%;
@@ -34,11 +38,6 @@
 }
 
 .filters-container .reset {
-    margin: 0 3px;
-    color: #fff;
-    display: inline-block;
-    position: relative;
-    cursor: pointer;
     padding: 0 5px;
     border-radius: 10%;
     line-height: 30px;
@@ -47,11 +46,6 @@
 }
 
 .filters-container .refresh {
-    margin: 0 3px;
-    color: #fff;
-    display: inline-block;
-    position: relative;
-    cursor: pointer;
     padding: 0 5px;
     border-radius: 10%;
     line-height: 30px;
@@ -287,4 +281,29 @@ span.copy {
     100% {
         opacity: 1
     }
+}
+
+.page-line-second.fixed {
+    position: fixed;
+    width: 100%;
+    top: 60px;
+}
+
+.entity-creator-content {
+    margin-top: 60px;
+}
+
+.current.form-entry {
+    border: 1px solid #28a745;
+}
+
+.wizard {
+    padding: 15px;
+    border: 1px solid #eee;
+    border-right: none;
+    right: 0;
+    top: 180px;
+    position: fixed;
+    z-index: 999;
+    background: white;
 }

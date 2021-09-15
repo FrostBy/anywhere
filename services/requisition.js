@@ -7,7 +7,7 @@ class Requisition {
         return 'https://staffing.epam.com/api/v1/hiring-container/[ID]/requisitions';
     }
 
-    static async getRequisitions(locations = []) {
+    static async getRequisitions(locations = [], limit = 20) {
         if (!locations.length) return {};
 
         const containersData = await $.get(this.containersURL, {
@@ -18,6 +18,8 @@ class Requisition {
             q: 'audit.creator.id=in=(4000741400010708873,4060741400035187120)'
         }).promise();
 
+        if (locations.includes('Kyrgyzstan')) locations.push('Kazakhstan');
+
         const containers = containersData.content.filter(container => locations.includes(container.location.name));
         containers.sort((a, b) => new Date(b.audit.created) - new Date(a.audit.created));
 
@@ -27,13 +29,7 @@ class Requisition {
 
         const activeDisciplines = new Set(services.Config.get(services.Configurator.Requisitions.key('disciplines.' + container.location.name), []));
 
-        const requisitionsData = await $.get(this.requisitionsURL.replace('[ID]', container.id), {
-            page: 0,
-            size: 1000,
-            sort: ['primarySkill.name', 'desc', 'ignore-case'],
-            q: `status=in=(Draft,Submitted,"Open: Under Review")${activeDisciplines.size ? `;primarySkill.name=in=(${[...activeDisciplines].join(',')})` : ''}`
-        }).promise();
-        const requisitions = requisitionsData.content.filter(requisition => !requisition.applicantDashboardView && requisition.lastChangeDateForOnHold === requisition.lastStatusUpdateDate || !requisition.unit);
+        const requisitions = await this._getRequisitions(container, activeDisciplines, limit);
         requisitions.sort((a, b) => a.primarySkill.name.localeCompare(b.primarySkill.name));
 
         return {
@@ -41,12 +37,27 @@ class Requisition {
                 code: container.code,
                 id: container.id,
             },
-            requisitions: requisitions.map(requisition => ({
+            requisitions: requisitions.splice(0, limit).map(requisition => ({
                 id: requisition.id,
                 primarySkill: requisition.primarySkill.name,
                 title: requisition.title.name,
                 headline: requisition.headline
             }))
         };
+    }
+
+    static async _getRequisitions(container, disciplines, limit = 20, page = 0, prevRequisitions = []) {
+        const requisitionsData = await $.get(this.requisitionsURL.replace('[ID]', container.id), {
+            page,
+            size: limit,
+            sort: ['primarySkill.name', 'desc', 'ignore-case'],
+            q: `status=in=(Draft,Submitted,"Open: Under Review")${disciplines.size ? `;primarySkill.name=in=(${[...disciplines].join(',')})` : ''}`
+        }).promise();
+
+        const requisitions = prevRequisitions.concat(requisitionsData.content.filter(requisition => !requisition.applicantDashboardView && requisition.lastChangeDateForOnHold === requisition.lastStatusUpdateDate || !requisition.unit));
+
+        if (requisitions.length !== requisitionsData.length && requisitions.length < limit) return this._getRequisitions(container, disciplines, limit, page + 1, requisitions);
+
+        return requisitions;
     }
 }

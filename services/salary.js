@@ -266,22 +266,31 @@ class Salary {
         return functions[currency] || functions['RUB'];
     }
 
-    static getOffer(offer, data) {
+    static async getOffer(offer, data) {
         let result = `${data.type}, `;
         const salary = (offer.base || 0) + offer.premium;
+
+        if (data.type === 'IC') result += `${Math.round(salary / 168).toLocaleString()}/h ${data.currency} = ~`;
+
         if (offer.base) {
             result += `${offer.base.toLocaleString()} + ${offer.premium.toLocaleString()} = ${salary.toLocaleString()} ${data.currency}`;
         } else result += `${salary.toLocaleString()} ${data.currency}`;
+
+        const rate = await this.get(data.currency);
+
+        if (data.currency === 'COP') result += ` (~${Math.floor(salary * rate.value)} ${rate.to})`;
 
         if (offer.psp) result += ` + ${offer.psp.toLocaleString()} ${data.currency} PSP = ${(salary + offer.psp).toLocaleString()} ${data.currency}`;
         if (offer.signOn) result += ` + ${offer.signOn.toLocaleString()} ${data.currency} Sign On (${data.condition})`;
         return result;
     }
 
-    static calculateOffer(data = {}) {
+    static async calculateOffer(data = {}) {
         let result = 'SE are out of range';
         const offer = this.getCalcFunction(data.currency)(data);
-        if (offer) result = this.getOffer(offer, data);
+
+        if (offer) result = await this.getOffer(offer, data);
+
         $('.offer-tool .result').text(`Offer: ${result}`);
 
         /*

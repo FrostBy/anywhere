@@ -1,7 +1,7 @@
 let requisitionRoute;
 
 class RequisitionsRoute {
-    static get bodyClass() { return 'containers'; }
+    static get bodyClass() { return 'requisitions'; }
 
     static get route() {
         return 'https://staffing.epam.com/hiringContainers/.*/requisitions';

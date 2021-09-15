@@ -20,6 +20,7 @@ class ProfileEditRoute {
         $('body').addClass(this.constructor.bodyClass);
 
         services.Dom.Profile.initButtonsContainer();
+        services.Dom.Profile.initFixedHeader();
 
         services.Dom.Profile.watchRequests(() => this.initTimeout());
     }

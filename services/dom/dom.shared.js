@@ -5,6 +5,8 @@ class DomShared {
         DomShared.unWatch();
         this.modal(false);
         $('.buttons-container').remove();
+        $(window).off('scroll.header');
+        $('.page-line-second.fixed').removeClass('fixed').css('top', '');
     }
 
     static watchRequests(handleEvent = () => {}) {
@@ -149,5 +151,16 @@ class DomShared {
         container.append(element);
 
         container.find('>').sort((a, b) => +b.dataset.position - +a.dataset.position).appendTo(container);
+    }
+
+    static initFixedHeader() {
+        $('.page-line-second').addClass('fixed');
+
+        $(window).off('scroll.header').on('scroll.header', () => {
+            const offset = 60 - $(window).scrollTop();
+            if (offset <= 0) $('.page-line-second.fixed').css('top', '0');
+            else if (offset < 60) $('.page-line-second.fixed').css('top', `${offset}px`);
+            else $('.page-line-second.fixed').css('top', '60px');
+        });
     }
 }
