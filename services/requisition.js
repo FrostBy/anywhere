@@ -41,7 +41,8 @@ class Requisition {
                 id: requisition.id,
                 primarySkill: requisition.primarySkill.name,
                 title: requisition.title.name,
-                headline: requisition.headline
+                headline: requisition.headline,
+                status: requisition.status
             }))
         };
     }
@@ -51,13 +52,14 @@ class Requisition {
             page,
             size: limit,
             sort: ['primarySkill.name', 'desc', 'ignore-case'],
-            q: `status=in=(Draft,Submitted,"Open: Under Review")${disciplines.size ? `;primarySkill.name=in=(${[...disciplines].join(',')})` : ''}`
+            q: `status=in=(Draft,Submitted,"Open: Under Review","On Hold")${disciplines.size ? `;primarySkill.name=in=(${[...disciplines].join(',')})` : ''}`
         }).promise();
 
-        const requisitions = prevRequisitions.concat(requisitionsData.content.filter(requisition => !requisition.applicantDashboardView && requisition.lastChangeDateForOnHold === requisition.lastStatusUpdateDate || !requisition.unit));
+        const requisitions = requisitionsData.content.filter(requisition => !requisition.applicantDashboardView && requisition.lastChangeDateForOnHold === requisition.lastStatusUpdateDate || !requisition.unit);
+        const allRequisitions = prevRequisitions.concat(requisitions);
 
-        if (requisitions.length !== requisitionsData.length && requisitions.length < limit) return this._getRequisitions(container, disciplines, limit, page + 1, requisitions);
+        if (allRequisitions.length !== requisitions.length && allRequisitions.length < limit) return this._getRequisitions(container, disciplines, limit, page + 1, allRequisitions);
 
-        return requisitions;
+        return allRequisitions;
     }
 }

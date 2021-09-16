@@ -30,9 +30,11 @@ class DomProfile extends DomShared {
                     // language=HTML
                     return `<a
                             href="https://staffing.epam.com/requisition/edit?${(new URLSearchParams(params)).toString()}"
-                            target="_blank">
+                            target="_blank"
+                            data-disabled="${requisition.status === 'On Hold' ? 'disabled' : ''}"
+                    >
                         ${requisition.title} | ${requisition.headline} | ${requisition.primarySkill} |
-                            (${requisition.id})
+                            (${requisition.id}) | ${requisition.status}
                     </a>`;
                 });
                 this.modal(true, 'Requisitions',
