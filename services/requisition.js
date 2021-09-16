@@ -55,7 +55,7 @@ class Requisition {
             q: `status=in=(Draft,Submitted,"Open: Under Review","On Hold")${disciplines.size ? `;primarySkill.name=in=(${[...disciplines].join(',')})` : ''}`
         }).promise();
 
-        const requisitions = requisitionsData.content.filter(requisition => !requisition.applicantDashboardView && requisition.lastChangeDateForOnHold === requisition.lastStatusUpdateDate || !requisition.unit);
+        const requisitions = requisitionsData.content.filter(requisition => !requisition.applicantDashboardView && requisition.lastChangeDateForOnHold === requisition.lastStatusUpdateDate && !requisition.unit);
         const allRequisitions = prevRequisitions.concat(requisitions);
 
         if (allRequisitions.length !== requisitions.length && allRequisitions.length < limit) return this._getRequisitions(container, disciplines, limit, page + 1, allRequisitions);
