@@ -48,7 +48,7 @@ class Wizard {
     static getProcessors(form, type) {
         const processors = {
             select: function (value = form.data('default-value')) {
-                console.log(form);
+                DomProfile.toggleSpinner(true);
                 form.addClass('current').scrollTo(200);
                 const searchWatcher = services.Dom.Shared.waitForAddedNode({
                     selector: '#search', parent: form[0], recursive: true, disconnect: true,
@@ -58,6 +58,7 @@ class Wizard {
                                 selector: '.ng-dropdown-panel', parent: form[0], recursive: true, disconnect: true,
                                 done: () => setTimeout(() => {
                                     form.find('.ng-dropdown-panel .ng-option:eq(0)').triggerRawMouse('click');
+                                    DomProfile.toggleSpinner(false);
                                 }, 500)
                             });
                             form.find('#search').val(value).triggerRawEvent('input');
@@ -69,17 +70,22 @@ class Wizard {
                         searchWatcher.disconnect();
                         form.find('.ng-input input').triggerRawMouse('mousedown');
                         form.find('.ng-dropdown-panel .ng-option:eq(0)').triggerRawMouse('click');
+                        DomProfile.toggleSpinner(false);
                     }
                 }, 500);
                 form.find('.ellipsis').scrollTo(200).triggerRawMouse('mousedown');
             },
             search: function (value = form.data('default-value')) {
+                DomProfile.toggleSpinner(true);
                 form.addClass('current').scrollTo(200);
                 form.find('.ng-input').triggerRawMouse('mousedown');
                 form.find('.ng-input input').val(value).triggerRawEvent('input');
                 services.Dom.Shared.waitForAddedNode({
                     selector: '.ng-dropdown-panel', parent: form[0], recursive: true, disconnect: true,
-                    done: () => form.find('.ng-dropdown-panel .ng-option:eq(0)').triggerRawMouse('click')
+                    done: () => {
+                        form.find('.ng-dropdown-panel .ng-option:eq(0)').triggerRawMouse('click');
+                        DomProfile.toggleSpinner(false);
+                    }
                 });
             },
             input: function (value = form.data('default-value')) {
