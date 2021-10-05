@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Staffing Desc Helper
 // @namespace    http://tampermonkey.net/
-// @version      2021.09.16
+// @version      2021.10.05
 // @description  The script helps to work with Staffing Desk
 // @author       Vladislav Romanovsky
 // @contributor  Dmitry Scherbatykh
@@ -38,6 +38,7 @@
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/config.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/engagementDetails.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/proposal.js
+// @require      https://github.com/FrostBy/anywhere/raw/master/services/offer.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/requisition.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/salary.js
 // @require      https://github.com/FrostBy/anywhere/raw/master/services/staffingReport.js
@@ -69,6 +70,7 @@
         Filter: { Shared: FilterShared, Startup: FilterStartup, Containers: FilterContainers, Requisitions: FilterRequisitions },
         StaffingReport,
         Proposal,
+        Offer,
         Salary,
         EngagementDetails,
         Requisition,

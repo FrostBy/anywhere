@@ -59,10 +59,10 @@ class Wizard {
                                 done: () => setTimeout(() => {
                                     form.find('.ng-dropdown-panel .ng-option:eq(0)').triggerRawMouse('click');
                                     DomProfile.toggleSpinner(false);
-                                }, 750)
+                                }, 1000)
                             });
                             form.find('#search').val(value).triggerRawEvent('input');
-                        }, 200);
+                        }, 500);
                     }
                 });
                 setTimeout(() => {

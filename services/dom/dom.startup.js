@@ -26,17 +26,18 @@ class DomStartup extends DomShared {
             .data('status', 'done');
     }
 
-    static setRequisitionStatus(requisitions) {
+    static setOfferStatus(offers) {
         $('.profile-table tbody.proposal').each(function () {
-            $(this).find('.requisitions').remove();
+            $(this).find('.offers').remove();
             const id = $(this).find('.applicant-link a, .candidate__info-link a').attr('href').split('/').pop();
-            if (requisitions[id]) {
-                const container = $('<div></div>').addClass('requisitions');
-                requisitions[id].declined.forEach(requisition => {
-                    container.append($(`<span class="requisition declined" title="${requisition.status} | ${requisition.jobFunction}">`));
+
+            if (offers[id]) {
+                const container = $('<div></div>').addClass('offers');
+                offers[id].declined.forEach(offer => {
+                    container.append($(`<span class="offer declined" title="${offer.status} | ${offer.jobFunction}">`));
                 });
-                requisitions[id].accepted.forEach(requisition => {
-                    container.append($(`<span class="requisition accepted" title="${requisition.status} | ${requisition.jobFunction}">`));
+                offers[id].accepted.forEach(requisition => {
+                    container.append($(`<span class="offer accepted" title="${requisition.status} | ${requisition.jobFunction}">`));
                 });
                 $(this).find('.candidate__applicant-icons').append(container);
             }
@@ -66,5 +67,19 @@ class DomStartup extends DomShared {
                 $(this).find('.candidate__applicant-icons').append($(`<span title="${jobFunction.name}">${jobFunction.seniorityTrack}${jobFunction.level}</span>`).addClass('job-function'));
             }
         });
+    }
+
+    static initGetDataButton(onClick = () => {}) {
+        this.appendButtons($('<div class="force-update-data" title="Request data in background">⇄</div>'), 2);
+        $('.force-update-data').off('click').on('click', async () => {
+            this.toggleSpinner(true);
+            onClick();
+            this.toggleSpinner(false);
+        });
+    }
+
+   static terminate() {
+       super.terminate();
+       $('.force-update-offers').remove();
     }
 }

@@ -97,22 +97,22 @@
     background-color: #6c757d;
 }
 
-.startup .requisitions {
+.startup .offers {
     margin-top: 2px;
 }
 
-.startup .requisitions .requisition {
+.startup .offers .offer {
     display: inline-block;
     width: 15px;
     height: 15px;
     margin: 0 3px;
 }
 
-.startup .requisitions .requisition.accepted {
+.startup .offers .offer.accepted {
     background-color: #28a745;
 }
 
-.startup .requisitions .requisition.declined {
+.startup .offers .offer.declined {
     background-color: #dc3545;
 }
 
@@ -149,6 +149,6 @@
     background: #ff9b19;
 }
 
-.startup .buttons-container .force-update-proposals {
+.startup .buttons-container .force-update-data {
     background: #28a745;
 }

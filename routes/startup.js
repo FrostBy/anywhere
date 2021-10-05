@@ -16,6 +16,30 @@ class StartupRoute {
         return startupRoute;
     }
 
+    constructor() {
+        this.data = {};
+        this.getDataRequestDone = false;
+    }
+
+    async getData() {
+        this.getDataRequestDone = false;
+        this.data.proposals = await this.proposal.get();
+        this.data.offers = await this.offer.get(this.data.proposals);
+        this.data.report = await this.report.get(this.data.offers.reportRows, this.data.offers.locationIds, this.data.offers.applicantIds);
+        this.getDataRequestDone = true;
+    }
+
+    updateDOM() {
+        const interval = setInterval(() => {
+            if (this.getDataRequestDone) {
+                clearInterval(interval);
+                services.Dom.Startup.setJobFunction(this.data.proposals);
+                services.Dom.Startup.setOfferStatus(this.data.offers.offers);
+                this.report.fill(this.data.report);
+            }
+        }, 1000);
+    }
+
     init() {
         $('body').addClass(this.constructor.bodyClass);
 
@@ -27,9 +51,14 @@ class StartupRoute {
         this.filter = new services.Filter.Startup();
         this.report = new services.StaffingReport();
         this.proposal = new services.Proposal({ report: this.report, filter: this.filter });
+        this.offer = new services.Offer();
 
         this.report.init();
-        this.proposal.initButton();
+        this.getData();
+        services.Dom.Startup.initGetDataButton(async () => {
+            await this.getData();
+            this.updateDOM();
+        });
 
         this.watchProposals();
         this.idleTimer();
@@ -72,7 +101,7 @@ class StartupRoute {
                     services.Dom.Startup.setClasses();
                     this.filter.calculate();
                     this.filter.reset();
-                    this.proposal.get();
+                    this.updateDOM();
                     this.watcher.disconnect();
                     this.watchActions();
                 }, 2000);
