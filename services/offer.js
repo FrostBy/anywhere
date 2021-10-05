@@ -106,6 +106,11 @@ class Offer {
             }
         });
 
-        return { offers: offersObject, reportRows, applicantIds: Array.from(applicantIds), locationIds: Array.from(locationIds) };
+        return {
+            offers: offersObject,
+            reportRows,
+            applicantIds: Array.from(applicantIds),
+            locationIds: Array.from(locationIds)
+        };
     }
 }

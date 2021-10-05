@@ -70,7 +70,7 @@ class DomStartup extends DomShared {
     }
 
     static initGetDataButton(onClick = () => {}) {
-        this.appendButtons($('<div class="force-update-data" title="Request data in background">⇄</div>'), 2);
+        this.appendButtons($('<div class="force-update-data" title="Request data">⇄</div>'), 2);
         $('.force-update-data').off('click').on('click', async () => {
             this.toggleSpinner(true);
             onClick();

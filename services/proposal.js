@@ -57,6 +57,7 @@ class Proposal {
             const status = proposal.advancedStatusDetails?.action.name || 'Preselected';
             const fullName = applicant.fullName;
             const changed = applicant.lastProcessStatusUpdateDate;
+            const rawRequisitions = applicant.requisitionDashboardView || proposal.requisitionDashboardView || proposal.employee.requisitionDashboardView || [];
 
             proposalsObject[id] = {
                 id,
@@ -64,6 +65,7 @@ class Proposal {
                 fullName,
                 changed,
                 jobFunction: applicant.jobFunctionAfterInterview,
+                requisitions: rawRequisitions
             };
 
             const proposalOld = proposalsObjectOld[id];
