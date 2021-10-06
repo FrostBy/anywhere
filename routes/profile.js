@@ -26,8 +26,9 @@ class ProfileRoute {
         services.Dom.Profile.initButtonsContainer();
 
         this.proposal = new services.Proposal();
+        this.report = new services.StaffingReport();
         services.Dom.Profile.watchRequests(() => this.initTimeout());
-        services.Dom.Profile.watchNextStep(this.proposal);
+        services.Dom.Profile.watchNextStep(this.proposal, this.report);
 
         services.Dom.Profile.markHiringWeek(await this.isHiringWeek());
     }

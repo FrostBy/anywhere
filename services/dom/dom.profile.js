@@ -74,7 +74,7 @@ class DomProfile extends DomShared {
         });
     }
 
-    static watchNextStep(proposal) {
+    static watchNextStep(proposal, report) {
         $(document).on('click.action', '.staffing-status-dropdown a', function () {
             const lastAction = $(this).attr('title');
 
@@ -86,7 +86,7 @@ class DomProfile extends DomShared {
                     disconnect: true,
                     done: async (element, params) => {
                         const id = window.location.href.match(/(\d+)/)[0];
-                        const interviews = await proposal.getInterviews([id]);
+                        const interviews = await report.getInterviews([id]);
                         const interview = interviews[id]?.find(interview => interview.name === 'Offer');
 
                         if (interview) {
