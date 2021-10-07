@@ -308,10 +308,39 @@ span.copy {
     background: white;
 }
 
-a[data-disabled='disabled']{
+a[data-disabled='disabled'] {
     pointer-events: none;
     color: currentColor;
     cursor: not-allowed;
     opacity: 0.5;
     text-decoration: none;
+}
+
+.sub-filters {
+    line-height: 100%;
+    width: 100%;
+    height: auto;
+    top: 110%;
+    position: absolute;
+    background: white;
+    box-shadow: 0 0 3px black;
+    padding: 5px;
+}
+
+.sub-filters:empty {
+    display: none;
+}
+
+.sub-filters label {
+    vertical-align: middle;
+    margin: -3px 0 0 5px;
+}
+
+.sub-filters input {
+    margin: 0;
+}
+
+.sub-filters .input-wrapper {
+    display: inline-block;
+    margin: 0 5px
 }

@@ -58,14 +58,18 @@ class Proposal {
             const fullName = applicant.fullName;
             const changed = applicant.lastProcessStatusUpdateDate;
             const rawRequisitions = applicant.requisitionDashboardView || proposal.requisitionDashboardView || proposal.employee.requisitionDashboardView || [];
+            const hireDate = proposal.employee?.hireDate;
 
             proposalsObject[id] = {
                 id,
+                employeeId: proposal.employee?.id,
                 status,
                 fullName,
                 changed,
                 jobFunction: applicant.jobFunctionAfterInterview,
-                requisitions: rawRequisitions
+                requisitions: rawRequisitions,
+                hireDate,
+                hired: hireDate && moment(hireDate) < moment()
             };
 
             const proposalOld = proposalsObjectOld[id];

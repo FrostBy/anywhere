@@ -11,6 +11,7 @@ class FilterContainers extends FilterShared {
         return `
             <div class='filter containers new' data-status="new" title="New">0</div>
             <div class='filter containers outdated' data-status="outdated" title="Outdated">0</div>
+            ${super.dom}
         `;
     }
 

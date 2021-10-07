@@ -1,29 +1,44 @@
 class DomStartup extends DomShared {
     static setClasses() {
-        $('.profile-table tbody:has(span[title="Backup Consideration"])')
-            .addClass('proposal backup-consideration new')
-            .data('status', 'new');
-        $('.profile-table tbody:has(span[title="RM Candidate Consideration"])')
-            .addClass('proposal rm-candidate-consideration new')
-            .data('status', 'new');
-        $('.profile-table tbody:has(span[title="Select Action"])')
-            .addClass('proposal select-action new')
-            .data('status', 'new');
-        $('.profile-table tbody:has(span[title="On Hold"])')
-            .addClass('proposal on-hold')
-            .data('status', 'on-hold');
-        $('.profile-table tbody:has(span[title="Technical Interview"])')
-            .addClass('proposal on-hold')
-            .data('status', 'on-hold');
-        $('.profile-table tbody:has(span[title="Offer Preparation"])')
-            .addClass('proposal offer-preparation')
-            .data('status', 'offer-preparation');
-        $('.profile-table tbody:has(span[title="Offer Acceptance"])')
-            .addClass('proposal offer-acceptance')
-            .data('status', 'offer-acceptance');
-        $('.profile-table tbody:has(span[title="Background Check"])')
-            .addClass('proposal background-check done')
-            .data('status', 'done');
+        $('.profile-table tbody').each(function () {
+            $(this).addClass('proposal');
+            $(this).data('properties', new Set());
+
+            const status = $(this).find('.staffing-status span').attr('title');
+
+            switch (status) {
+                case 'Backup Consideration':
+                    $(this).addClass('backup-consideration new').data('properties').add('new');
+                    break;
+                case 'RM Candidate Consideration':
+                    $(this).addClass('rm-candidate-consideration new').data('properties').add('new');
+                    break;
+                case 'Select Action':
+                    $(this).addClass('select-action new').data('properties').add('new');
+                    break;
+                case 'On Hold':
+                    $(this).addClass('on-hold').data('properties').add('on-hold');
+                    break;
+                case 'Technical Interview':
+                    $(this).addClass('technical-interview on-hold').data('properties').add('on-hold');
+                    break;
+                case 'General Feedback':
+                    $(this).addClass('general-feedback on-hold').data('properties').add('on-hold');
+                    break;
+                case 'Offer Preparation':
+                    $(this).addClass('offer-preparation').data('properties').add('offer-preparation');
+                    break;
+                case 'Offer Acceptance':
+                    $(this).addClass('offer-acceptance').data('properties').add('offer-acceptance');
+                    break;
+                case 'Background Check':
+                    $(this).addClass('background-check done').data('properties').add('done');
+                    break;
+                default:
+                    $(this).addClass('unknown new').data('properties').add('new');
+                    break;
+            }
+        });
     }
 
     static setOfferStatus(offers) {
@@ -78,8 +93,8 @@ class DomStartup extends DomShared {
         });
     }
 
-   static terminate() {
-       super.terminate();
-       $('.force-update-offers').remove();
+    static terminate() {
+        super.terminate();
+        $('.force-update-offers').remove();
     }
 }

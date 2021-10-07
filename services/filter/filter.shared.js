@@ -22,17 +22,15 @@ class FilterShared {
 
     static get dom() {
         // language=HTML
-        return ``;
+        return `
+            <div class='reset'>Reset</div>
+            <div class='toggler open'></div>
+            <div class="sub-filters"></div>`;
     }
 
     _init() {
         const filters = $(`<div class="filters-container open"></div>`);
         filters.append(this.constructor.dom);
-        // language=HTML
-        filters.append(`
-            <div class='reset'>Reset</div>
-            <div class='toggler open'></div>
-        `);
 
         $('body').append(filters);
 
@@ -52,6 +50,11 @@ class FilterShared {
             that.state[$(this).data('status')] = !$(this).hasClass('disabled');
             that.refresh();
         });
+
+        $('.sub-filters input').off('change.filter').on('change.filter', function () {
+            that.state[$(this).data('status')] = !$(this).prop('checked');
+            that.refresh();
+        });
     }
 
     refresh() {
@@ -60,9 +63,19 @@ class FilterShared {
         $('.filter').each(function () {
             $(this).toggleClass('disabled', that.state[$(this).data('status')]);
         });
-        $(`${this.constructor.tableClass} tbody`).each(function () {
-            $(this).toggleClass('hidden', that.state[$(this).data('status')]);
+
+        $('.sub-filters input').each(function () {
+            const parentEnabled = !that.state[$(this).data('for')];
+            $(this).prop('checked', parentEnabled && !that.state[$(this).data('status')]);
+            $(this).parent('.input-wrapper').toggleClass('hidden', !parentEnabled);
         });
+
+        $(`${this.constructor.tableClass} tbody`).each(function () {
+            const isHidden = Object.keys(that.state).some(status => that.state[status] && $(this).data('properties').has(status));
+            $(this).toggleClass('hidden', isHidden);
+        });
+
+        $('.sub-filters').toggleClass('hidden', !$('.sub-filters .input-wrapper:not(.hidden)').length);
     }
 
     reset() {

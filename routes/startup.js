@@ -36,6 +36,9 @@ class StartupRoute {
                 services.Dom.Startup.setJobFunction(this.data.proposals);
                 services.Dom.Startup.setOfferStatus(this.data.offers.offers);
                 this.report.fill(this.data.report);
+
+                this.filter.setEmployees(this.data.proposals);
+                this.filter.refresh();
             }
         }, 1000);
     }
