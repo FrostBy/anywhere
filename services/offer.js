@@ -29,7 +29,7 @@ class Offer {
         const offers = offersData.content;
         const allOffers = prevOffers.concat(offers);
 
-        if (offers.length >= 1000 && allOffers.length <= limit) return this._getOffers(limit, page + 1, statuses, allOffers);
+        if (offers.length >= 1000 && allOffers.length < limit) return this._getOffers(limit, page + 1, statuses, allOffers);
 
         return allOffers;
     }*/

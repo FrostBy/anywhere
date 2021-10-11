@@ -29,7 +29,7 @@ class Requisition {
 
         const activeDisciplines = new Set(services.Config.get(services.Configurator.Requisitions.key('disciplines.' + container.location.name), []));
 
-        const requisitions = await this._getRequisitions(container, activeDisciplines, limit);
+        const requisitions = await this._getAvailableRequisitions(container, activeDisciplines, limit);
         requisitions.sort((a, b) => a.primarySkill.name.localeCompare(b.primarySkill.name));
 
         return {
@@ -47,18 +47,29 @@ class Requisition {
         };
     }
 
-    static async _getRequisitions(container, disciplines, limit = 20, page = 0, prevRequisitions = []) {
+    static async _getAvailableRequisitions(container, disciplines, limit = 20) {
+        const activeRequisitions = await this._getRequisitions(container, disciplines, limit, 0, ['Open: Under Review']);
+
+        if (activeRequisitions.length < limit) {
+            const inactiveRequisitions = await this._getRequisitions(container, disciplines, limit, 0, ['On Hold', 'Draft', 'Submitted']);
+            return activeRequisitions.concat(inactiveRequisitions).slice(0, limit);
+        }
+
+        return activeRequisitions;
+    }
+
+    static async _getRequisitions(container, disciplines, limit = 20, page = 0, statuses = ['Open: Under Review', 'On Hold', 'Draft', 'Submitted'], prevRequisitions = []) {
         const requisitionsData = await $.get(this.requisitionsURL.replace('[ID]', container.id), {
             page,
             size: limit,
             sort: ['primarySkill.name', 'desc', 'ignore-case'],
-            q: `status=in=(Draft,Submitted,"Open: Under Review","On Hold")${disciplines.size ? `;primarySkill.name=in=(${[...disciplines].join(',')})` : ''}`
+            q: `status=in=("${statuses.join('","')}")${disciplines.size ? `;primarySkill.name=in=("${[...disciplines].join('","')}")` : ''}`
         }).promise();
 
         const requisitions = requisitionsData.content.filter(requisition => !requisition.applicantDashboardView && requisition.lastChangeDateForOnHold === requisition.lastStatusUpdateDate && !requisition.unit);
         const allRequisitions = prevRequisitions.concat(requisitions);
 
-        if (allRequisitions.length !== requisitions.length && allRequisitions.length < limit) return this._getRequisitions(container, disciplines, limit, page + 1, allRequisitions);
+        if (requisitionsData.content.length >= limit && allRequisitions.length < limit) return this._getRequisitions(container, disciplines, limit, page + 1, statuses, allRequisitions);
 
         return allRequisitions;
     }
