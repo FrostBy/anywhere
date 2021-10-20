@@ -5,6 +5,7 @@ class DomProfile extends DomShared {
     }
 
     static initRequisitionButton() {
+        unsafeWindow.$ =$;
         $('button.requisitions').remove();
 
         const button = `<button class="requisitions btn profile-action" title="Show Empty Requisitions">Requisitions</button>`;
@@ -20,7 +21,7 @@ class DomProfile extends DomShared {
 
                 const params = {
                     recruiter: $('.profile-content td:contains("Applicant Owner")').next('td').find('a').get(0).textContent.trim(),
-                    candidate: $('.entity-name span:last-child').get(0).textContent.trim(),
+                    candidate: $('.entity-name span:last').get(0).textContent.trim(),
                     jobFunction,
                     level
                 };
@@ -150,7 +151,7 @@ class DomProfile extends DomShared {
     }
 
     static markHiringWeek(status = false) {
-        const header = $('.entity-name span:last-child');
+        const header = $('.entity-name span:last');
         header.toggleClass('hiring-week', status);
         if (status) $('sd-applicant-icons').prepend(this.hwDom);
     }
