@@ -5,7 +5,6 @@ class DomProfile extends DomShared {
     }
 
     static initRequisitionButton() {
-        unsafeWindow.$ =$;
         $('button.requisitions').remove();
 
         const button = `<button class="requisitions btn profile-action" title="Show Empty Requisitions">Requisitions</button>`;
@@ -81,6 +80,19 @@ class DomProfile extends DomShared {
         $(document).on('click.action', '.staffing-status-dropdown a', function () {
             const lastAction = $(this).attr('title');
 
+            const clearPersonsActions = ['Offer Acceptance', 'Offer Preparation', 'Background Check'];
+            if (clearPersonsActions.includes(lastAction)) {
+                services.Dom.Profile.waitForAddedNode({
+                    selector: '.modal .ng-clear-wrapper',
+                    parent: document.body,
+                    recursive: false,
+                    disconnect: true,
+                    done: async (element, params) => {
+                        $('.ng-clear-wrapper').triggerRawMouse('mousedown');
+                    }
+                });
+            }
+
             if (lastAction === 'Offer Acceptance') {
                 services.Dom.Profile.waitForAddedNode({
                     selector: '.modal.modal-bs4.show',
@@ -105,8 +117,6 @@ class DomProfile extends DomShared {
                                 const npString = lines.find(element => element.startsWith('Notice period'));
                                 const np = npString?.split(': ')[1] || 'N/A';
 
-                                $(element).find('.visible-text-area').val(`${hiringProgram}, NP: ${np}`).triggerRawEvent('input');
-
                                 const responseDateString = lines.find(element => element.startsWith('Candidate Response date'));
                                 const responseDate = responseDateString?.split(/\n/)[1];
 
@@ -118,6 +128,8 @@ class DomProfile extends DomShared {
 
                                     $(element).find('sd-datepicker-popup[label="Due Date"] input').val(dueDate.format('DD-MMM-yyyy')).triggerRawEvent('input');
                                 }
+
+                                $(element).find('.visible-text-area').val(`${hiringProgram}, NP: ${np}`).triggerRawEvent('input').focus();
                             }
                         }
 
@@ -133,19 +145,7 @@ class DomProfile extends DomShared {
                         const id = window.location.href.match(/(\d+)/)[0];
                         const profile = await proposal.getApplicant(id);
                         const hiringProgram = profile?.hiringProgram.name;
-                        $(element).find('.visible-text-area').val(`${hiringProgram}, `).triggerRawEvent('input');
-                    }
-                });
-            }
-            const clearPersonsActions = ['Offer Acceptance', 'Offer Preparation', 'Background Check'];
-            if (clearPersonsActions.includes(lastAction)) {
-                services.Dom.Profile.waitForAddedNode({
-                    selector: '.modal .ng-clear-wrapper',
-                    parent: document.body,
-                    recursive: false,
-                    disconnect: true,
-                    done: async (element, params) => {
-                        $('.ng-clear-wrapper').triggerRawMouse('mousedown');
+                        $(element).find('.visible-text-area').val(`${hiringProgram}, `).triggerRawEvent('input').focus();
                     }
                 });
             }
