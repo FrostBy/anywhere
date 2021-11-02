@@ -26,6 +26,7 @@ class DomProfile extends DomShared {
                     jobFunction,
                     level
                 };
+                Object.keys(params).forEach((k) => !params[k] && delete params[k]);
 
                 const requisitions = data.requisitions.map(requisition => {
                     params.id = requisition.id;
