@@ -2,6 +2,7 @@ class Wizard {
     constructor(fields = {}, steps = [], data = {}) {
         this.fields = fields;
         this.steps = steps;
+        this.nextStep = 0;
         this.data = data;
     }
 
@@ -14,13 +15,22 @@ class Wizard {
         // language=HTML
         $('body').append(`
             <div class="wizard">
-                <button class="action-button fill-form">Fill the Form (Step By Step)</button>
+                <div class="buttons">
+                    <button class="action-button fill-form">Fill the Form (Step By Step)</button>
+                    <button class="action-button retry" title="Retry">⟳</button>
+                </div>
             </div>
         `);
-        $('.fill-form').on('click', function (e) {
+
+        $('.fill-form').on('click', e => {
             e.preventDefault();
-            if (!that.steps.length) return;
-            that.processField();
+            that.processField(this.nextStep);
+            this.nextStep++;
+        }).one('click', () => $('.retry').show());
+
+        $('.retry').hide().on('click', e => {
+            e.preventDefault();
+            this.processField(this.nextStep - 1);
         });
     }
 
@@ -29,9 +39,11 @@ class Wizard {
         $('.current').removeClass('current');
     }
 
-    processField() {
+    processField(stepNumber) {
+        if (!this.steps[stepNumber]) return;
+
         $('.current').removeClass('current');
-        const step = this.steps.shift();
+        const step = this.steps[stepNumber];
         const value = this.data[step];
         this.constructor._processField(this.fields[step])(value);
     }

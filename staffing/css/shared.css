@@ -308,6 +308,10 @@ span.copy {
     background: white;
 }
 
+.wizard .buttons {
+    display: flex;
+}
+
 a[data-disabled='disabled'] {
     pointer-events: none;
     color: currentColor;
