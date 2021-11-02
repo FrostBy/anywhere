@@ -32,7 +32,8 @@ class Salary {
     }
 
     static init() {
-        const containers = $('.profile-content').find('td:contains("Current Salary (Gross)"), td:contains("Expected Salary (Gross)")').next('td');
+        const containers = $('.profile-content').find('td:contains("Current Salary (Gross)"), td:contains("Expected Salary (Gross)")').next('td').filter((i, e) => e.innerText.trim());
+
         if (!containers.length) return;
 
         $('span.exchange').remove();
@@ -45,25 +46,28 @@ class Salary {
 
         this.generateTooltip(containers.find('.money'), false);
 
-        $('.exchange').on('click', (e) => this.generateTooltip([$(e.target).parent().find('.money')]));
+        $('.exchange').on('click', (e) => this.generateTooltip($(e.target).parent().find('.money')));
     }
 
     static async generateTooltip(containers, show = true) {
         for (const container of containers) {
-            if (container.data('tooltipsterNs')) container.tooltipster('destroy');
-
-            const text = $.trim(container.get(0).textContent);
+            const text = $.trim(container.textContent);
             const [from, money, period] = text.split(' ');
 
-            if (!money || !from) return;
+            if (!money || !from) continue;
 
             const rate = await this.get(from);
 
-            container.tooltipster({
+            const containerObject = $(container);
+
+            if (containerObject.data('tooltipsterNs')) containerObject.tooltipster('destroy');
+
+            containerObject.tooltipster({
                 content: `~ ${rate.to} ${Math.floor(money.replace(/[^0-9]/g, '') * rate.value)}`,
                 theme: 'tooltipster-light'
             });
-            if (show) container.tooltipster('show');
+
+            if (show) containerObject.tooltipster('show');
         }
     }
 
