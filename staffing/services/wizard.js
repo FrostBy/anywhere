@@ -55,14 +55,14 @@ class Wizard {
                     done: () => {
                         setTimeout(() => {
                             services.Dom.Shared.waitForAddedNode({
-                                selector: '.ng-dropdown-panel', parent: form[0], recursive: true, disconnect: true,
+                                selector: '.ng-dropdown-panel em', parent: form[0], recursive: true, disconnect: true,
                                 done: () => setTimeout(() => {
                                     form.find('.ng-dropdown-panel .ng-option:eq(0)').triggerRawMouse('click');
                                     DomProfile.toggleSpinner(false);
-                                }, 1000)
+                                }, 750)
                             });
                             form.find('#search').val(value).triggerRawEvent('input');
-                        }, 500);
+                        }, 100);
                     }
                 });
                 setTimeout(() => {
@@ -72,7 +72,7 @@ class Wizard {
                         form.find('.ng-dropdown-panel .ng-option:eq(0)').triggerRawMouse('click');
                         DomProfile.toggleSpinner(false);
                     }
-                }, 750);
+                }, 250);
                 form.find('.ellipsis').scrollTo(200).triggerRawMouse('mousedown');
             },
             search: function (value = form.data('default-value')) {
