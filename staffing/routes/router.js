@@ -25,6 +25,11 @@ function initRouter() {
     let location = window.location;
     let previousUrl = '';
 
+    if (location.href !== previousUrl) {
+        previousUrl = location.href;
+        route(location.href);
+    }
+
     new MutationObserver(function (mutations) {
         if (location.href !== previousUrl) {
             previousUrl = location.href;
