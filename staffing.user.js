@@ -53,9 +53,9 @@
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/routes/startup.js
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/routes/router.js
 
-// @resource     IMPORTED_CSS_TOOLTIPSTER https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/staffing/css/tooltipster.bundle.min.css
-// @resource     IMPORTED_CSS_TOOLTIPSTER_LIGHT https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/staffing/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css
-// @resource     IMPORTED_CSS_TOASTR https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/staffing/css/toastr.min.css
+// @resource     IMPORTED_CSS_TOOLTIPSTER https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/css/tooltipster.bundle.min.css
+// @resource     IMPORTED_CSS_TOOLTIPSTER_LIGHT https://cdnjs.cloudflare.com/ajax/libs/tooltipster/4.2.8/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css
+// @resource     IMPORTED_CSS_TOASTR https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css
 
 // @resource     IMPORTED_CSS_SHARED https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/css/shared.css
 // @resource     IMPORTED_CSS_STARTUP https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/css/startup.css

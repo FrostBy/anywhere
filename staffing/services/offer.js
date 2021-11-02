@@ -36,7 +36,6 @@ class Offer {
 
     constructor(params = {}) {}
 
-
     terminate() {
         if (this.getRequest) this.getRequest.map(request => request.abort());
     }

@@ -20,6 +20,8 @@ class DomProfile extends DomShared {
                 const [jobFunction, level] = $('.profile-content td:contains("Job Function (after interview)")').next('td').get(0).textContent.trim().split(' Level ');
 
                 const params = {
+                    primarySkill: $('.profile-content td:contains("Primary Skill")').next('td').find('sd-value-with-separator .name').get(0).textContent.trim(),
+                    unit: $('sd-svg-icon[title="Ultra Flex"]').length ? 'Maksym Zaletskyi / UltraFlex' : undefined,
                     recruiter: $('.profile-content td:contains("Applicant Owner")').next('td').find('a').get(0).textContent.trim(),
                     candidate: $('.entity-name span:last').get(0).textContent.trim(),
                     jobFunction,

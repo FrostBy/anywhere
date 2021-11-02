@@ -32,18 +32,18 @@ class Salary {
     }
 
     static init() {
-        const container = $('.profile-content td:contains("Expected Salary (Gross)")').next('td');
-        if (!container.length) return;
+        const containers = $('.profile-content').find('td:contains("Current Salary (Gross)"), td:contains("Expected Salary (Gross)")').next('td');
+        if (!containers.length) return;
 
         $('span.exchange').remove();
 
         const button = `<span class="exchange" title="Get Exchange Rate">💱</span>`;
 
-        if (!container.find('.money').length) container.contents().wrap('<span class="money" />');
+        if (!containers.find('.money').length) containers.contents().wrap('<span class="money" />');
 
-        container.append(button);
+        containers.append(button);
 
-        this.generateTooltip([container.find('.money')], false);
+        this.generateTooltip(containers.find('.money'), false);
 
         $('.exchange').on('click', (e) => this.generateTooltip([$(e.target).parent().find('.money')]));
     }
