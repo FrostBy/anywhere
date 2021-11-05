@@ -17,7 +17,6 @@ class ProfileEditRoute {
     }
 
     get validators() {
-        unsafeWindow.$ = $;
         const hiringPrograms = [
             'Remote Individual Contractor',
             'Fixed Anywhere',
@@ -56,7 +55,6 @@ class ProfileEditRoute {
                     return { jobFunction, level };
                 },
                 callback: (result, validator) => {
-                    console.log(validator);
                     if (!result.jobFunction) validator.message(validator.statuses.ERROR, 'Empty Job Function (after interview)');
                     if (!result.level) validator.message(validator.statuses.ERROR, 'Empty Job Function Level (after interview)');
                 },

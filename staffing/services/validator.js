@@ -30,6 +30,7 @@ class Validator {
         this.validators = validators;
         this.options = options;
         this.api = new services.API();
+        this.hasErrors = false;
     }
 
     key(key) { return Validator.prefix + '.' + this.page + '.' + key; }
@@ -40,7 +41,7 @@ class Validator {
             <div class="validator">
                 <div class="buttons">
                     <button class="action-button validate">Validate</button>
-                    <button class="check ellipsis on-load ${services.Config.get(this.key('onLoad')) ? 'selected' : ''}">
+                    <button class="check ellipsis on-load ${services.Config.get(this.key('onLoad'), true) ? 'selected' : ''}">
                         On Load
                     </button>
                 </div>
@@ -53,13 +54,13 @@ class Validator {
         });
 
         $('.validator .on-load').on('click', e => {
-            const onLoad = !services.Config.get(this.key('onLoad'));
+            const onLoad = !services.Config.get(this.key('onLoad'), true);
             $(e.target).toggleClass('selected', onLoad);
             services.Config.set(this.key('onLoad'), onLoad);
         });
 
         this.initFixed();
-        if (services.Config.get(this.key('onLoad'))) this.validate();
+        if (services.Config.get(this.key('onLoad'), true)) this.validate();
     }
 
     terminate() {
@@ -86,13 +87,19 @@ class Validator {
     }
 
     async validate() {
-        $('.validate').toggleClass('in-progress');
+        this.hasErrors = false;
         toastr.remove();
+
+        $('.validate').toggleClass('in-progress');
+
         await Promise.all(Object.values(this.validators).map(async validator => {
             const result = await validator.function(this);
             if (validator.showMessage !== false && (!result || typeof result === 'object')) this.message(result?.status, validator?.error.message);
             if (validator.callback) validator.callback(result, this);
         }));
+
+        if (!this.hasErrors) this.message(Validator.statuses.SUCCESS, 'No Errors');
+
         $('.validate').toggleClass('in-progress');
     }
 
@@ -115,6 +122,7 @@ class Validator {
             case Validator.statuses.ERROR:
             default: {
                 toastr['error'](message, title);
+                this.hasErrors = true;
                 break;
             }
         }
