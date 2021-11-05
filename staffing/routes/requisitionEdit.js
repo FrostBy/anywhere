@@ -53,7 +53,9 @@ class RequisitionEditRoute {
         $('body').addClass(this.constructor.bodyClass);
         services.Dom.Shared.initFixedHeader();
 
-        const steps = ['jobFunction', 'level', 'title', 'candidate', 'recruiter', 'primarySkill', 'unit'];
+        const stepData = this.constructor.stepsData;
+        const mandatorySteps = ['title', 'primarySkill', 'unit'];
+        const steps = ['jobFunction', 'level', 'title', 'candidate', 'recruiter', 'primarySkill', 'unit'].filter(step => stepData[step] || mandatorySteps.includes(step));
 
         const fields = {
             jobFunction: $('[formcontrolname="jobFunction"] .form-entry:eq(0)'),

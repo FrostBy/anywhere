@@ -35,6 +35,7 @@
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/services/filter/filter.requisitions.js
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/services/filter/filter.startup.js
 
+// @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/services/api.js
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/services/config.js
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/services/engagementDetails.js
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/services/proposal.js
@@ -44,6 +45,7 @@
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/services/staffingReport.js
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/services/version.js
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/services/wizard.js
+// @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/services/validator.js
 
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/routes/containers.js
 // @require      https://git.epam.com/vladislav_romanovsky/anywhere/-/raw/master/staffing/routes/requisitions.js
@@ -65,6 +67,7 @@
 
 (() => {
     window.services = {
+        API,
         Config,
         Dom: { Shared: DomShared, Containers: DomContainers, Startup: DomStartup, Profile: DomProfile },
         Filter: { Shared: FilterShared, Startup: FilterStartup, Containers: FilterContainers, Requisitions: FilterRequisitions },
@@ -75,6 +78,7 @@
         EngagementDetails,
         Requisition,
         Wizard,
+        Validator,
         Configurator: { Shared: ConfiguratorShared, Startup: ConfiguratorStartup, Requisitions: ConfiguratorRequisitions }
     };
     window.GM_setValue = GM_setValue;

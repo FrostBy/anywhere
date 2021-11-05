@@ -25,27 +25,12 @@ class StaffingReport {
         `;
     }
 
-    static get locationsUrl() {
-        return 'https://staffing.epam.com/api/b1/locationService?size=1000&q=id=in=([IDS])';
-    }
-
-    static get interviewsUrl() {
-        return 'https://staffing.epam.com/api/v1/applicants/[ID]/interview-and-request?size=200';
-    }
-
-    _retrieveISOCode(location) {
-        if (location.isoCode || !location.parent) return {
-            isoCode: location.isoCode || location.name,
-            name: location.name
-        };
-        else return this._retrieveISOCode(location.parent);
-    }
-
     constructor() {
         this.config = {};
         this.applicants = [];
         this.locations = {};
         this.interviews = {};
+        this.api = new services.API();
     }
 
     init() {
@@ -58,8 +43,7 @@ class StaffingReport {
         $(window).off('scroll.staffingReport');
         $('.staffing-report-toggler').remove();
         $('.staffing-report').remove();
-        if (this.getLocationsRequest) this.getLocationsRequest.abort();
-        if (this.getInterviewsRequests) this.getInterviewsRequests.map(request => request.abort());
+        this.api.terminate();
     }
 
     initEvents() {
@@ -95,47 +79,11 @@ class StaffingReport {
         if (value) $('.staffing-report textarea').val(value).change();
     }
 
-    async getLocations(ids = []) {
-        const locations = {};
 
-        if (this.getLocationsRequest) this.getLocationsRequest.abort();
-
-        this.getLocationsRequest = $.get(StaffingReport.locationsUrl.replace('[IDS]', ids.join(',')));
-
-        const data = await this.getLocationsRequest.promise();
-        if (!data) return locations;
-
-        data.content.forEach(location => {
-            locations[location.id] = this._retrieveISOCode(location);
-        });
-
-        return locations;
-    }
-
-    async getInterviews(ids) {
-        const interviews = {};
-
-        if (this.getInterviewsRequests) this.getInterviewsRequests.map(request => request.abort());
-
-        this.getInterviewsRequests = ids.map(id => $.get(StaffingReport.interviewsUrl.replace('[ID]', id)));
-
-        const data = await Promise.all(this.getInterviewsRequests.map(request => request.promise()));
-        if (!data) return interviews;
-
-
-        data.forEach(allInterviews => {
-            if (!allInterviews) return;
-            const id = allInterviews[0].candidate.employeeId || allInterviews[0].candidate.applicantId;
-            interviews[id] = allInterviews;
-        });
-
-        return interviews;
-    }
-
-    async get(reportRows, locationIds= [], applicantIds = []) {
+    async get(reportRows, locationIds = [], applicantIds = []) {
         if (!this.applicants.length && locationIds.length && applicantIds.length) {
-            this.locations = await this.getLocations(locationIds);
-            this.interviews = await this.getInterviews(applicantIds);
+            this.locations = await this.api.getLocations(locationIds);
+            this.interviews = await this.api.getInterviews(applicantIds);
             this.applicants = reportRows.map(row => {
                 const location = this.locations[row.locationId];
 

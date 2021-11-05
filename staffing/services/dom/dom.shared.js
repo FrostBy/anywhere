@@ -162,5 +162,6 @@ class DomShared {
             else if (offset < 60) $('.page-line-second.fixed').css('top', `${offset}px`);
             else $('.page-line-second.fixed').css('top', '60px');
         });
+        $(window).trigger('scroll.header');
     }
 }

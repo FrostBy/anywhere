@@ -11,7 +11,6 @@ class Wizard {
     static key(key) { return this.prefix + '.' + key; }
 
     init() {
-        const that = this;
         // language=HTML
         $('body').append(`
             <div class="wizard">
@@ -24,7 +23,7 @@ class Wizard {
 
         $('.fill-form').on('click', e => {
             e.preventDefault();
-            that.processField(this.nextStep);
+            this.processField(this.nextStep);
             this.nextStep++;
         }).one('click', () => $('.retry').show());
 
