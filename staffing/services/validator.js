@@ -10,18 +10,25 @@ class Validator {
         };
     }
 
-    static get options() {
+    get statuses() {
+        return Validator.statuses;
+    }
+
+    static get optionsToastr() {
         return {
             positionClass: 'toast-bottom-right',
             timeOut: 0,
             //hideEasing: 'linear',
             hideEasing: 'swing',
+            allowHtml: true,
+            closeOnHover: false,
         };
     }
 
-    constructor(page, validators = {}) {
+    constructor(page, validators = {}, options = {}) {
         this.page = page;
         this.validators = validators;
+        this.options = options;
         this.api = new services.API();
     }
 
@@ -66,16 +73,21 @@ class Validator {
         $('.validator').addClass('fixed');
 
         $(window).off('scroll.validator').on('scroll.validator', () => {
-            const offset = 181 - $(window).scrollTop();
-            if (offset <= 0) $('.validator.fixed').css('top', '0');
-            else if (offset < 181) $('.validator.fixed').css('top', `${offset}px`);
-            else $('.validator.fixed').css('top', '181px');
+            const defaultOffset = this.options.offset || 181;
+            const top = this.options.top || 0;
+
+            const offset = defaultOffset - $(window).scrollTop();
+
+            if (offset <= top) $('.validator.fixed').css('top', top);
+            else if (offset < defaultOffset) $('.validator.fixed').css('top', `${offset}px`);
+            else $('.validator.fixed').css('top', `${defaultOffset}px`);
         });
         $(window).trigger('scroll.validator');
     }
 
     async validate() {
         $('.validate').toggleClass('in-progress');
+        toastr.remove();
         await Promise.all(Object.values(this.validators).map(async validator => {
             const result = await validator.function(this);
             if (validator.showMessage !== false && (!result || typeof result === 'object')) this.message(result?.status, validator?.error.message);
@@ -85,7 +97,7 @@ class Validator {
     }
 
     message(status = Validator.statuses.ERROR, message = 'Error', title = 'Validation', options = {}) {
-        toastr.options = Object.assign(Validator.options, options);
+        toastr.options = Object.assign(Validator.optionsToastr, options);
 
         switch (status) {
             case Validator.statuses.SUCCESS: {

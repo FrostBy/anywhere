@@ -21,6 +21,18 @@ class ProfileRoute {
     }
 
     get validators() {
+        const hiringPrograms = [
+            'Remote Individual Contractor',
+            'Fixed Anywhere',
+            'Flex',
+            'Flex (off-hour)',
+            'Ultra Flex',
+        ];
+        const placesOfWork = [
+            'Remote is preferable',
+            'Remote only',
+        ];
+
         return {
             /*skills: async () => {
                 const interviews = await this.api.getInterviews([ProfileRoute.id]);
@@ -39,15 +51,15 @@ class ProfileRoute {
                 }
             },*/
             interviews: {
-                function: async (api) => {
+                function: async (validator) => {
                     const interviews = await this.api.getInterviews([ProfileRoute.id]);
                     const technical = interviews[ProfileRoute.id]?.find(interview => interview.name === 'Technical' && interview.status === 'Completed' && moment().diff(interview.interviewDate, 'month') < 6);
                     const general = interviews[ProfileRoute.id]?.find(interview => interview.name === 'General' && interview.status === 'Completed' && moment().diff(interview.interviewDate, 'month') < 6);
                     return { technical: !!technical, general: !!general };
                 },
-                callback: (result, api) => {
-                    if (!result.technical) api.message(api.statuses.ERROR, 'No Up-to-Date Technical Interview');
-                    if (!result.general) api.message(api.statuses.ERROR, 'No Up-to-Date General Interview');
+                callback: (result, validator) => {
+                    if (!result.technical) validator.message(validator.statuses.ERROR, 'No Up-to-Date Technical Interview');
+                    if (!result.general) validator.message(validator.statuses.ERROR, 'No Up-to-Date General Interview');
                 },
                 showMessage: false,
             },
@@ -60,7 +72,7 @@ class ProfileRoute {
             },
             salary: {
                 function: () => {
-                    const containers = $('.profile-content').find('td:contains("Expected Salary (Gross)")').next('td').filter((i, e) => e.innerText.trim());
+                    const containers = $('.profile-content, .entity-records-columns').find('div:contains("Expected Salary (Gross)"), td:contains("Expected Salary (Gross)")').next().filter((i, e) => e.innerText.trim());
                     return containers.length;
                 },
                 error: { message: 'Empty Salary Expectations' }
@@ -86,6 +98,20 @@ class ProfileRoute {
                     return containers.length;
                 },
                 error: { message: 'Empty Job Function (after interview)' }
+            },
+            hiringProgram: {
+                function: () => {
+                    const container = $('.profile-content').find('td:contains("Hiring Program")').next('td').get(0);
+                    return container ? hiringPrograms.includes(container.innerText.trim()) : true;
+                },
+                error: { message: `Invalid Hiring Program, allowed values: <br> <ul><li>${hiringPrograms.join('</li><li>')}</li></ul>` }
+            },
+            placeOfWork: {
+                function: () => {
+                    const container = $('.profile-content').find('td:contains("Preferred Place Of Work")').next('td').get(0);
+                    return container ? placesOfWork.includes(container.innerText.trim()) : true;
+                },
+                error: { message: `Invalid Preferred Place Of Work, allowed values: <br> <ul><li>${placesOfWork.join('</li><li>')}</li></ul>` }
             }
         };
     }
@@ -124,7 +150,7 @@ class ProfileRoute {
             services.Dom.Profile.initCopyButtons();
             services.Dom.Profile.initRequisitionButton();
             services.Salary.init();
-            if(!this.firstLoad){
+            if (!this.firstLoad) {
                 this.firstLoad = true;
                 this.validator.init();
             }
