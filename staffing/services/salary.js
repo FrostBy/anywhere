@@ -237,7 +237,7 @@ class Salary {
                         </div>
                     </div>
                     <div class="form-entry button-wrapper">
-                        <button class="btn profile-action" type="button">🖩</button>
+                        <button class="btn profile-action">🖩</button>
                         <button class="check ellipsis append ${services.Config.get(this.key('append'), true) ? 'selected' : ''}"
                                 type="button">
                             Append
