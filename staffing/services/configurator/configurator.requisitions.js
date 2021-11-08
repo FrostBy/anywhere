@@ -7,7 +7,7 @@ class ConfiguratorRequisitions extends ConfiguratorShared {
     }
 
     static refreshForm(filter) {
-        const containerLocation = $('.content-table td:contains("Location")').next('td').get(0)?.innerText;
+        const containerLocation = $('.content-table td:textEquals("Location")').next('td').get(0)?.innerText;
         if (!containerLocation) return;
 
         const recruiters = {};

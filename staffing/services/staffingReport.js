@@ -4,7 +4,7 @@ class StaffingReport {
         return `
             <div class="staffing-report sidebar-container">
                 <div class='body sidebar'>
-                    <button class="close"><span class="fa fa-close"></span></button>
+                    <button class="close" type="button"><span class="fa fa-close"></span></button>
                     <form class="boards applicant-summary__info-container">
                         <div class="preview applicant-summary__info-container-block">
                             <div><span style="background-color:#9ed267;">Для информации:</span></div>
@@ -16,7 +16,7 @@ class StaffingReport {
                             <textarea></textarea>
                         </div>
                         <div class="applicant-summary__last-updated-info button">
-                            <button class="btn">Refresh</button>
+                            <button class="btn refresh" type="button">Refresh</button>
                         </div>
                         <span class="copy" title="Copy to Clipboard">⎘</span>
                     </form>
@@ -56,12 +56,11 @@ class StaffingReport {
             data.forEach(row => div.append(`<p>${row}</p>`));
         });
 
-        $('.staffing-report button').on('click', (e) => {
-            e.preventDefault();
+        $('.staffing-report .refresh').on('click', () => {
             this.fill(this.config.applicants);
         });
 
-        $('.staffing-report .copy').on('click', (e) => {
+        $('.staffing-report .copy').on('click', () => {
             window.getSelection().selectAllChildren($('.staffing-report .preview').get(0));
             document.execCommand('copy');
         });

@@ -42,7 +42,7 @@ span.prefill {
     outline: none;
 }
 
-.form-wrapper button {
+.form-wrapper .btn {
     font-size: 200%;
     line-height: 10px;
     padding: 0 4px 10px;
@@ -62,6 +62,11 @@ span.prefill {
 
 .offer-tool .button-wrapper {
     justify-content: center;
+}
+
+.offer-tool .append {
+    height: auto;
+    margin-left: 15px;
 }
 
 .applicant-profile__additional-info-details, .content-table tr td:last-child {

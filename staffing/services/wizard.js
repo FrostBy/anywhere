@@ -15,20 +15,18 @@ class Wizard {
         $('body').append(`
             <div class="wizard">
                 <div class="buttons">
-                    <button class="action-button fill-form">Fill the Form (Step By Step)</button>
-                    <button class="action-button retry" title="Retry">⟳</button>
+                    <button class="action-button fill-form" type="button">Fill the Form (Step By Step)</button>
+                    <button class="action-button retry" title="Retry" type="button">⟳</button>
                 </div>
             </div>
         `);
 
-        $('.fill-form').on('click', e => {
-            e.preventDefault();
+        $('.fill-form').on('click', () => {
             this.processField(this.nextStep);
             this.nextStep++;
         }).one('click', () => $('.retry').show());
 
-        $('.retry').hide().on('click', e => {
-            e.preventDefault();
+        $('.retry').hide().on('click', () => {
             this.processField(this.nextStep - 1);
         });
     }
@@ -73,7 +71,7 @@ class Wizard {
                                 }, 750)
                             });
                             form.find('#search').val(value).triggerRawEvent('input');
-                        }, 100);
+                        }, 250);
                     }
                 });
                 setTimeout(() => {

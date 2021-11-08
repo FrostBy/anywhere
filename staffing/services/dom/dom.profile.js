@@ -13,15 +13,15 @@ class DomProfile extends DomShared {
 
         $('.requisitions').on('click', async (e) => {
             DomProfile.toggleSpinner(true);
-            const locations = $('.profile-content td:contains("Location")').next('td').get(0)?.innerText.split(', ');
+            const locations = $('.profile-content td:textEquals("Location")').next('td').get(0)?.innerText.split(', ');
             const data = await services.Requisition.getRequisitions(locations);
             if (data.container) {
-                const [jobFunction, level] = $('.profile-content td:contains("Job Function (after interview)")').next('td').get(0).textContent.trim().split(' Level ');
+                const [jobFunction, level] = $('.profile-content td:textEquals("Job Function (after interview)")').next('td').get(0).textContent.trim().split(' Level ');
 
                 const params = {
-                    primarySkill: $('.profile-content td:contains("Primary Skill")').next('td').find('sd-value-with-separator .name').get(0).textContent.trim(),
+                    primarySkill: $('.profile-content td:textEquals("Primary Skill")').next('td').find('sd-value-with-separator .name').get(0).textContent.trim(),
                     unit: $('sd-svg-icon[title="Ultra Flex"]').length ? 'Maksym Zaletskyi / UltraFlex' : undefined,
-                    recruiter: $('.profile-content td:contains("Applicant Owner")').next('td').find('a').get(0).textContent.trim(),
+                    recruiter: $('.profile-content td:textEquals("Applicant Owner")').next('td').find('a').get(0).textContent.trim(),
                     candidate: $('.entity-name span:last').get(0).textContent.trim(),
                     jobFunction,
                     level
@@ -63,8 +63,8 @@ class DomProfile extends DomShared {
         $('.entity-name span').addClass('copy-text');
         $('.entity-name').prepend(button);
 
-        $('.profile-content td:contains("Applicant Owner")').next('td').find('a').addClass('copy-text');
-        $('.profile-content td:contains("Applicant Owner")').next('td').prepend(button);
+        $('.profile-content td:textEquals("Applicant Owner")').next('td').find('a').addClass('copy-text');
+        $('.profile-content td:textEquals("Applicant Owner")').next('td').prepend(button);
 
         $('.copy').on('click', (e) => {
             const text = $.trim($(e.target).parent().find('.copy-text').get(0).textContent);

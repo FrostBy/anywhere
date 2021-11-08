@@ -1,4 +1,8 @@
 class Salary {
+    static get prefix() { return 'salary'; }
+
+    static key(key) { return this.prefix + '.' + key; }
+
     static async request(from = 'RUB', to = 'USD', auth = {}, source) {
         const sources = {
             exchangerate: async (from, to) => {
@@ -32,7 +36,7 @@ class Salary {
     }
 
     static init() {
-        const containers = $('.profile-content').find('td:contains("Current Salary (Gross)"), td:contains("Expected Salary (Gross)")').next('td').filter((i, e) => e.innerText.trim());
+        const containers = $('.profile-content').find('td:textEquals("Current Salary (Gross)"), td:textEquals("Expected Salary (Gross)")').next('td').filter((i, e) => e.innerText.trim());
 
         if (!containers.length) return;
 
@@ -97,7 +101,7 @@ class Salary {
 
     static initCalculator() {
         const container = $('.salary-expectations .title:contains("Comment")').eq(0);
-        if (!container.length || $('.calculate').length) return;
+        if (!container.length || container.find('> .calculate').length) return;
 
         container.append('<span class="calculate" title="Calculate Offer">🖩</span>');
         const from = $('sd-static-select[formcontrolname="expectedCurrency"] .selected-option .ellipsis').get(0)?.innerText || 'USD';
@@ -233,7 +237,11 @@ class Salary {
                         </div>
                     </div>
                     <div class="form-entry button-wrapper">
-                        <button class="btn profile-action">🖩</button>
+                        <button class="btn profile-action" type="button">🖩</button>
+                        <button class="check ellipsis append ${services.Config.get(this.key('append'), true) ? 'selected' : ''}"
+                                type="button">
+                            Append
+                        </button>
                     </div>
                 </form>
                 <div class="result">Offer:</div>
@@ -250,6 +258,12 @@ class Salary {
             $(this).serializeArray().forEach(obj => { data[obj.name] = !isNaN(+obj.value) ? +obj.value : obj.value; });
             Salary.calculateOffer(data);
             return false;
+        });
+
+        $('.offer-tool .append').on('click', e => {
+            const append = !services.Config.get(this.key('append'), true);
+            $(e.target).toggleClass('selected', append);
+            services.Config.set(this.key('append'), append);
         });
     }
 
@@ -297,14 +311,15 @@ class Salary {
 
         $('.offer-tool .result').text(`Offer: ${result}`);
 
-        /*
-        const container = $('.salary-expectations .title:contains("Comment")').eq(0);
-        const textarea = container.next().find('textarea.visible-text-area');
-        textarea.val(function (i, text) {
-            let string = text.trim() ? '\n' : '';
-            string += 'Offer:';
-            return text + string;
-        });
-        textarea.trigger('input');*/
+        if (services.Config.get(this.key('append'))) {
+            const container = $('.salary-expectations .title:contains("Comment")').eq(0);
+            const textarea = container.next().find('textarea.visible-text-area');
+            textarea.val(function (i, text) {
+                let string = text.trim() ? '\n' : '';
+                const offersCount = (text.match(/Offer/g) || []).length;
+                string += `Offer ${offersCount ? offersCount + 1 : ''}: ${result}`;
+                return text + string;
+            }).triggerRawEvent('input');
+        }
     }
 }

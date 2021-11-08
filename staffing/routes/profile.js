@@ -43,7 +43,7 @@ class ProfileRoute {
                     const primarySkill = feedback.primarySkill.name;
                     const primarySkillLevel = feedback.primarySkill.skillLevel;
 
-                    const primarySkillContainer = $('.content-table td:contains("Primary Skill")').next('td');
+                    const primarySkillContainer = $('.content-table td:textEquals("Primary Skill")').next('td');
                     const skillName = primarySkillContainer.find('.name').get(0)?.innerText;
                     const skillLevel = primarySkillContainer.find('.skill-level').get(0)?.innerText;
 
@@ -72,21 +72,21 @@ class ProfileRoute {
             },
             salary: {
                 function: () => {
-                    const containers = $('.profile-content, .entity-records-columns').find('div:contains("Expected Salary (Gross)"), td:contains("Expected Salary (Gross)")').next().filter((i, e) => e.innerText.trim());
+                    const containers = $('.profile-content, .entity-records-columns').find('div:textEquals("Expected Salary (Gross)"), td:textEquals("Expected Salary (Gross)")').next().filter((i, e) => e.innerText.trim());
                     return containers.length;
                 },
                 error: { message: 'Empty Salary Expectations' }
             },
             applicantOwner: {
                 function: () => {
-                    const containers = $('.profile-content').find('td:contains("Applicant Owner")').next('td').filter((i, e) => e.innerText.trim());
+                    const containers = $('.profile-content').find('td:textEquals("Applicant Owner")').next('td').filter((i, e) => e.innerText.trim());
                     return containers.length;
                 },
                 error: { message: 'Empty Applicant Owner' }
             },
             location: {
                 function: () => {
-                    const locations = $('.profile-content td:contains("Location")').next('td').get(0)?.innerText.split(', ');
+                    const locations = $('.profile-content td:textEquals("Location")').next('td').get(0)?.innerText.split(', ');
 
                     return locations && locations.length > 1;
                 },
@@ -94,21 +94,21 @@ class ProfileRoute {
             },
             jobFunction: {
                 function: () => {
-                    const containers = $('.profile-content').find('td:contains("Job Function (after interview)")').next('td').filter((i, e) => e.innerText.trim());
+                    const containers = $('.profile-content').find('td:textEquals("Job Function (after interview)")').next('td').filter((i, e) => e.innerText.trim());
                     return containers.length;
                 },
                 error: { message: 'Empty Job Function (after interview)' }
             },
             hiringProgram: {
                 function: () => {
-                    const container = $('.profile-content').find('td:contains("Hiring Program")').next('td').get(0);
+                    const container = $('.profile-content').find('td:textEquals("Hiring Program")').next('td').get(0);
                     return container ? hiringPrograms.includes(container.innerText.trim()) : true;
                 },
                 error: { message: `Invalid Hiring Program, allowed values: <br> <ul><li>${hiringPrograms.join('</li><li>')}</li></ul>` }
             },
             placeOfWork: {
                 function: () => {
-                    const container = $('.profile-content').find('td:contains("Preferred Place Of Work")').next('td').get(0);
+                    const container = $('.profile-content').find('td:textEquals("Preferred Place Of Work")').next('td').get(0);
                     return container ? placesOfWork.includes(container.innerText.trim()) : true;
                 },
                 error: { message: `Invalid Preferred Place Of Work, allowed values: <br> <ul><li>${placesOfWork.join('</li><li>')}</li></ul>` }

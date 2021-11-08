@@ -58,6 +58,7 @@ class DomShared {
     }
 
     static initPlugins() {
+        $.expr[':'].textEquals = $.expr.createPseudo(arg => elem => $(elem).text() === arg);
         this.initRawTriggers();
     }
 
