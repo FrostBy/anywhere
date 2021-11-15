@@ -75,14 +75,15 @@ class ProfileEditRoute {
             hiringProgram: {
                 function: () => {
                     const hiringProgram = $('sd-static-select[formcontrolname="hiringProgram"] .selected-option').get(0)?.innerText.trim();
-                    return hiringPrograms.includes(hiringProgram);
+                    return hiringProgram && hiringPrograms.includes(hiringProgram);
                 },
                 error: { message: `Invalid Hiring Program, allowed values: <br> <ul><li>${hiringPrograms.join('</li><li>')}</li></ul>` }
             },
             placeOfWork: {
                 function: () => {
                     const button = $('sd-multi-check-square[formcontrolname="preferredPlaceOfWork"] button.selected').get(0);
-                    return button ? placesOfWork.includes(button.innerText) : true;
+                    const placeOfWork = button ? button.innerText.trim() : '';
+                    return placeOfWork ? placesOfWork.includes(placeOfWork) : false;
                 },
                 error: { message: `Invalid Preferred Place Of Work, allowed values: <br> <ul><li>${placesOfWork.join('</li><li>')}</li></ul>` }
             }

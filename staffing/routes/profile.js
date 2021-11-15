@@ -108,15 +108,15 @@ class ProfileRoute {
             },
             hiringProgram: {
                 function: () => {
-                    const container = $('.profile-content').find('td:textEquals("Hiring Program")').next('td').get(0);
-                    return container ? hiringPrograms.includes(container.innerText.trim()) : true;
+                    const hiringProgram = $('.profile-content').find('td:textEquals("Hiring Program")').next('td').get(0)?.innerText.trim();
+                    return hiringProgram ? hiringPrograms.includes(hiringProgram) : false;
                 },
                 error: { message: `Invalid Hiring Program, allowed values: <br> <ul><li>${hiringPrograms.join('</li><li>')}</li></ul>` }
             },
             placeOfWork: {
                 function: () => {
-                    const container = $('.profile-content').find('td:textEquals("Preferred Place Of Work")').next('td').get(0);
-                    return container ? placesOfWork.includes(container.innerText.trim()) : true;
+                    const placeOfWork = $('.profile-content').find('td:textEquals("Preferred Place Of Work")').next('td').get(0)?.innerText.trim();
+                    return placeOfWork ? placesOfWork.includes(placeOfWork) : false;
                 },
                 error: { message: `Invalid Preferred Place Of Work, allowed values: <br> <ul><li>${placesOfWork.join('</li><li>')}</li></ul>` }
             }
