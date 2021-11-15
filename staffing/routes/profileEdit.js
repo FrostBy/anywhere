@@ -50,6 +50,18 @@ class ProfileEditRoute {
             },
             jobFunction: {
                 function: () => {
+                    const jobFunction = $('sd-job-function-field[formcontrolname="jobFunction"] .selected-option .ellipsis').get(0)?.innerText.trim();
+                    const level = $('sd-job-function-field[formcontrolname="jobFunction"] input[type="radio"]:checked').length;
+                    return { jobFunction, level };
+                },
+                callback: (result, validator) => {
+                    if (!result.jobFunction) validator.message(validator.statuses.ERROR, 'Empty Job Function');
+                    if (!result.level) validator.message(validator.statuses.ERROR, 'Empty Job Function Level');
+                },
+                showMessage: false,
+            },
+            jobFunctionAfterInterview: {
+                function: () => {
                     const jobFunction = $('sd-job-function-field[formcontrolname="jobFunctionAfterInterview"] .selected-option .ellipsis').get(0)?.innerText.trim();
                     const level = $('sd-job-function-field[formcontrolname="jobFunctionAfterInterview"] input[type="radio"]:checked').length;
                     return { jobFunction, level };

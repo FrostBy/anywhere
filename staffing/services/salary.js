@@ -238,10 +238,7 @@ class Salary {
                     </div>
                     <div class="form-entry button-wrapper">
                         <button class="btn profile-action">🖩</button>
-                        <button class="check ellipsis append ${services.Config.get(this.key('append'), true) ? 'selected' : ''}"
-                                type="button">
-                            Append
-                        </button>
+                        <button class="check ellipsis append" type="button">Append</button>
                     </div>
                 </form>
                 <div class="result">Offer:</div>
@@ -252,18 +249,16 @@ class Salary {
 
         $('.prefill').on('click', () => $('.offer-tool').toggle());
 
-        $('.offer-tool form').on('submit', function (e) {
+        $('.offer-tool form').on('submit', function (e, append = false) {
             e.preventDefault();
             const data = {};
             $(this).serializeArray().forEach(obj => { data[obj.name] = !isNaN(+obj.value) ? +obj.value : obj.value; });
-            Salary.calculateOffer(data);
+            Salary.calculateOffer(data, append);
             return false;
         });
 
         $('.offer-tool .append').on('click', e => {
-            const append = !services.Config.get(this.key('append'), true);
-            $(e.target).toggleClass('selected', append);
-            services.Config.set(this.key('append'), append);
+            $('.offer-tool form').trigger('submit', [true]);
         });
     }
 
@@ -303,7 +298,7 @@ class Salary {
         return result;
     }
 
-    static async calculateOffer(data = {}) {
+    static async calculateOffer(data = {}, append = false) {
         let result = 'SE are out of range';
         const offer = this.getCalcFunction(data.currency)(data);
 
@@ -311,7 +306,7 @@ class Salary {
 
         $('.offer-tool .result').text(`Offer: ${result}`);
 
-        if (services.Config.get(this.key('append'))) {
+        if (append) {
             const container = $('.salary-expectations .title:contains("Comment")').eq(0);
             const textarea = container.next().find('textarea.visible-text-area');
             textarea.val(function (i, text) {

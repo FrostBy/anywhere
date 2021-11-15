@@ -94,6 +94,13 @@ class ProfileRoute {
             },
             jobFunction: {
                 function: () => {
+                    const containers = $('.profile-content').find('td:textEquals("Job Function")').next('td').filter((i, e) => e.innerText.trim());
+                    return containers.length;
+                },
+                error: { message: 'Empty Job Function' }
+            },
+            jobFunctionAfterInterview: {
+                function: () => {
                     const containers = $('.profile-content').find('td:textEquals("Job Function (after interview)")').next('td').filter((i, e) => e.innerText.trim());
                     return containers.length;
                 },
