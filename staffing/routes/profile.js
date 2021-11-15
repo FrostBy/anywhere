@@ -108,7 +108,9 @@ class ProfileRoute {
             },
             hiringProgram: {
                 function: () => {
-                    const hiringProgram = $('.profile-content').find('td:textEquals("Hiring Program")').next('td').get(0)?.innerText.trim();
+                    const container = $('.profile-content').find('td:textEquals("Hiring Program")').next('td').get(0);
+                    if (!container) return true;
+                    const hiringProgram = container ? container.innerText.trim() : '';
                     return hiringProgram ? hiringPrograms.includes(hiringProgram) : false;
                 },
                 error: { message: `Invalid Hiring Program, allowed values: <br> <ul><li>${hiringPrograms.join('</li><li>')}</li></ul>` }
