@@ -410,3 +410,9 @@ button.check.selected {
 button.check.selected:hover {
     background-color: #1a9cb0
 }
+
+a.common-button {
+    text-align: center;
+    padding-top: 4px;
+    text-decoration: none;
+}

@@ -158,6 +158,7 @@ class ProfileRoute {
         this.timeout = setTimeout(() => {
             services.Dom.Profile.initCopyButtons();
             services.Dom.Profile.initRequisitionButton();
+            services.Dom.Profile.addInterviewerReportButtons();
             services.Salary.init();
             if (!this.firstLoad) {
                 this.firstLoad = true;

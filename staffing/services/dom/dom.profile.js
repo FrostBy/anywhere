@@ -178,4 +178,15 @@ class DomProfile extends DomShared {
             </span>
         `;
     }
+
+    static addInterviewerReportButtons() {
+        const url = `https://app.powerbi.com/groups/me/reports/5e1e312e-39f1-49ef-804c-b7d99239b5a9/ReportSection20088fd69ea6b8ab4cc1?filter=Interviewer/EmployeeIdOrign eq '[ID]'`;
+        const interviewers = $('.interview-wrapper .interview__interviewer-link');
+        interviewers.each(function () {
+            if ($(this).next('.report').length) return;
+
+            const id = $(this).find('.employee-link').attr('href').match(/(\d+)/)[0];
+            $(this).after(`<a class="common-button report" href="${url.replace('[ID]', id)}" target="_blank">Open Report</a>`);
+        });
+    }
 }
