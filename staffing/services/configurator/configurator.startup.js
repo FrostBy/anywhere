@@ -29,6 +29,7 @@ class ConfiguratorStartup extends ConfiguratorShared {
     }
 
     static init() {
+        const refreshPageDefault = services.Config.get(this.key('refreshPage'), true);
         let boards = services.Config.get(this.key('boards'));
         if (typeof boards !== 'object' || !Object.keys(boards).length) boards = services.Config.set(this.key('boards'), this.boards);
 
@@ -41,12 +42,21 @@ class ConfiguratorStartup extends ConfiguratorShared {
             return $(`<div class="input-wrapper"><input type="checkbox" value="${id}" id="board_${id}" ${activeBoardsIds.includes(id) ? 'checked="true"' : null}"><label for="board_${id}">${allBoards[id]}</label></div>`);
         });
 
+        // language=HTML
+        const refreshPage = `
+            <div class="input-wrapper">
+                <input type="checkbox" value="0" id="refresh_page" class="refresh-page"
+                       ${refreshPageDefault ? 'checked="true"' : null}">
+                <label for="refresh_page">Refresh page each 30 minutes</label>
+            </div>
+        `;
         const configurator = $(services.Configurator.Shared.dom);
 
         const [fields1, fields2] = this.splitArr(boardsFields);
         configurator.find('form').empty()
             .append($('<div class="applicant-summary__info-container-block"></div>').append(fields1))
-            .append($('<div class="applicant-summary__info-container-block"></div>').append(fields2));
+            .append($('<div class="applicant-summary__info-container-block"></div>').append(fields2))
+            .append($('<div class="applicant-summary__last-updated-info"></div>').append(refreshPage));
 
         configurator.find('form input').on('change', function () {
             if ($(this).prop('checked')) boards[$(this).val()] = allBoards[$(this).val()];
@@ -55,13 +65,20 @@ class ConfiguratorStartup extends ConfiguratorShared {
         });
 
         $('body').append(configurator);
-        services.Dom.Shared.appendButtons($(this.button), 0)
+        services.Dom.Shared.appendButtons($(this.button), 0);
 
-        services.Configurator.Shared.initEvents();
+        this.initEvents();
     }
 
     static processBoard() {
         let ids = Object.keys(services.Config.get(this.key('boards'))).concat(Object.keys(services.Config.get('boardsCustom', {})));
         if (ids.some(board => window.location.href.indexOf(board))) return true;
+    }
+
+    static initEvents() {
+        super.initEvents();
+        $('.refresh-page').on('change', function () {
+            services.Config.set(ConfiguratorStartup.key('refreshPage'), $(this).prop('checked'));
+        });
     }
 }

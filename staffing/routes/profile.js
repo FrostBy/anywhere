@@ -32,24 +32,32 @@ class ProfileRoute {
             'Remote is preferable',
             'Remote only',
         ];
+        const defaultSKills = [
+            'JavaScript',
+        ];
 
         return {
-            /*skills: async () => {
-                const interviews = await this.api.getInterviews([ProfileRoute.id]);
-                const interview = interviews[ProfileRoute.id]?.find(interview => interview.name === 'Technical' && interview.status === 'Completed');
+            skills: {
+                function: async () => {
+                    /*const interviews = await this.api.getInterviews([ProfileRoute.id]);
+                    const interview = interviews[ProfileRoute.id]?.find(interview => interview.name === 'Technical' && interview.status === 'Completed');
 
-                if (interview) {
-                    const feedback = interview.interviewFeedback[0];
-                    const primarySkill = feedback.primarySkill.name;
-                    const primarySkillLevel = feedback.primarySkill.skillLevel;
+                    if (interview) {
+                        const feedback = interview.interviewFeedback[0];
+                        const primarySkill = feedback.primarySkill.name;
+                        const primarySkillLevel = feedback.primarySkill.skillLevel;
 
-                    const primarySkillContainer = $('.content-table td:textEquals("Primary Skill")').next('td');
-                    const skillName = primarySkillContainer.find('.name').get(0)?.innerText;
-                    const skillLevel = primarySkillContainer.find('.skill-level').get(0)?.innerText;
+                        const primarySkillContainer = $('.content-table td:textEquals("Primary Skill")').next('td');
+                        const skillName = primarySkillContainer.find('.name').get(0)?.innerText;
+                        const skillLevel = primarySkillContainer.find('.skill-level').get(0)?.innerText;
 
-                    console.log(primarySkill, primarySkillLevel, skillName, skillLevel);
-                }
-            },*/
+                        console.log(primarySkill, primarySkillLevel, skillName, skillLevel);
+                    }*/
+                    const primarySkill = $('.profile-content').find('td:textEquals("Primary Skill")').next('td').find('.name').get(0)?.innerText.trim();
+                    return primarySkill ? !defaultSKills.includes(primarySkill) : false;
+                },
+                error: { message: `Invalid Primary Skill (default value used)` }
+            },
             interviews: {
                 function: async (validator) => {
                     const interviews = await this.api.getInterviews([ProfileRoute.id]);
@@ -66,7 +74,7 @@ class ProfileRoute {
             cv: {
                 function: () => {
                     const attachmentsContainer = $('.applicant-attachments');
-                    return attachmentsContainer.find('sd-attachment-item').length;
+                    return attachmentsContainer.find('sd-attachment-item .attachment-icon.cv').length;
                 },
                 error: { message: 'No CV' }
             },

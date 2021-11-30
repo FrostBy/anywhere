@@ -132,9 +132,10 @@ class StartupRoute {
         let idleTime = 0;
         //Increment the idle time counter every minute.
         this.interval = setInterval(() => {
+            const refresh = services.Config.get(services.Configurator.Startup.key('refreshPage'), true);
             idleTime++;
-            if (idleTime % 3 === 0) this.proposal.get(); //each 3 minutes
-            if (idleTime >= 30) window.location.reload(); //30 minutes
+            if (refresh && idleTime >= 30) window.location.reload(); //30 minutes
+            else if (idleTime % 3 === 0) this.proposal.get(); //each 3 minutes
         }, 60000); // 1 minute
         //Zero the idle timer on mouse movement.
         $(document).on('mousemove.idle keypress.idle', () => { idleTime = 0; });

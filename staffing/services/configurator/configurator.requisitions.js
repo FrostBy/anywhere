@@ -3,7 +3,7 @@ class ConfiguratorRequisitions extends ConfiguratorShared {
 
     static init() {
         $('body').append(this.dom);
-        services.Dom.Shared.appendButtons($(this.button), 0)
+        services.Dom.Shared.appendButtons($(this.button), 0);
     }
 
     static refreshForm(filter) {
@@ -101,9 +101,13 @@ class ConfiguratorRequisitions extends ConfiguratorShared {
                 filter.calculate();
             });
 
+        this.initEvents();
+    }
+
+    static initEvents() {
+        super.initEvents();
         $('.auto-paginate').on('change', function () {
             services.Config.set(ConfiguratorRequisitions.key('autoPaginate'), $(this).prop('checked'));
         });
-        this.initEvents();
     }
 }
