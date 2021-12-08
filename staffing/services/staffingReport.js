@@ -82,13 +82,13 @@ class StaffingReport {
     async get(reportRows, locationIds = [], applicantIds = []) {
         if (!this.applicants.length && locationIds.length && applicantIds.length) {
             this.locations = await this.api.getLocations(locationIds);
-            this.interviews = await this.api.getInterviews(applicantIds);
+            this.interviews = await this.api.getInterviews(applicantIds, ['Technical'], ['Completed']);
             this.applicants = reportRows.map(row => {
                 const location = this.locations[row.locationId];
 
                 if (location) row.location = `${location.name} (${location.isoCode})`;
 
-                const interview = this.interviews[row.id]?.find(interview => interview.name === 'Technical' && interview.status === 'Completed');
+                const interview = this.interviews[row.id] ? this.interviews[row.id][0] : undefined;
 
                 if (interview) {
                     const feedback = interview.interviewFeedback[0];

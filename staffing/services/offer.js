@@ -1,9 +1,4 @@
 class Offer {
-
-    static get offersUrl() {
-        return 'https://staffing.epam.com/api/v1/applicants/[ID]/offers';
-    }
-
     static get offerStatuses() {
         return {
             declined: [
@@ -16,44 +11,22 @@ class Offer {
         };
     }
 
-    /*static async _getOffers(limit = 10000, page = 0, offerStatuses = [], prevOffers = []) {
-        const statuses = offerStatuses.length ? offerStatuses : [...this.offerStatuses.declined, ...offerStatuses.accepted];
-        const offersData = await $.get(this.allOffersUrl, {
-            page,
-            size: 1000,
-            sort: [],
-            filterType: 'approved',
-            q: `offerStatus=in=("${statuses.join('","')}")`
-        }).promise();
-
-        const offers = offersData.content;
-        const allOffers = prevOffers.concat(offers);
-
-        if (offers.length >= 1000 && allOffers.length < limit) return this._getOffers(limit, page + 1, statuses, allOffers);
-
-        return allOffers;
-    }*/
-
-    constructor(params = {}) {}
+    constructor(params = {}) {
+        this.api = new services.API();
+    }
 
     terminate() {
-        if (this.getRequest) this.getRequest.map(request => request.abort());
+        this.api.terminate();
     }
 
     async getOffers(ids) {
-        if (this.getRequest) this.getRequest.map(request => request.abort());
-
-        this.getRequest = ids.map(id => $.get(Offer.offersUrl.replace('[ID]', id)));
-
-        const data = await Promise.all(this.getRequest.map(request => request.promise()));
-        if (!data) return {};
-
+        const allOffers = await this.api.getOffers(ids, [...Offer.offerStatuses.declined, ...Offer.offerStatuses.accepted]);
         const offers = {};
 
-        data.forEach(allOffers => {
-            if (!allOffers.content.length) return;
-            const id = allOffers.content[0].applicant.id;
-            offers[id] = allOffers;
+        allOffers.forEach(offer => {
+            const id = offer.applicant.id;
+            if (!offers[id]) offers[id] = [offer];
+            else offers[id].push(offer);
         });
 
         return offers;
@@ -67,11 +40,11 @@ class Offer {
         const applicantsOffers = await this.getOffers(Object.keys(proposals));
 
         Object.entries(applicantsOffers).map(([applicantId, offers]) => {
-            proposals[applicantId].offers = offers.content;
+            proposals[applicantId].offers = offers;
 
             offersObject[applicantId] = { declined: [], accepted: [] };
 
-            for (const offer of offers.content) {
+            for (const offer of offers) {
                 if (!offer.requisition || !offer.applicant) continue;
 
                 const offerData = {
@@ -84,7 +57,7 @@ class Offer {
                 if (Offer.offerStatuses.declined.includes(offer.offerStatus)) offersObject[applicantId].declined.push(offerData);
                 else if (Offer.offerStatuses.accepted.includes(offer.offerStatus)) {
                     applicantIds.add(applicantId);
-                    locationIds.add(offer.applicant.location.id);
+                    locationIds.add(offer.applicant.elmLocation.id);
 
                     const status = proposals[applicantId].status;
 
@@ -95,7 +68,7 @@ class Offer {
                             level: offer.requisition.jobFunction.name,
                             english: offer.applicant.englishLevel?.name,
                             location: offer.requisition.location.name,
-                            locationId: offer.applicant.location?.id,
+                            locationId: offer.applicant.elmLocation?.id,
                             skill: offer.applicant.primarySkill?.name,
                         });
                     }

@@ -34,6 +34,9 @@ class ProfileRoute {
         ];
         const defaultSKills = [
             'JavaScript',
+            'Front-End Development',
+            'DevOps',
+            'Other',
         ];
 
         return {
@@ -60,9 +63,9 @@ class ProfileRoute {
             },
             interviews: {
                 function: async (validator) => {
-                    const interviews = await this.api.getInterviews([ProfileRoute.id]);
-                    const technical = interviews[ProfileRoute.id]?.find(interview => interview.name === 'Technical' && interview.status === 'Completed' && moment().diff(interview.interviewDate, 'month') < 6);
-                    const general = interviews[ProfileRoute.id]?.find(interview => interview.name === 'General' && interview.status === 'Completed' && moment().diff(interview.interviewDate, 'month') < 6);
+                    const interviews = await this.api.getInterviews([ProfileRoute.id], ['Technical', 'General'], ['Completed']);
+                    const technical = interviews[ProfileRoute.id]?.find(interview => interview.name === 'Technical' && moment().diff(interview.interviewDate, 'month') < 6);
+                    const general = interviews[ProfileRoute.id]?.find(interview => interview.name === 'General' && moment().diff(interview.interviewDate, 'month') < 6);
                     return { technical: !!technical, general: !!general };
                 },
                 callback: (result, validator) => {
@@ -74,7 +77,7 @@ class ProfileRoute {
             cv: {
                 function: () => {
                     const attachmentsContainer = $('.applicant-attachments');
-                    return attachmentsContainer.find('sd-attachment-item .attachment-icon.cv').length;
+                    return attachmentsContainer.find('sd-attachment-item .attachment-icon.cv, sd-attachment-item .attachment-icon.cv-epam').length;
                 },
                 error: { message: 'No CV' }
             },

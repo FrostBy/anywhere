@@ -102,8 +102,8 @@ class DomProfile extends DomShared {
                     disconnect: true,
                     done: async (element, params) => {
                         const id = window.location.href.match(/(\d+)/)[0];
-                        const interviews = await report.getInterviews([id]);
-                        const interview = interviews[id]?.find(interview => interview.name === 'Offer' && interview.status === 'Completed');
+                        const interviews = await report.getInterviews([id], ['Offer'], ['Completed']);
+                        const interview = interviews[id]?.[0];
 
                         if (interview) {
                             const offer = interview.interviewFeedback[0];

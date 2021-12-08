@@ -169,6 +169,9 @@ class Salary {
             'COP': `
                 <option value="FIX" selected>FIX</option>
             `,
+            'EUR': `
+                <option value="FIX" selected>FIX</option>
+            `,
         };
 
         // language=HTML
