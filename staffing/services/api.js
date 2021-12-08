@@ -24,7 +24,7 @@ class API {
     }
 
     static get locationByStringUrl() {
-        return 'https://staffing.epam.com/api/v1/elm/locations/findByNameOrSynonymName?searchString=[string]';
+        return 'https://staffing.epam.com/api/v1/elm/locations/findByNameOrSynonymName?searchString=[STRING]';
     }
 
     static get locationByID() {
@@ -33,6 +33,14 @@ class API {
 
     static get interviewsUrl() {
         return 'https://staffing.epam.com/api/v1/interview';
+    }
+
+    static get containersURL() {
+        return 'https://staffing.epam.com/api/v1/hiring-container/dashboard';
+    }
+
+    static get requisitionsURL() {
+        return 'https://staffing.epam.com/api/v1/hiring-container/[ID]/requisitions';
     }
 
     constructor() {
@@ -44,13 +52,10 @@ class API {
     }
 
     async getInterviews(applicants, names, statuses, limit = applicants.length ? applicants.length * 10 : 1000, page = 0) {
-        const candidate = applicants.length ? `candidate.applicantId=in=(${applicants.join(',')})` : '';
-        const status = statuses.length ? `status=in=("${statuses.join('","')}")` : '';
-        const name = names.length ? `name=in=("${names.join('","')}")` : '';
         const query = {
             size: 1000,
             sort: [],
-            q: [status, candidate, name].filter(Boolean).join(';')
+            q: API._buildQ([[names, 'name'], [statuses, 'status'], [applicants, 'candidate.applicantId']])
         };
         const data = await API.getRSQLRequest(limit, API.interviewsUrl, query, page);
 
@@ -90,16 +95,62 @@ class API {
         return locations;
     }
 
+    async getLocationsByStrings(strings = []) {
+        if (this.requests.getLocationsRequests) this.requests.getLocationsRequests.map(request => request.abort());
+
+        const locations = {};
+
+        this.requests.getLocationsRequests = strings.map(string => $.get(API.locationByStringUrl.replace('[STRING]', string)));
+
+        const data = await Promise.all(this.requests.getLocationsRequests.map(request => request.promise()));
+        if (!data) return locations;
+
+        data.forEach(collection => {
+            collection.content.map(location => {
+                locations[location.id] = this._retrieveISOCode(location);
+            });
+        });
+
+        return locations;
+    }
+
     async getOffers(applicants = [], statuses = [], limit = 1000, page = 0) {
-        const offerStatus = statuses.length ? `offerStatus=in=("${statuses.join('","')}")` : '';
-        const applicant = applicants.length ? `applicant.id=in=(${applicants.join(',')})` : '';
         const query = {
             size: 1000,
             sort: [],
             filterType: 'approved',
-            q: [offerStatus, applicant].filter(Boolean).join(';')
+            q: API._buildQ([[statuses, 'offerStatus'], [applicants, 'applicant.id']])
+
         };
         return API.getRSQLRequest(limit, API.offersUrl, query, page);
+    }
+
+    async getContainers() {
+        const query = {
+            size: 100,
+            filterType: 'all',
+            sort: ['audit.created,desc'],
+            q: API._buildQ([[["4000741400010708873","4060741400035187120"], 'audit.creator.id'], [['Approved'], 'status']])
+        };
+        return API.getRSQLRequest(100, API.containersURL, query, 0);
+    }
+
+    async getRequisitions(container, disciplines, limit = 20, page = 0, statuses = ['Open: Under Review', 'On Hold', 'Draft', 'Submitted']) {
+        const query = {
+            size: limit,
+            sort: ['primarySkill.name', 'desc', 'ignore-case'],
+            q: API._buildQ([[statuses, 'status'], [disciplines, 'primarySkill.name']])
+        };
+        const filter = requisition => !requisition.applicantDashboardView && requisition.lastChangeDateForOnHold === requisition.lastStatusUpdateDate && !requisition.unit;
+        return API.getRSQLRequest(100, API.requisitionsURL.replace('[ID]', container.id), query, 0, filter);
+    }
+
+    static _buildQ(data = []) {
+        return data.map(row => {
+            if (!row[0].length) return false;
+            const isString = typeof row[0][0] === 'string';
+            return isString ? `${row[1]}=in=("${row[0].join('","')}")` : `${row[1]}=in=(${row[0].join(',')})`;
+        }).filter(Boolean).join(';');
     }
 
     static async getRSQLRequest(limit, url, query = {}, page = 0, filter, prevResults = []) {
