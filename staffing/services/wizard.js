@@ -81,7 +81,6 @@ class Wizard {
                         searchWatcher.disconnect();
                         form.find('.ng-input input').triggerRawMouse('mousedown');
                         const options = form.find('.ng-dropdown-panel .ng-option');
-                        options.filter((index, option) => console.log(123, option));
                         const option = options.filter((index, option) => option.innerText.trim() === value.trim())[0] || options.eq(0);
                         $(option).triggerRawMouse('click');
                         DomProfile.toggleSpinner(false);
@@ -98,7 +97,6 @@ class Wizard {
                     selector: '.ng-dropdown-panel', parent: form[0], recursive: true, disconnect: true,
                     done: () => {
                         const options = form.find('.ng-dropdown-panel .ng-option');
-                        options.filter((index, option) => console.log(123, option));
                         const option = options.filter((index, option) => option.innerText.trim() === value.trim())[0] || options.eq(0);
                         $(option).triggerRawMouse('click');
                         DomProfile.toggleSpinner(false);
