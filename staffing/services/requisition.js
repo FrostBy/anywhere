@@ -1,10 +1,10 @@
 class Requisition {
-    static async getRequisitions(locations = [], limit = 20) {
-        if (!locations.length) return {};
+    static async getRequisitions(applicantId, limit = 20) {
         const api = new services.API();
 
         const containersData = await api.getContainers();
-        let country = Object.values(await api.getLocationsByStrings([locations[0]]))?.[0].name;
+        let profile = await api.getApplicantProfile(applicantId);
+        let country = api.getCountryFromLocation(profile.elmLocation).name;
         if (country === 'Kyrgyzstan') country = 'Kazakhstan';
 
         const containers = containersData.filter(container => country === container.location.name);

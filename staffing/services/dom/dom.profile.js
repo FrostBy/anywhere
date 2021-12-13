@@ -1,4 +1,6 @@
 class DomProfile extends DomShared {
+    static get id() { return window.location.href.match(/(\d+)/)[0]; }
+
     static terminate() {
         super.terminate();
         $(document).off('click.action');
@@ -13,8 +15,7 @@ class DomProfile extends DomShared {
 
         $('.requisitions').on('click', async (e) => {
             DomProfile.toggleSpinner(true);
-            const locations = $('.profile-content td:textEquals("Location")').next('td').get(0)?.innerText.split(', ');
-            const data = await services.Requisition.getRequisitions(locations);
+            const data = await services.Requisition.getRequisitions(DomProfile.id);
             if (data.container) {
                 const [jobFunction, level] = $('.profile-content td:textEquals("Job Function (after interview)")').next('td').get(0).textContent.trim().split(' Level ');
 
@@ -185,7 +186,10 @@ class DomProfile extends DomShared {
         interviewers.each(function () {
             if ($(this).next('.report').length) return;
 
-            const id = $(this).find('.employee-link').attr('href').match(/(\d+)/)[0];
+            const href = $(this).find('.employee-link').attr('href');
+            if (!href) return;
+
+            const id = href.match(/(\d+)/)[0];
             $(this).after(`<a class="common-button report" href="${url.replace('[ID]', id)}" target="_blank">Open Report</a>`);
         });
     }

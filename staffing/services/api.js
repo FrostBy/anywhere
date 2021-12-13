@@ -19,6 +19,10 @@ class API {
         return value;
     }
 
+    static get getApplicantProfile() {
+        return 'https://staffing.epam.com/api/v1/applicants/extended/[ID]';
+    }
+
     static get offersUrl() {
         return 'https://staffing.epam.com/api/v1/offer';
     }
@@ -69,13 +73,13 @@ class API {
         return interviews;
     }
 
-    _retrieveISOCode(location) {
-        if (location.isoCode && location.type === 'Country' || !location.parent) return {
+    getCountryFromLocation(location) {
+        if (location.type === 'Country' || !location.parent) return {
             isoCode: location.isoCode || location.name,
             name: location.name,
             id: location.id
         };
-        else return this._retrieveISOCode(location.parent);
+        else return this.getCountryFromLocation(location.parent);
     }
 
     async getLocations(ids = []) {
@@ -89,7 +93,7 @@ class API {
         if (!data) return locations;
 
         data.forEach(location => {
-            locations[location.id] = this._retrieveISOCode(location);
+            locations[location.id] = this.getCountryFromLocation(location);
         });
 
         return locations;
@@ -107,11 +111,20 @@ class API {
 
         data.forEach(collection => {
             collection.content.map(location => {
-                locations[location.id] = this._retrieveISOCode(location);
+                locations[location.id] = this.getCountryFromLocation(location);
             });
         });
 
         return locations;
+    }
+
+    async getApplicantProfile(id) {
+        if (this.requests.getApplicantProfileRequests) this.requests.getApplicantProfileRequests.abort();
+        this.requests.getApplicantProfileRequests = $.get(API.getApplicantProfile.replace('[ID]', id));
+
+        const data = await this.requests.getApplicantProfileRequests.promise();
+
+        return data || undefined;
     }
 
     async getOffers(applicants = [], statuses = [], limit = 1000, page = 0) {
@@ -130,7 +143,7 @@ class API {
             size: 100,
             filterType: 'all',
             sort: ['audit.created,desc'],
-            q: API._buildQ([[["4000741400010708873","4060741400035187120"], 'audit.creator.id'], [['Approved'], 'status']])
+            q: API._buildQ([[['4000741400010708873', '4060741400035187120'], 'audit.creator.id'], [['Approved'], 'status']])
         };
         return API.getRSQLRequest(100, API.containersURL, query, 0);
     }

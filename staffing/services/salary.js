@@ -169,6 +169,9 @@ class Salary {
             'COP': `
                 <option value="FIX" selected>FIX</option>
             `,
+            'MXN': `
+                <option value="FIX" selected>FIX</option>
+            `,
             'EUR': `
                 <option value="FIX" selected>FIX</option>
             `,
@@ -181,7 +184,7 @@ class Salary {
                     <div class="form-entry">
                         <label class="form-entry-label" title="">Currency</label>
                         <div class="form-entry-field">
-                            <input name="currency" readonly value="${currency}" class="form-entry-input">
+                            <input name="currency" value="${currency}" class="form-entry-input">
                         </div>
                     </div>
                     <div class="form-entry">
