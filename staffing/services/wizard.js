@@ -42,70 +42,71 @@ class Wizard {
         $('.current').removeClass('current');
         const step = this.steps[stepNumber];
         const value = this.data[step];
-        this.constructor._processField(this.fields[step])(value);
+        Wizard._processField(this.fields[step], value);
     }
 
-    static _processField(form) {
+    static _processField(fieldGetter, value) {
         $('.current').removeClass('current');
-        if (typeof form === 'function') return form;
-        if (form.parents('sd-static-select').length) return this.getProcessors(form, 'select');
-        if (form.parents('sd-search-select').length) return this.getProcessors(form, 'search');
-        if (form.parents('sd-input-field').length) return this.getProcessors(form, 'input');
-        return () => {};
+        const field = fieldGetter(value);
+        if (!(field instanceof $)) return field; //is a function
+        if (field.parents('sd-static-select').length) return this.getProcessors(field, 'select')(value);
+        if (field.parents('sd-search-select').length) return this.getProcessors(field, 'search')(value);
+        if (field.parents('sd-input-field').length) return this.getProcessors(field, 'input')(value);
+        return false;
     }
 
-    static getProcessors(form, type) {
+    static getProcessors(field, type) {
         const processors = {
-            select: function (value = form.data('default-value')) {
+            select: function (value = field.data('default-value')) {
                 DomProfile.toggleSpinner(true);
-                form.addClass('current').scrollTo(200);
+                field.addClass('current').scrollTo(200);
                 const searchWatcher = services.Dom.Shared.waitForAddedNode({
-                    selector: '#search', parent: form[0], recursive: true, disconnect: true,
+                    selector: '#search', parent: field[0], recursive: true, disconnect: true,
                     done: () => {
                         setTimeout(() => {
                             services.Dom.Shared.waitForAddedNode({
-                                selector: '.ng-dropdown-panel em', parent: form[0], recursive: true, disconnect: true,
+                                selector: '.ng-dropdown-panel em', parent: field[0], recursive: true, disconnect: true,
                                 done: () => setTimeout(() => {
-                                    const options = form.find('.ng-dropdown-panel .ng-option');
-                                    const option = value && options.filter((index, option) => option.innerText.trim() === value.trim())[0] || options.eq(0);
+                                    const options = field.find('.ng-dropdown-panel .ng-option');
+                                    const option = value && options.filter((index, option) => option.innerText.trim() === value?.trim())?.[0] || options.eq(0);
                                     $(option).triggerRawMouse('click');
                                     DomProfile.toggleSpinner(false);
                                 }, 750)
                             });
-                            form.find('#search').val(value).triggerRawEvent('input');
+                            field.find('#search').val(value).triggerRawEvent('input');
                         }, 250);
                     }
                 });
                 setTimeout(() => {
-                    if (!form.find('#search').length) {
+                    if (!field.find('#search').length) {
                         searchWatcher.disconnect();
-                        form.find('.ng-input input').triggerRawMouse('mousedown');
-                        const options = form.find('.ng-dropdown-panel .ng-option');
-                        const option = value && options.filter((index, option) => option.innerText.trim() === value.trim())[0] || options.eq(0);
+                        field.find('.ng-input input').triggerRawMouse('mousedown');
+                        const options = field.find('.ng-dropdown-panel .ng-option');
+                        const option = value && options.filter((index, option) => option.innerText.trim() === value?.trim())?.[0] || options.eq(0);
                         $(option).triggerRawMouse('click');
                         DomProfile.toggleSpinner(false);
                     }
                 }, 250);
-                form.find('.ellipsis').scrollTo(200).triggerRawMouse('mousedown');
+                field.find('.ellipsis').scrollTo(200).triggerRawMouse('mousedown');
             },
-            search: function (value = form.data('default-value')) {
+            search: function (value = field.data('default-value')) {
                 DomProfile.toggleSpinner(true);
-                form.addClass('current').scrollTo(200);
-                form.find('.ng-input').triggerRawMouse('mousedown');
-                form.find('.ng-input input').val(value).triggerRawEvent('input');
+                field.addClass('current').scrollTo(200);
+                field.find('.ng-input').triggerRawMouse('mousedown');
+                field.find('.ng-input input').val(value).triggerRawEvent('input');
                 services.Dom.Shared.waitForAddedNode({
-                    selector: '.ng-dropdown-panel', parent: form[0], recursive: true, disconnect: true,
+                    selector: '.ng-dropdown-panel', parent: field[0], recursive: true, disconnect: true,
                     done: () => {
-                        const options = form.find('.ng-dropdown-panel .ng-option');
-                        const option = value && options.filter((index, option) => option.innerText.trim() === value.trim())[0] || options.eq(0);
+                        const options = field.find('.ng-dropdown-panel .ng-option');
+                        const option = value && options.filter((index, option) => option.innerText.trim() === value?.trim())?.[0] || options.eq(0);
                         $(option).triggerRawMouse('click');
                         DomProfile.toggleSpinner(false);
                     }
                 });
             },
-            input: function (value = form.data('default-value')) {
-                form.addClass('current').scrollTo(200);
-                form.find('textarea').val(`For ${value}`).triggerRawEvent('input');
+            input: function (value = field.data('default-value')) {
+                field.addClass('current').scrollTo(200);
+                field.find('textarea').val(`For ${value}`).triggerRawEvent('input');
             }
         };
         return processors[type] ? processors[type] : () => {};

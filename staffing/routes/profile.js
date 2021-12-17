@@ -90,8 +90,7 @@ class ProfileRoute {
             },
             applicantOwner: {
                 function: () => {
-                    const containers = $('.profile-content').find('td:textEquals("Applicant Owner")').next('td').filter((i, e) => e.innerText.trim());
-                    return containers.length;
+                    return $('.profile-content').find('td:textEquals("Applicant Owner")').next('td').find('a')?.text().trim();
                 },
                 error: { message: 'Empty Applicant Owner' }
             },

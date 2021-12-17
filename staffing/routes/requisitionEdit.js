@@ -58,11 +58,11 @@ class RequisitionEditRoute {
         const steps = ['jobFunction', 'level', 'title', 'candidate', 'recruiter', 'primarySkill', 'unit'].filter(step => stepData[step] || mandatorySteps.includes(step));
 
         const fields = {
-            jobFunction: $('[formcontrolname="jobFunction"] .form-entry:eq(0)'),
-            unit: $('[formcontrolname="unit"] .form-entry'),
-            recruiter: $('[formcontrolname="primaryRecruiter"] .form-entry'),
-            primarySkill: $('[formcontrolname="primarySkill"] .form-entry'),
-            candidate: $('[formcontrolname="headline"] .form-entry'),
+            jobFunction: () => $('[formcontrolname="jobFunction"] .form-entry:eq(0)'),
+            unit: () => $('[formcontrolname="unit"] .form-entry'),
+            recruiter: () => $('[formcontrolname="primaryRecruiter"] .form-entry'),
+            primarySkill: () => $('[formcontrolname="primarySkill"] .form-entry'),
+            candidate: () => $('[formcontrolname="headline"] .form-entry'),
             level: (value) => {
                 const form = $('[formcontrolname="jobFunction"] .ng-star-inserted .form-entry').addClass('current');
                 const radioList = form.find('.form-entry-field label');
@@ -71,7 +71,7 @@ class RequisitionEditRoute {
                     }
                 );
             },
-            title: $('[formcontrolname="title"] .form-entry')
+            title: () => $('[formcontrolname="title"] .form-entry')
         };
         this.wizard = new services.Wizard(fields, steps, this.constructor.stepsData);
         this.wizard.init();
