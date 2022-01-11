@@ -318,7 +318,7 @@ class Salary {
             textarea.val(function (i, text) {
                 let string = text.trim() ? '\n' : '';
                 const offersCount = (text.match(/Offer/g) || []).length;
-                string += `Offer${offersCount ? ' ' + offersCount + 1 : ''}: ${result}`;
+                string += `Offer${offersCount ? ' ' + (offersCount + 1) : ''}: ${result}`;
                 return text + string;
             }).triggerRawEvent('input');
         }
